@@ -92,7 +92,7 @@ const userSchema = z.object({
   }),
 });
 const createUser: NextApiHandler<PostResponse> = async (req, res) => {
-  await validateAuthentication(req);
+  await validateAuthorization(req, "usuarios", "editar", true);
   const user = userSchema.parse(req.body);
   const { senha: password } = user;
   let hashedPassword = hashSync(password, 10);
@@ -114,7 +114,7 @@ type GetResponse = {
   data: IUsuario[] | IUsuario;
 };
 const getUsers: NextApiHandler<GetResponse> = async (req, res) => {
-  await validateAuthentication(req);
+  await validateAuthorization(req, "usuarios", "visualizar", true);
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("users");
   const { id } = req.query;
@@ -135,75 +135,76 @@ type PutResponse = {
 const editUserSchema = z.object({
   _id: z.string().optional(),
   nome: z
-    .string()
-    .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." })
-    .optional(),
+    .string({ required_error: "Por favor, preencha o nome do usuário" })
+    .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." }),
   telefone: z.string().optional(),
-  email: z.string().email("Por favor, preencha um email válido.").optional(),
-  senha: z
-    .string({
-      required_error: "Por favor, preencha a senha do usuário.",
-    })
-    .optional(),
-  visibilidade: z
-    .union([z.literal("PRÓPRIA"), z.literal("GERAL"), z.array(z.string())])
-    .optional(), // z.string().or(z.string().array())
-  funisVisiveis: z.array(z.number()).or(z.array(z.never())).optional(),
+  email: z
+    .string({ required_error: "Por favor, preencha o email do usuário." })
+    .email("Por favor, preencha um email válido."),
+  senha: z.string({
+    required_error: "Por favor, preencha a senha do usuário.",
+  }),
+  visibilidade: z.union([
+    z.literal("PRÓPRIA"),
+    z.literal("GERAL"),
+    z.array(z.string()),
+  ]), // z.string().or(z.string().array())
+  funisVisiveis: z.union([z.array(z.number()), z.literal("TODOS")], {
+    required_error:
+      "Por favor, especifique a quais funis o usuário terá acesso.",
+  }),
   grupoPermissaoId: z
     .number({ required_error: "Grupo de permissão necessário." })
-    .or(z.string({ required_error: "Grupo de permissão necessário." }))
-    .optional(),
+    .or(z.string({ required_error: "Grupo de permissão necessário." })),
   comissao: z
     .object({
       id: z.number(),
       nome: z.string(),
     })
-    .optional(),
-  permissoes: z
-    .object({
-      usuarios: z.object({
-        visualizar: z.boolean(),
-        editar: z.boolean(),
-      }),
-      comissoes: z.object({
-        visualizarComissaoResponsavel: z.boolean(),
-        editarComissaoResponsavel: z.boolean(),
-        visualizarComissaoRepresentante: z.boolean(),
-        editarComissaoRepresentante: z.boolean(),
-      }),
-      dimensionamento: z.object({
-        editarPremissas: z.boolean(),
-        editarFatorDeGeracao: z.boolean(),
-        editarInclinacao: z.boolean(),
-        editarDesvio: z.boolean(),
-        editarDesempenho: z.boolean(),
-        editarSombreamento: z.boolean(),
-      }),
-      kits: z.object({
-        visualizar: z.boolean(),
-        editar: z.boolean(),
-      }),
-      tabelaVenda: z.object({
-        visualizarItens: z.boolean(),
-        habitarDesabilitarItens: z.boolean(),
-        editarQuantidades: z.boolean(),
-        adicionarItens: z.boolean(),
-        visualizarPrecos: z.boolean(),
-        visualizarMargem: z.boolean(),
-        editarMargem: z.boolean(),
-      }),
-      projetos: z.object({
-        serResponsavel: z.boolean(),
-        serRepresentante: z.boolean(),
-        editarResponsavelRepresentante: z.boolean(),
-        visualizarDocumentos: z.boolean(),
-        editarDocumentos: z.boolean(),
-      }),
-      clientes: z.object({
-        editarResponsavelRepresentante: z.boolean(),
-      }),
-    })
-    .optional(),
+    .nullable(),
+  permissoes: z.object({
+    usuarios: z.object({
+      visualizar: z.boolean(),
+      editar: z.boolean(),
+    }),
+    comissoes: z.object({
+      visualizarComissaoResponsavel: z.boolean(),
+      editarComissaoResponsavel: z.boolean(),
+      visualizarComissaoRepresentante: z.boolean(),
+      editarComissaoRepresentante: z.boolean(),
+    }),
+    dimensionamento: z.object({
+      editarPremissas: z.boolean(),
+      editarFatorDeGeracao: z.boolean(),
+      editarInclinacao: z.boolean(),
+      editarDesvio: z.boolean(),
+      editarDesempenho: z.boolean(),
+      editarSombreamento: z.boolean(),
+    }),
+    kits: z.object({
+      visualizar: z.boolean(),
+      editar: z.boolean(),
+    }),
+    tabelaVenda: z.object({
+      visualizarItens: z.boolean(),
+      habitarDesabilitarItens: z.boolean(),
+      editarQuantidades: z.boolean(),
+      adicionarItens: z.boolean(),
+      visualizarPrecos: z.boolean(),
+      visualizarMargem: z.boolean(),
+      editarMargem: z.boolean(),
+    }),
+    projetos: z.object({
+      serResponsavel: z.boolean(),
+      editarResponsavel: z.boolean(),
+      visualizarDocumentos: z.boolean(),
+      editarDocumentos: z.boolean(),
+    }),
+    clientes: z.object({
+      serRepresentante: z.boolean(),
+      editarRepresentante: z.boolean(),
+    }),
+  }),
 });
 
 const editUser: NextApiHandler<PutResponse> = async (req, res) => {

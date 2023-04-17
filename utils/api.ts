@@ -51,7 +51,6 @@ export async function validateAuthorization<
       `Nível de autorização insuficiente.`
     );
   }
-  return session;
 }
 // Criando o handler de erros
 function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {

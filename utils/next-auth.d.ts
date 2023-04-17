@@ -10,12 +10,9 @@ declare module "next-auth" {
       name: string;
       email: string;
       visibilidade: "GERAL" | "PRÓPRIA" | string[];
+      funisVisiveis: number[] | "TODOS";
       permissoes: {
         usuarios: {
-          visualizar: boolean;
-          editar: boolean;
-        };
-        gruposPermissoes: {
           visualizar: boolean;
           editar: boolean;
         };
@@ -46,16 +43,15 @@ declare module "next-auth" {
           visualizarMargem: boolean;
           editarMargem: boolean;
         };
-        funisVisiveis: number[];
         projetos: {
           serResponsavel: boolean;
-          serRepresentante: boolean;
-          editarResponsavelRepresentante: boolean;
+          editarResponsavel: boolean;
           visualizarDocumentos: boolean;
           editarDocumentos: boolean;
         };
         clientes: {
-          editarResponsavelRepresentante: boolean;
+          serRepresentante: boolean;
+          editarRepresentante: boolean;
         };
       };
     };

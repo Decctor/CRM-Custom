@@ -234,7 +234,7 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
                   categoryName="ESTADO"
                   value={
                     clientInfo.uf
-                      ? Object.keys(stateCities).indexOf(clientInfo.uf)
+                      ? Object.keys(stateCities).indexOf(clientInfo.uf) + 1
                       : ""
                   }
                   options={[
@@ -250,6 +250,7 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
                     },
                   ]}
                   onChange={(selectedItem) => {
+                    console.log(selectedItem);
                     if (
                       selectedItem.value == "MG" ||
                       selectedItem.value == "GO"

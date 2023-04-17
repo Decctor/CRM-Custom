@@ -73,7 +73,7 @@ function EditClient({
     mutationKey: ["editUser"],
     mutationFn: async () => {
       try {
-        const { data } = await axios.put(`/api/clients?id=${clientInfo._id}`, {
+        const { data } = await axios.put(`/api/clients?id=${clientInfo._id}&representative=${client.representante?.id}`, {
           changes: clientInfo,
         });
         queryClient.invalidateQueries({ queryKey: ["clients"] });

@@ -99,13 +99,14 @@ export const Sidebar = () => {
             url="/clientes"
             icon={<FaUser style={{ fontSize: "20px", color: "#15599a" }} />}
           />
-
-          <SidebarItem
-            text="Controle de Usuários"
-            isOpen={sidebarExtended}
-            url={"/auth/users"}
-            icon={<FaUsers style={{ fontSize: "20px", color: "#15599a" }} />}
-          />
+          {session?.user.permissoes.usuarios.visualizar ? (
+            <SidebarItem
+              text="Controle de Usuários"
+              isOpen={sidebarExtended}
+              url={"/auth/users"}
+              icon={<FaUsers style={{ fontSize: "20px", color: "#15599a" }} />}
+            />
+          ) : null}
         </div>
         <div className="flex w-full items-end justify-center">
           <MdLogout

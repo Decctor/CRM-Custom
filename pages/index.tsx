@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DropdownSelect from "@/components/Inputs/DropdownSelect";
 import { Sidebar } from "@/components/Sidebar";
 import FunnelList from "@/components/dnd/FunnelList";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios, { Axios, AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
@@ -10,10 +15,12 @@ import toast from "react-hot-toast";
 import { AiOutlinePlus } from "react-icons/ai";
 import NewClientModal from "@/components/Modals/NewClient";
 import LoadingPage from "@/components/utils/LoadingPage";
+import { Funnel } from "../utils/models";
 import { funnels } from "@/utils/constants";
 import { useResponsibles } from "@/utils/methods";
 import LoadingComponent from "@/components/utils/LoadingComponent";
-import { IProject } from "@/utils/models";
+import { IProject, IResponsible } from "@/utils/models";
+import { Session } from "next-auth";
 
 {
   // Exemplo de mutation com tratamento de erros
@@ -41,8 +48,32 @@ import { IProject } from "@/utils/models";
     },
   }); */
 }
+type Options = {
+  activeResponsible: string | null;
+  activeFunnel: number | null;
+  responsibleOptions:
+    | {
+        id: string;
+        label: string;
+        value: string;
+      }[]
+    | null;
+  funnelOptions:
+    | {
+        id: number;
+        label: string;
+        value: number;
+      }[]
+    | null;
+};
+type UpdateObjFunnelStage = {
+  updateObjId: string;
+  funnelId: string;
+  newStageId: string;
+  responsibleId: string;
+};
 function getStageProjects(
-  funnelId: number,
+  funnelId: number | null,
   stageId: number,
   projects: IProject[]
 ) {
@@ -53,16 +84,86 @@ function getStageProjects(
   );
   return stageProjects;
 }
+function getOptions(
+  session: Session | null,
+  responsibles: IResponsible[] | undefined
+) {
+  var options: Options = {
+    activeResponsible: null,
+    activeFunnel: null,
+    responsibleOptions: null,
+    funnelOptions: null,
+  };
+  if (!session || !responsibles) return options;
+  if (session.user.visibilidade == "GERAL") {
+    options.activeResponsible = null;
+    options.responsibleOptions = responsibles.map((resp) => {
+      return {
+        id: resp.id,
+        label: resp.nome,
+        value: resp.id,
+      };
+    });
+  } else {
+    var filteredResponsibles = responsibles.filter(
+      (responsible) => responsible.id == session.user.id
+    );
+    options.activeResponsible = session.user.id;
+    options.responsibleOptions = filteredResponsibles.map((resp) => {
+      return {
+        id: resp.id,
+        label: resp.nome,
+        value: resp.id,
+      };
+    });
+  }
+  if (session.user.funisVisiveis == "TODOS") {
+    options.activeFunnel = 1;
+    options.funnelOptions = funnels.map((funnel) => {
+      return {
+        id: funnel.id,
+        label: funnel.nome,
+        value: funnel.id,
+      };
+    });
+  } else {
+    var filteredFunnels: Funnel[] | [] = [];
+    const allFunnels: Funnel[] = funnels;
+    filteredFunnels = allFunnels.filter(
+      (funnel) =>
+        session.user.funisVisiveis != "TODOS" &&
+        session.user.funisVisiveis.includes(funnel.id)
+    );
+    options.activeFunnel = filteredFunnels[0] ? filteredFunnels[0].id : null;
+    options.funnelOptions = filteredFunnels.map((funnel) => {
+      return {
+        id: funnel.id,
+        label: funnel.nome,
+        value: funnel.id,
+      };
+    });
+  }
+  return options;
+}
 
 export default function Home() {
-  const { data, status } = useSession({ required: true });
-  const [responsible, setResponsible] = useState<string | null>(null);
-  const [funnel, setFunnel] = useState<number>(1);
-
+  const queryClient = useQueryClient();
+  const { data: session, status } = useSession({ required: true });
   const { data: responsibles } = useResponsibles();
-  const { data: projects, isLoading: projectsLoading } = useQuery({
+
+  const [responsible, setResponsible] = useState<string | null>(
+    getOptions(session, responsibles).activeResponsible
+  );
+  const [funnel, setFunnel] = useState<number | null>(
+    getOptions(session, responsibles).activeFunnel
+  );
+
+  const {
+    data: projects = [],
+    isLoading: projectsLoading,
+  }: UseQueryResult<IProject[], Error> = useQuery({
     queryKey: ["projects", funnel, responsible],
-    queryFn: async () => {
+    queryFn: async (): Promise<IProject[]> => {
       try {
         const { data } = await axios.get(
           `/api/projects?responsible=${responsible}&funnel=${funnel}`
@@ -72,22 +173,116 @@ export default function Home() {
         toast.error(
           "Erro ao buscar informações desse cliente. Por favor, tente novamente mais tarde."
         );
+        return [];
       }
     },
+    enabled: !!session?.user,
   });
 
-  const [newProjectModalIsOpen, setNewProjectModalIsOpen] = useState(false);
+  async function updateObjFunnelStage({
+    updateObjId,
+    funnelId,
+    newStageId,
+    responsibleId,
+  }: UpdateObjFunnelStage) {
+    await axios.put("/api/projects/funnel", {
+      updateObjId,
+      funnelId,
+      newStageId,
+      responsibleId,
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["projects", funnel, responsible],
+    });
+  }
+  const { mutate } = useMutation({
+    mutationKey: ["updateObjFunnelStage"],
+    mutationFn: async (info: UpdateObjFunnelStage) => {
+      try {
+        await axios.put("/api/projects/funnel", info);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+          return;
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+          return;
+        }
+      }
+    },
+    onMutate: async (variables) => {
+      // Getting current projects snapshot
+      const projectsSnapshot: any = queryClient.getQueryData([
+        "projects",
+        funnel,
+        responsible,
+      ]);
+      // Updating project reference
+      let project = projectsSnapshot.filter(
+        (x: any) => x._id == variables.updateObjId
+      )[0];
+      let indexOfProject = projectsSnapshot
+        .map((e: any) => e._id)
+        .indexOf(variables.updateObjId);
+      project.funis[variables.funnelId].etapaId = Number(variables.newStageId);
+      // Generating NewProjects array
+      const newProjects = [...projectsSnapshot];
+      newProjects[indexOfProject] = project;
+      queryClient.setQueryData(["projects", funnel, responsible], newProjects);
 
-  function onDragEnd(result: DropResult) {
-    const { source, destination } = result;
+      // Returning snapshot as context for OnSuccess or OnError
+      return { projectsSnapshot };
+    },
+    onError: async (err, variables, context) => {
+      queryClient.setQueryData(
+        ["projects", funnel, responsible],
+        context?.projectsSnapshot
+      );
+    },
+    onSettled: async () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+  async function onDragEnd(result: DropResult) {
+    const { source, destination, draggableId } = result;
     if (!destination) return;
     if (destination.droppableId == source.droppableId) return;
+
+    let project = projects.filter((x) => x._id == draggableId)[0];
+    if (project && funnel) {
+      const setOfFunnelsInProject = project.funis?.map((funnel) => funnel.id);
+      const indexOfFunnelInProject = setOfFunnelsInProject?.indexOf(funnel);
+      const projectResponsibleId = project.responsavel.id;
+      console.log("INDEX", indexOfFunnelInProject);
+      const newStageId = destination.droppableId;
+      if (indexOfFunnelInProject != undefined) {
+        mutate({
+          updateObjId: draggableId,
+          funnelId: indexOfFunnelInProject.toString(),
+          newStageId: newStageId,
+          responsibleId: projectResponsibleId,
+        });
+      }
+    }
+    console.log("PROJETO", project);
     console.log("ON DRAG END", result);
     let add;
     let active;
   }
-
-  console.log(projects);
+  useEffect(() => {
+    if (!funnel) {
+      setFunnel(getOptions(session, responsibles).activeFunnel);
+    }
+    if (!responsible) {
+      setResponsible(getOptions(session, responsibles).activeResponsible);
+    }
+  }, [session, responsibles]);
+  console.log(session);
+  console.log(getOptions(session, responsibles));
+  console.log(responsible);
   if (status == "loading") return <LoadingPage />;
   return (
     <div className="flex h-full">
@@ -109,7 +304,18 @@ export default function Home() {
               categoryName="Usuários"
               selectedItemLabel="Todos"
               value={responsible}
-              options={
+              options={getOptions(session, responsibles).responsibleOptions}
+              onChange={(selected) => setResponsible(selected.value)}
+              onReset={() => {
+                if (session.user.visibilidade == "GERAL") {
+                  setResponsible(null);
+                } else {
+                  setResponsible(session.user.id);
+                }
+              }}
+              width="350px"
+            />
+            {/**
                 responsibles
                   ? responsibles.map((resp) => {
                       return {
@@ -118,52 +324,42 @@ export default function Home() {
                         value: resp.id,
                       };
                     })
-                  : null
-              }
-              onChange={(selected) => setResponsible(selected.value)}
-              onReset={() => setResponsible(null)}
-              width="350px"
-            />
+                  : null */}
             <DropdownSelect
               categoryName="Funis"
-              selectedItemLabel="PADRÃO"
+              selectedItemLabel="FUNIL PADRÃO"
               value={funnel}
-              options={funnels.map((funnel) => {
-                return {
-                  id: funnel.id,
-                  label: funnel.nome,
-                  value: funnel.id,
-                };
-              })}
+              options={getOptions(session, responsibles).funnelOptions}
               onChange={(selected) => setFunnel(selected.value)}
-              onReset={() => setFunnel(1)}
+              onReset={() => setFunnel(null)}
               width="350px"
             />
           </div>
         </div>
-        {data ? (
+        {session ? (
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="mt-2 flex w-full grow overflow-x-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
               {projectsLoading ? (
                 <LoadingComponent />
-              ) : (
+              ) : funnels.filter((funn) => funn.id == funnel)[0] ? (
                 funnels
                   .filter((funn) => funn.id == funnel)[0]
                   .etapas.map((stage) => (
                     <FunnelList
                       key={stage.id}
+                      id={stage.id}
                       stageName={stage.nome}
                       items={getStageProjects(funnel, stage.id, projects).map(
                         (item, index) => {
                           return {
-                            id: index,
+                            id: item._id ? item._id : "",
                             name: item.nome,
                           };
                         }
                       )}
                     />
                   ))
-              )}
+              ) : null}
               {/* <FunnelList
                 stageName="APRESENTAÇÃO DE PROPOSTA"
                 items={[

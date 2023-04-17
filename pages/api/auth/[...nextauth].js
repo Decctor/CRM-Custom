@@ -45,6 +45,7 @@ export const authOptions = {
           name: userInDb.nome,
           image: userInDb.avatar_url,
           visibilidade: userInDb.visibilidade,
+          funisVisiveis: userInDb.funisVisiveis,
           permissoes: userInDb.permissoes,
         };
         // If no error and we have user data, return it
@@ -74,6 +75,7 @@ export const authOptions = {
       // console.log("TOKEN", token);
       if (session?.user) {
         session.user.id = token.sub;
+        session.user.funisVisiveis = token.funisVisiveis;
         session.user.visibilidade = token.visibilidade;
         session.user.permissoes = token.permissoes;
       }
@@ -85,6 +87,7 @@ export const authOptions = {
       // console.log("PROFILE", profile);
       // console.log(token);
       if (user) {
+        token.funisVisiveis = user.funisVisiveis;
         token.visibilidade = user.visibilidade;
         token.permissoes = user.permissoes;
       }

@@ -166,8 +166,22 @@ const editClientSchema = z.object({
 });
 
 const editClients: NextApiHandler<PutResponse> = async (req, res) => {
-  await validateAuthorization(req, "clientes", "editarRepresentante", true);
-  const { id } = req.query;
+  const session = await validateAuthorization(
+    req,
+    "clientes",
+    "serRepresentante",
+    true
+  );
+  // if(session.user.id)
+  const { id, representative } = req.query;
+  if (
+    session.user.visibilidade == "PRÓPRIA" &&
+    representative != session.user.id
+  ) {
+    throw new createHttpError.Unauthorized(
+      "Somente o representante ou administradores podem alterar esse cliente."
+    );
+  }
   if (!id && typeof id !== "string")
     throw new createHttpError.BadRequest(
       "ID do objeto de alteração não especificado."

@@ -5,15 +5,17 @@ import { IUsuario } from "@/utils/models";
 import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import EditUser from "@/components/Modals/EditUser";
+import { useSession } from "next-auth/react";
 
 type ActiveUserModalState = {
   isOpen: boolean;
   user: IUsuario | null;
 };
 function Users() {
+  const { data: session } = useSession();
   const {
     data: users,
     isLoading,
@@ -25,12 +27,23 @@ function Users() {
         const { data } = await axios.get("/api/users");
         return data.data;
       } catch (error) {
-        toast.error("Erro na busca por usuário. Por favor, tente novamente.");
+        console.log("ERROR", error);
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+          return;
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+          return;
+        }
       }
     },
+    enabled: session?.user.permissoes.usuarios.visualizar,
     refetchOnWindowFocus: false,
   });
-
+  console.log(session);
   const [newUserModalIsOpen, setUserModalIsOpen] = useState(false);
   const [activeUserModal, setActiveUserModal] = useState<ActiveUserModalState>({
     isOpen: false,

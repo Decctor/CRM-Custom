@@ -4,15 +4,16 @@ import { Droppable } from "react-beautiful-dnd";
 
 interface IFunnelListProps {
   stageName: string;
+  id: string | number;
   items: {
     id: number | string;
     name: string;
     [key: string]: string | unknown;
   }[];
 }
-function FunnelList({ stageName, items }: IFunnelListProps) {
+function FunnelList({ stageName, items, id }: IFunnelListProps) {
   return (
-    <Droppable droppableId={stageName}>
+    <Droppable droppableId={id.toString()}>
       {(provided) => (
         <div className="flex w-full min-w-[350px] flex-col p-2 px-4 lg:w-[350px]">
           <div className="flex h-[50px] w-full flex-col">

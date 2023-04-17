@@ -26,7 +26,7 @@ export interface IUsuario {
   senha: string;
   avatar_url?: string;
   visibilidade: "GERAL" | "PRÓPRIA" | string[];
-  funisVisiveis: number[] | [] | "TODOS";
+  funisVisiveis: number[] | "TODOS";
   grupoPermissaoId: string | number;
   comissao: Comissao | null;
   permissoes: {
@@ -85,16 +85,16 @@ export interface IResponsible {
   _id?: string;
 }
 export interface IProject {
-  _id?: ObjectId | string;
+  _id?: string;
   nome: string;
   identificador: number;
   responsavel: {
     nome: string;
-    id: ObjectId | string;
+    id: string;
   };
   representante: {
     nome: string;
-    id: ObjectId | string;
+    id: string;
   };
   clienteId: string;
   cliente?: IClient[]; // ajustar pós criação da interface de Cliente
