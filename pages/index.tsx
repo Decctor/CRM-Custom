@@ -48,6 +48,7 @@ import { Session } from "next-auth";
     },
   }); */
 }
+
 type Options = {
   activeResponsible: string | null;
   activeFunnel: number | null;
@@ -72,6 +73,7 @@ type UpdateObjFunnelStage = {
   newStageId: string;
   responsibleId: string;
 };
+
 function getStageProjects(
   funnelId: number | null,
   stageId: number,
@@ -149,6 +151,7 @@ function getOptions(
 export default function Home() {
   const queryClient = useQueryClient();
   const { data: session, status } = useSession({ required: true });
+
   const { data: responsibles } = useResponsibles();
 
   const [responsible, setResponsible] = useState<string | null>(
@@ -179,22 +182,6 @@ export default function Home() {
     enabled: !!session?.user,
   });
 
-  async function updateObjFunnelStage({
-    updateObjId,
-    funnelId,
-    newStageId,
-    responsibleId,
-  }: UpdateObjFunnelStage) {
-    await axios.put("/api/projects/funnel", {
-      updateObjId,
-      funnelId,
-      newStageId,
-      responsibleId,
-    });
-    queryClient.invalidateQueries({
-      queryKey: ["projects", funnel, responsible],
-    });
-  }
   const { mutate } = useMutation({
     mutationKey: ["updateObjFunnelStage"],
     mutationFn: async (info: UpdateObjFunnelStage) => {
@@ -246,6 +233,7 @@ export default function Home() {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
+
   async function onDragEnd(result: DropResult) {
     const { source, destination, draggableId } = result;
     if (!destination) return;
@@ -272,6 +260,7 @@ export default function Home() {
     let add;
     let active;
   }
+
   useEffect(() => {
     if (!funnel) {
       setFunnel(getOptions(session, responsibles).activeFunnel);
@@ -280,9 +269,7 @@ export default function Home() {
       setResponsible(getOptions(session, responsibles).activeResponsible);
     }
   }, [session, responsibles]);
-  console.log(session);
-  console.log(getOptions(session, responsibles));
-  console.log(responsible);
+
   if (status == "loading") return <LoadingPage />;
   return (
     <div className="flex h-full">

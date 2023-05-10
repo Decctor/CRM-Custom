@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdDashboard, MdLogout } from "react-icons/md";
-import { FaUser, FaUsers } from "react-icons/fa";
+import { FaSolarPanel, FaUser, FaUsers } from "react-icons/fa";
 import { TfiAngleRight } from "react-icons/tfi";
 import { BsGraphUpArrow } from "react-icons/bs";
 import SidebarItem from "./SidebarItem";
@@ -26,8 +26,8 @@ export const Sidebar = () => {
           delay: 0.1,
         }}
         style={{ maxHeight: "100vh" }}
-        className={`overscroll-y sticky top-0 flex flex-col overflow-y-auto border-r border-gray-200 bg-[#fff] px-1 py-4 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ${
-          sidebarExtended ? "w-[200px] min-w-[200px]" : "w-[70px] min-w-[70px]"
+        className={`overscroll-y sticky top-0 flex flex-col overflow-y-auto border-r border-gray-200 bg-[#fff]  px-2 py-4 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ${
+          sidebarExtended ? "w-[210px] min-w-[210px]" : "w-[70px] min-w-[70px]"
         }`}
       >
         <div className="flex h-[70px] w-full items-start justify-center">
@@ -99,6 +99,16 @@ export const Sidebar = () => {
             url="/clientes"
             icon={<FaUser style={{ fontSize: "20px", color: "#15599a" }} />}
           />
+          <SidebarItem
+            text="Kits"
+            isOpen={sidebarExtended}
+            url="/kits"
+            icon={
+              <FaSolarPanel style={{ fontSize: "20px", color: "#15599a" }} />
+            }
+          />
+        </div>
+        <div className="flex w-full flex-col">
           {session?.user.permissoes.usuarios.visualizar ? (
             <SidebarItem
               text="Controle de Usuários"
@@ -107,15 +117,22 @@ export const Sidebar = () => {
               icon={<FaUsers style={{ fontSize: "20px", color: "#15599a" }} />}
             />
           ) : null}
-        </div>
-        <div className="flex w-full items-end justify-center">
-          <MdLogout
-            onClick={() => {
-              signOut({ redirect: false });
-              push("/auth/signin");
-            }}
-            style={{ fontSize: "20px", color: "#15599a", cursor: "pointer" }}
-          />
+          <div
+            className={`mt-2 flex cursor-pointer items-center justify-center rounded p-2  duration-300 ease-in  hover:bg-blue-100`}
+          >
+            <MdLogout
+              onClick={() => {
+                signOut({ redirect: false });
+                push("/auth/signin");
+              }}
+              style={{
+                fontSize: "20px",
+                color: "#15599a",
+                cursor: "pointer",
+                alignSelf: "center",
+              }}
+            />
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>

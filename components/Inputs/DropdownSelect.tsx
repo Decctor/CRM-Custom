@@ -99,7 +99,7 @@ function DropdownSelect<T extends {}>({
           >
             {selectedId && options
               ? options.filter((item) => item.id == selectedId)[0].label
-              : selectedItemLabel}
+              : categoryName}
           </p>
         )}
         {selectMenuIsOpen ? (

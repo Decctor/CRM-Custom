@@ -1,5 +1,5 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { IClient, IRepresentative, IResponsible } from "./models";
+import { IClient, IKit, IRepresentative, IResponsible } from "./models";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
@@ -76,7 +76,31 @@ export function useResponsibles(): UseQueryResult<IResponsible[], Error> {
     refetchOnWindowFocus: false,
   });
 }
-
+export function useKits(onlyActive?: boolean): UseQueryResult<IKit[], Error> {
+  return useQuery({
+    queryKey: ["kits"],
+    queryFn: async (): Promise<IKit[]> => {
+      try {
+        var url;
+        if (onlyActive) url = "/api/kits/active=true";
+        else url = "/api/kits";
+        const { data } = await axios.get(url);
+        return data.data;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+        }
+        return [];
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
+}
 export function useClients(): UseQueryResult<IClient[], Error> {
   return useQuery({
     queryKey: ["clients"],

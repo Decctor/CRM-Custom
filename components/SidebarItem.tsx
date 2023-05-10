@@ -15,7 +15,7 @@ function SidebarItem({ isOpen, icon, text, url }: SiderbarItemProps) {
         <div
           className={`mt-2 flex cursor-pointer items-center ${
             isOpen ? "justify-start" : "justify-center "
-          } rounded p-2  duration-300 ease-in hover:scale-105 hover:bg-blue-100`}
+          } rounded  p-2 duration-300 ease-in hover:scale-105 hover:bg-blue-100`}
         >
           {icon}
           {isOpen ? (

@@ -18,6 +18,38 @@ export interface Comissao {
   id: number;
   nome: string;
 }
+export type InverterType = {
+  id: string | number;
+  fabricante: string;
+  modelo: string;
+  qtde: number;
+};
+export type ModuleType = {
+  id: string | number;
+  fabricante: string;
+  modelo: string;
+  qtde: number;
+};
+type StructureComponent = {
+  insumo: string;
+  tipo: string;
+  qtde: number;
+  medida: string;
+};
+export interface IKit {
+  _id?: ObjectId;
+  nome: string;
+  categoria: "ON-GRID" | "OFF-GRID" | "BOMBA SOLAR";
+  topologia: "INVERSOR" | "MICRO-INVERSOR";
+  preco: Number;
+  ativo: boolean;
+  fornecedor: string;
+  estruturasCompativeis: string[];
+  incluiEstrutura: boolean;
+  incluiTranformador: boolean;
+  inversores: InverterType[];
+  modulos: ModuleType[];
+}
 export interface IUsuario {
   _id?: ObjectId | string;
   nome: string;

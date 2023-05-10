@@ -82,7 +82,6 @@ export const authOptions = {
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-      console.log("USER", user);
       // console.log("ACCOUNT", account);
       // console.log("PROFILE", profile);
       // console.log(token);

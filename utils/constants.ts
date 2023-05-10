@@ -85,6 +85,53 @@ export const roles = [
       },
     },
   },
+  {
+    id: 2,
+    role: "Promotor de Vendas",
+    permissoes: {
+      usuarios: {
+        visualizar: false,
+        editar: false,
+      },
+      comissoes: {
+        visualizarComissaoResponsavel: true,
+        editarComissaoResponsavel: false,
+        visualizarComissaoRepresentante: true,
+        editarComissaoRepresentante: false,
+      },
+      dimensionamento: {
+        editarPremissas: false,
+        editarFatorDeGeracao: false,
+        editarInclinacao: false,
+        editarDesvio: false,
+        editarDesempenho: false,
+        editarSombreamento: false,
+      },
+      kits: {
+        visualizar: true,
+        editar: false,
+      },
+      tabelaVenda: {
+        visualizarItens: true,
+        habitarDesabilitarItens: false,
+        editarQuantidades: false,
+        adicionarItens: true,
+        visualizarPrecos: true,
+        visualizarMargem: false,
+        editarMargem: false,
+      },
+      projetos: {
+        serResponsavel: true,
+        editarResponsavel: true,
+        visualizarDocumentos: true,
+        editarDocumentos: false,
+      },
+      clientes: {
+        serRepresentante: true,
+        editarRepresentante: false,
+      },
+    },
+  },
 ];
 export const comissionTable = [
   {

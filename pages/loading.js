@@ -1,9 +1,8 @@
 import React from "react";
-import FullScreenWrapper from "../Wrappers/FullScreenWrapper";
 
-function LoadingPage() {
+function Loading() {
   return (
-    <div className="flex min-h-[100vh] w-screen max-w-full flex-col  items-center justify-center  xl:min-h-[100vh]">
+    <div className="flex min-h-[100vh] w-screen max-w-full flex-col  items-center justify-center bg-[#fff] xl:min-h-[100vh]">
       <div role="status">
         <svg
           aria-hidden="true"
@@ -27,4 +26,4 @@ function LoadingPage() {
   );
 }
 
-export default LoadingPage;
+export default Loading;

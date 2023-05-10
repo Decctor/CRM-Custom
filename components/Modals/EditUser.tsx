@@ -120,7 +120,7 @@ function EditUser({ user, closeModal }: EditUserProps) {
               <VscChromeClose style={{ color: "red" }} />
             </button>
           </div>
-          <div className="flex h-full flex-col gap-y-2 overflow-y-auto overscroll-y-auto py-1 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ">
+          <div className="flex h-full flex-col gap-y-2 overflow-y-auto overscroll-y-auto py-1 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
             <div className="grid w-full grid-cols-1 grid-rows-2 items-center gap-2 lg:grid-cols-2 lg:grid-rows-1 lg:items-start">
               <TextInput
                 label="NOME E SOBRENOME"
