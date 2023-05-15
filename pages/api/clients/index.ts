@@ -126,9 +126,11 @@ const editClientSchema = z.object({
     .string({ required_error: "Por favor, preencha o nome do cliente." })
     .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." })
     .optional(),
-  cpfCnpj: z.string({
-    required_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
-  }),
+  cpfCnpj: z
+    .string({
+      required_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
+    })
+    .optional(),
   telefonePrimario: z
     .string({
       required_error: "Por favor, preencha o telefone do cliente.",
@@ -163,6 +165,12 @@ const editClientSchema = z.object({
   cidade: z
     .string({ required_error: "Por favor, preencha a cidade do cliente." })
     .optional(),
+  dataNascimento: z.string().optional(),
+  rg: z.string().optional(),
+  estadoCivil: z.string().optional(),
+  profissao: z.string().optional(),
+  ondeTrabalha: z.string().optional(),
+  canalVenda: z.string().optional(),
 });
 
 const editClients: NextApiHandler<PutResponse> = async (req, res) => {
@@ -193,6 +201,7 @@ const editClients: NextApiHandler<PutResponse> = async (req, res) => {
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("clients");
   const changes = editClientSchema.parse(req.body.changes);
+  console.log(changes);
   if (typeof id === "string") {
     const data = await collection.findOneAndUpdate(
       {
@@ -207,7 +216,7 @@ const editClients: NextApiHandler<PutResponse> = async (req, res) => {
     );
     res
       .status(201)
-      .json({ data: data, message: "Cliente alterado com sucesso." });
+      .json({ data: data.value, message: "Cliente alterado com sucesso." });
   }
 };
 export default apiHandler({

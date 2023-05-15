@@ -17,7 +17,9 @@ function FunnelList({ stageName, items, id }: IFunnelListProps) {
       {(provided) => (
         <div className="flex w-full min-w-[350px] flex-col p-2 px-4 lg:w-[350px]">
           <div className="flex h-[50px] w-full flex-col">
-            <h1 className="font-medium">{stageName}</h1>
+            <h1 className="rounded bg-[#15599a] p-1 text-center font-medium text-white">
+              {stageName}
+            </h1>
           </div>
 
           <div

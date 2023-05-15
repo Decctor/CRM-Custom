@@ -2,7 +2,7 @@ import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { GoKebabVertical } from "react-icons/go";
 import { Sidebar } from "@/components/Sidebar";
@@ -16,11 +16,18 @@ import { GiPositionMarker } from "react-icons/gi";
 import { HiIdentification } from "react-icons/hi";
 import SleepyVolts from "../../../utils/sleepVolts.svg";
 import Image from "next/image";
+import TextInput from "@/components/Inputs/TextInput";
+import DateInput from "@/components/Inputs/DateInput";
+import dayjs from "dayjs";
+import SelectInput from "@/components/Inputs/SelectInput";
+import { formatDate } from "@/utils/methods";
+import DetailsBlock from "@/components/Blocks/DetailsBlock";
 function Projeto() {
   const { data: session } = useSession({
     required: true,
   });
   const { query } = useRouter();
+  const [infoHolder, setInfoHolder] = useState<IProject | undefined>();
 
   const {
     data: project,
@@ -31,7 +38,10 @@ function Projeto() {
     queryKey: ["projects", query.id],
     queryFn: async () => {
       try {
+        console.log(query.id);
         const { data } = await axios.get(`/api/projects?id=${query.id}`);
+        console.log("FETCH", data);
+        setInfoHolder(data.data);
         return data.data;
       } catch (error) {
         toast.error(
@@ -42,7 +52,8 @@ function Projeto() {
     },
     enabled: !!session?.user,
   });
-
+  console.log(projectLoading);
+  console.log(infoHolder);
   if (projectError)
     return (
       <div className="flex h-full">
@@ -70,7 +81,7 @@ function Projeto() {
               {project.descricao}
             </p>
           </div>
-          <div className="flex w-full grow flex-col items-start gap-6 py-4 lg:flex-row">
+          <div className="flex w-full flex-col items-start gap-6 py-4 lg:flex-row">
             <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[40%]">
               <div className="flex h-[40px] items-center justify-between border-b border-gray-200 pb-2">
                 <h1 className="font-bold text-black">Dados do Cliente</h1>
@@ -85,13 +96,13 @@ function Projeto() {
                       style={{ color: "#15599a", fontSize: "20px" }}
                     />
                     <p className="font-Poppins text-sm text-gray-500">
-                      {project.cliente ? project.cliente[0].nome : "-"}
+                      {project.cliente ? project.cliente.nome : "-"}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <MdEmail style={{ color: "#15599a", fontSize: "20px" }} />
                     <p className="font-Poppins text-sm text-gray-500">
-                      {project.cliente ? project.cliente[0].email : "-"}
+                      {project.cliente ? project.cliente.email : "-"}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -99,9 +110,7 @@ function Projeto() {
                       style={{ color: "#15599a", fontSize: "20px" }}
                     />
                     <p className="font-Poppins text-sm text-gray-500">
-                      {project.cliente
-                        ? project.cliente[0].telefonePrimario
-                        : "-"}
+                      {project.cliente ? project.cliente.telefonePrimario : "-"}
                     </p>
                   </div>
                 </div>
@@ -111,14 +120,14 @@ function Projeto() {
                       style={{ color: "#15599a", fontSize: "20px" }}
                     />
                     <p className="font-Poppins text-sm text-gray-500">
-                      {project.cliente ? project.cliente[0].cpfCnpj : "-"}
+                      {project.cliente ? project.cliente.cpfCnpj : "-"}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <FaCity style={{ color: "#15599a", fontSize: "20px" }} />
                     <p className="font-Poppins text-sm text-gray-500">
                       {project.cliente
-                        ? `${project.cliente[0].cidade} (${project.cliente[0].uf})`
+                        ? `${project.cliente.cidade} (${project.cliente.uf})`
                         : "-"}
                     </p>
                   </div>
@@ -128,7 +137,7 @@ function Projeto() {
                     />
                     <p className="font-Poppins text-sm text-gray-500">
                       {project.cliente
-                        ? `${project.cliente[0].endereco} - ${project.cliente[0].numeroOuIdentificador},  ${project.cliente[0].bairro}`
+                        ? `${project.cliente.endereco} - ${project.cliente.numeroOuIdentificador},  ${project.cliente.bairro}`
                         : "-"}
                     </p>
                   </div>
@@ -150,18 +159,6 @@ function Projeto() {
                 </button>
               </div>
               <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
-                {/* <div className="flex h-full w-full items-center justify-center gap-4">
-                  <div className="ml-2  flex h-[50px] w-[52px] items-center duration-500 ease-in-out">
-                    <Image
-                      src={SleepyVolts}
-                      height={50}
-                      alt={"Volts sonolento."}
-                    />
-                  </div>
-                  <p className="text-lg italic text-gray-400">
-                    Sem propostas geradas...
-                  </p>
-                </div> */}
                 <div className="flex h-[50px] w-full justify-center">
                   <h1>TESTE</h1>
                 </div>
@@ -172,6 +169,12 @@ function Projeto() {
                 <div className="h-[50px] w-full">a</div>
               </div>
             </div>
+          </div>
+          <div className="flex w-full flex-col gap-6 lg:flex-row">
+            <div className="w-full lg:w-[40%]">
+              <DetailsBlock info={project} />
+            </div>
+            <div className="w-full rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]"></div>
           </div>
         </div>
       </div>

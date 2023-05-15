@@ -31,6 +31,9 @@ export function formatToPhone(value: string): string {
   return value;
 }
 
+export function formatDate(value: any) {
+  return new Date(value).toISOString().slice(0, 10);
+}
 // Hooks
 export function useRepresentatives(): UseQueryResult<IRepresentative[], Error> {
   return useQuery({

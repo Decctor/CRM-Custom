@@ -1,4 +1,4 @@
-import NewKit from "@/components/Modals/ModalNewKit";
+import NewKit from "@/components/Modals/NewKit";
 import { Sidebar } from "@/components/Sidebar";
 import LoadingComponent from "@/components/utils/LoadingComponent";
 import { useKits } from "@/utils/methods";

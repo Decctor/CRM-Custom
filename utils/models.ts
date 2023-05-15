@@ -129,7 +129,11 @@ export interface IProject {
     id: string;
   };
   clienteId: string;
-  cliente?: IClient[]; // ajustar pós criação da interface de Cliente
+  cliente?: IClient; // ajustar pós criação da interface de Cliente
+  titularInstalacao?: string;
+  tipoTitular?: "PESSOA FISICA" | "PESSOA JURIDICA";
+  tipoLigacao?: "EXISTENTE" | "NOVA";
+  tipoInstalacao?: "URBANO" | "RURAL";
   descricao?: string;
   etiquetasIds?: number[];
   funis?: { id: number; etapaId: number }[];
@@ -155,6 +159,12 @@ export interface IClient {
   complemento?: string;
   uf: "MG" | "GO" | null;
   cidade: string;
+  dataNascimento?: string;
+  rg?: string;
+  estadoCivil?: string;
+  profissao?: string;
+  ondeTrabalha?: string;
+  canalVenda?: string;
   dataInsercao?: Date | null;
   projetos?: IProject[];
 }

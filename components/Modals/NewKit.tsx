@@ -12,6 +12,7 @@ import MultipleSelectInput from "../Inputs/MultipleSelectInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { AiOutlineMinus } from "react-icons/ai";
 type ModalNewKitProps = {
   isOpen: boolean;
   setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -506,10 +507,23 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                     INVERSORES ADICIONADOS
                   </h1>
                   {kitInfo.inversores.length > 0 ? (
-                    kitInfo.inversores.map((inverter) => (
-                      <div className="text-center font-light text-gray-500">
-                        {inverter.qtde} x {inverter.fabricante}-
-                        {inverter.modelo}
+                    kitInfo.inversores.map((inverter, index) => (
+                      <div className="flex items-center justify-between px-2 text-center font-light text-gray-500">
+                        <p>
+                          {inverter.qtde} x {inverter.fabricante}-
+                          {inverter.modelo}
+                        </p>
+                        <AiOutlineMinus
+                          onClick={() => {
+                            var arr = [...kitInfo.inversores];
+                            arr.splice(index, 1);
+                            setKitInfo((prev) => ({
+                              ...prev,
+                              inversores: arr,
+                            }));
+                          }}
+                          style={{ color: "rgb(239,68,68)", cursor: "pointer" }}
+                        />
                       </div>
                     ))
                   ) : (
@@ -523,9 +537,19 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                     MÓDULOS ADICIONADOS
                   </h1>
                   {kitInfo.modulos.length > 0 ? (
-                    kitInfo.modulos.map((module) => (
-                      <div className="text-center font-light text-gray-500">
-                        {module.qtde} x {module.fabricante}-{module.modelo}
+                    kitInfo.modulos.map((module, index) => (
+                      <div className="flex items-center justify-between px-2 text-center font-light text-gray-500">
+                        <p>
+                          {module.qtde} x {module.fabricante}-{module.modelo}
+                        </p>
+                        <AiOutlineMinus
+                          onClick={() => {
+                            var arr = [...kitInfo.modulos];
+                            arr.splice(index, 1);
+                            setKitInfo((prev) => ({ ...prev, modulos: arr }));
+                          }}
+                          style={{ color: "rgb(239,68,68)", cursor: "pointer" }}
+                        />
                       </div>
                     ))
                   ) : (
