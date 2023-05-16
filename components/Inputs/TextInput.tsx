@@ -4,6 +4,7 @@ type TextInputProps = {
   label: string;
   value: string;
   placeholder: string;
+  editable?: boolean;
   handleChange: (value: string) => void;
 };
 function TextInput({
@@ -11,6 +12,7 @@ function TextInput({
   label,
   value,
   placeholder,
+  editable = true,
   handleChange,
 }: TextInputProps) {
   const inputIdentifier = label.toLowerCase().replace(" ", "_");
@@ -28,6 +30,7 @@ function TextInput({
         value={value}
         onChange={(e) => handleChange(e.target.value)}
         id={inputIdentifier}
+        readOnly={!editable}
         type="text"
         placeholder={placeholder}
         className="w-full rounded-md border border-gray-200 p-3 text-sm outline-none placeholder:italic"

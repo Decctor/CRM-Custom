@@ -26,7 +26,7 @@ function DetailsBlock({ info }: DetailsBlockType) {
             changes: changes,
           }
         );
-        console.log("MUTATION", data);
+
         queryClient.invalidateQueries({ queryKey: ["projects", info._id] });
         if (data.message) toast.success(data.message);
         return "OK";

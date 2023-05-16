@@ -144,6 +144,7 @@ const editUserSchema = z.object({
   senha: z.string({
     required_error: "Por favor, preencha a senha do usuário.",
   }),
+  avatar_url: z.string().optional(),
   visibilidade: z.union([
     z.literal("PRÓPRIA"),
     z.literal("GERAL"),

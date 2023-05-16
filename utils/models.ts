@@ -114,6 +114,7 @@ export interface IRepresentative {
 export interface IResponsible {
   nome: string;
   id: string;
+  avatar_url?: string;
   _id?: string;
 }
 export interface IProject {

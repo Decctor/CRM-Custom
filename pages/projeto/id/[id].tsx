@@ -38,7 +38,6 @@ function Projeto() {
     queryKey: ["projects", query.id],
     queryFn: async () => {
       try {
-        console.log(query.id);
         const { data } = await axios.get(`/api/projects?id=${query.id}`);
         console.log("FETCH", data);
         setInfoHolder(data.data);
@@ -52,8 +51,7 @@ function Projeto() {
     },
     enabled: !!session?.user,
   });
-  console.log(projectLoading);
-  console.log(infoHolder);
+
   if (projectError)
     return (
       <div className="flex h-full">

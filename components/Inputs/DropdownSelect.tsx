@@ -10,6 +10,7 @@ type DropdownSelectProps<T> = {
   selectedItemLabel: string;
   options: DropdownOption<T>[] | null;
   value: number | string | null;
+  editable?: boolean;
   categoryName: string;
   width?: string;
   onChange: (value: DropdownOption<T>) => void;
@@ -20,6 +21,7 @@ function DropdownSelect<T extends {}>({
   selectedItemLabel,
   options,
   value,
+  editable = true,
   categoryName,
   width,
   onChange,
@@ -94,7 +96,9 @@ function DropdownSelect<T extends {}>({
           />
         ) : (
           <p
-            onClick={() => setSelectMenuIsOpen((prev) => !prev)}
+            onClick={() => {
+              if (editable) setSelectMenuIsOpen((prev) => !prev);
+            }}
             className="grow cursor-pointer text-[#353432]"
           >
             {selectedId && options
@@ -105,12 +109,16 @@ function DropdownSelect<T extends {}>({
         {selectMenuIsOpen ? (
           <IoMdArrowDropup
             style={{ cursor: "pointer" }}
-            onClick={() => setSelectMenuIsOpen((prev) => !prev)}
+            onClick={() => {
+              if (editable) setSelectMenuIsOpen((prev) => !prev);
+            }}
           />
         ) : (
           <IoMdArrowDropdown
             style={{ cursor: "pointer" }}
-            onClick={() => setSelectMenuIsOpen((prev) => !prev)}
+            onClick={() => {
+              if (editable) setSelectMenuIsOpen((prev) => !prev);
+            }}
           />
         )}
       </div>

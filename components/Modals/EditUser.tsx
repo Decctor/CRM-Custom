@@ -1,18 +1,21 @@
 import React, { useState } from "react";
-import { VscChromeClose } from "react-icons/vsc";
-import TextInput from "../Inputs/TextInput";
-import { formatToPhone } from "@/utils/methods";
-import DropdownSelect from "../Inputs/DropdownSelect";
-import { comissionTable, funnels, roles } from "@/utils/constants";
-import { MdRemoveCircle } from "react-icons/md";
-import { IoMdAddCircle } from "react-icons/io";
+import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { Comissao } from "../../utils/models";
 import { toast } from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ObjectId } from "mongodb";
-
+import TextInput from "../Inputs/TextInput";
+import DropdownSelect from "../Inputs/DropdownSelect";
+import { comissionTable, funnels, roles } from "@/utils/constants";
+import { Comissao } from "../../utils/models";
+import { formatToPhone } from "@/utils/methods";
+import { VscChromeClose } from "react-icons/vsc";
+import { MdRemoveCircle } from "react-icons/md";
+import { IoMdAddCircle } from "react-icons/io";
+import { BsCheckLg } from "react-icons/bs";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../services/firebase";
 interface IUserInfo {
   _id?: ObjectId | string;
   nome: string;
@@ -23,6 +26,7 @@ interface IUserInfo {
   funisVisiveis: number[] | "TODOS";
   grupoPermissaoId: string | number;
   comissao: Comissao | null;
+  avatar_url?: string;
   permissoes:
     | {
         usuarios: {
@@ -75,13 +79,32 @@ type EditUserProps = {
 };
 function EditUser({ user, closeModal }: EditUserProps) {
   const queryClient = useQueryClient();
-
+  const [image, setImage] = useState<File | null>();
   const [userInfo, setUserInfo] = useState<IUserInfo>(user);
+
+  async function uploadImage() {
+    var splitNome = user.nome.toLowerCase().split(" ");
+    var fixedNome = splitNome.join("_");
+    var imageRef = ref(storage, `usuarios/crm/avatar-${fixedNome}`);
+    let res = await uploadBytes(imageRef, image);
+    let url = await getDownloadURL(ref(storage, res.metadata.fullPath));
+    return url;
+  }
   const { mutate } = useMutation({
     mutationFn: async () => {
+      var url;
+      if (image) {
+        url = await uploadImage();
+      }
+      var changes;
+      if (url) {
+        changes = { ...userInfo, avatar_url: url };
+      } else {
+        changes = userInfo;
+      }
       try {
         let { data } = await axios.put(`/api/users?id=${userInfo._id}`, {
-          changes: userInfo,
+          changes: changes,
           changePassword: user.senha != userInfo.senha,
         });
         console.log("res", data);
@@ -121,6 +144,72 @@ function EditUser({ user, closeModal }: EditUserProps) {
             </button>
           </div>
           <div className="flex h-full flex-col gap-y-2 overflow-y-auto overscroll-y-auto py-1 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+            <div className="flex h-[200px]  flex-col items-center justify-center">
+              {!image && user.avatar_url ? (
+                <div className="relative mb-3 h-[120px] w-[120px] cursor-pointer rounded-full">
+                  <Image
+                    src={user.avatar_url}
+                    // width={96}
+                    // height={96}
+                    fill={true}
+                    alt="AVATAR"
+                    style={{
+                      borderRadius: "100%",
+                      objectFit: "cover",
+                      position: "absolute",
+                    }}
+                  />
+                  <input
+                    onChange={(e) => setImage(e.target.files[0])}
+                    className="h-full w-full opacity-0"
+                    type="file"
+                  />
+                </div>
+              ) : image ? (
+                <div className="relative mb-3 flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-full bg-gray-200">
+                  {/* <Image
+                    src={user.avatar_url}
+                    // width={96}
+                    // height={96}
+                    alt="AVATAR"
+                    fill={true}
+                    style={{
+                      borderRadius: "100%",
+                      objectFit: "cover",
+                      position: "absolute",
+                    }}
+                  /> */}
+                  <div className="absolute flex items-center justify-center">
+                    <BsCheckLg style={{ color: "green", fontSize: "25px" }} />
+                  </div>
+                  <input
+                    onChange={(e) => setImage(e.target.files[0])}
+                    className="h-full w-full opacity-0"
+                    type="file"
+                    accept="image/png, image/jpeg"
+                  />
+                </div>
+              ) : (
+                <div className="relative flex h-[120px] w-[120px] items-center justify-center rounded-full border border-gray-300 bg-gray-200">
+                  {image?.name ? (
+                    <div className="absolute flex items-center justify-center">
+                      <BsCheckLg style={{ color: "green", fontSize: "25px" }} />
+                    </div>
+                  ) : (
+                    <p className="absolute w-full text-center text-xs font-bold text-gray-700">
+                      ESCOLHA UMA IMAGEM
+                    </p>
+                  )}
+
+                  <input
+                    onChange={(e) => setImage(e.target.files[0])}
+                    className="h-full w-full opacity-0"
+                    type="file"
+                    accept=".png, .jpeg"
+                  />
+                </div>
+              )}
+            </div>
             <div className="grid w-full grid-cols-1 grid-rows-2 items-center gap-2 lg:grid-cols-2 lg:grid-rows-1 lg:items-start">
               <TextInput
                 label="NOME E SOBRENOME"

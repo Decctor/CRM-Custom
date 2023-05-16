@@ -70,12 +70,15 @@ function EditClient({
   });
 
   const { mutate } = useMutation({
-    mutationKey: ["editUser"],
+    mutationKey: ["editClient"],
     mutationFn: async () => {
       try {
-        const { data } = await axios.put(`/api/clients?id=${clientInfo._id}&representative=${client.representante?.id}`, {
-          changes: clientInfo,
-        });
+        const { data } = await axios.put(
+          `/api/clients?id=${clientInfo._id}&representative=${client.representante?.id}`,
+          {
+            changes: clientInfo,
+          }
+        );
         queryClient.invalidateQueries({ queryKey: ["clients"] });
         if (data.message) toast.success(data.message);
       } catch (error) {
@@ -219,6 +222,10 @@ function EditClient({
                         value={
                           newProject.funis[0] ? newProject.funis[0].id : null
                         }
+                        editable={
+                          session?.user.id == clientInfo.representante?.id ||
+                          session?.user.visibilidade == "GERAL"
+                        }
                         onChange={(selected) =>
                           setNewProject((prev) => ({
                             ...prev,
@@ -247,6 +254,10 @@ function EditClient({
                           newProject.funis[0]?.id
                             ? newProject.funis[0].etapaId
                             : null
+                        }
+                        editable={
+                          session?.user.id == clientInfo.representante?.id ||
+                          session?.user.visibilidade == "GERAL"
                         }
                         onChange={(selected) =>
                           setNewProject((prev) => ({
@@ -338,6 +349,10 @@ function EditClient({
                       ? clientInfo.representante.id
                       : null
                   }
+                  editable={
+                    session?.user.id == clientInfo.representante?.id ||
+                    session?.user.visibilidade == "GERAL"
+                  }
                   options={
                     representatives
                       ? representatives.map((representative) => {
@@ -369,6 +384,10 @@ function EditClient({
               <TextInput
                 label="NOME"
                 value={clientInfo.nome}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o nome do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({ ...prev, nome: value }))
@@ -378,6 +397,10 @@ function EditClient({
               <TextInput
                 label="CPF/CNPJ"
                 value={clientInfo.cpfCnpj}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o CPF ou CNPJ do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -392,6 +415,10 @@ function EditClient({
               <TextInput
                 label="TELEFONE PRIMÁRIO"
                 value={clientInfo.telefonePrimario}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o telefone primário do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -409,6 +436,10 @@ function EditClient({
                     ? clientInfo.telefoneSecundario
                     : ""
                 }
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o telefone secundário do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -423,6 +454,10 @@ function EditClient({
               <TextInput
                 label="EMAIL"
                 value={clientInfo.email}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o email do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({ ...prev, email: value }))
@@ -433,6 +468,10 @@ function EditClient({
               <TextInput
                 label="CEP"
                 value={clientInfo.cep}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o CEP do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -451,6 +490,10 @@ function EditClient({
                   clientInfo.uf
                     ? Object.keys(stateCities).indexOf(clientInfo.uf)
                     : ""
+                }
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
                 }
                 options={[
                   {
@@ -485,6 +528,10 @@ function EditClient({
                     ? stateCities[clientInfo.uf].indexOf(clientInfo.cidade)
                     : ""
                 }
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 options={
                   clientInfo.uf
                     ? stateCities[clientInfo.uf].map((city, index) => {
@@ -512,6 +559,10 @@ function EditClient({
               <TextInput
                 label="BAIRRO"
                 value={clientInfo.bairro}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o bairro do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({ ...prev, bairro: value }))
@@ -521,6 +572,10 @@ function EditClient({
               <TextInput
                 label="LOGRADOURO/RUA"
                 value={clientInfo.endereco}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o logradouro do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({ ...prev, endereco: value }))
@@ -532,6 +587,10 @@ function EditClient({
               <TextInput
                 label="NÚMERO/IDENTIFICADOR"
                 value={clientInfo.numeroOuIdentificador}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui o número ou identificador da residência do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -544,6 +603,10 @@ function EditClient({
               <TextInput
                 label="COMPLEMENTO"
                 value={clientInfo.complemento ? clientInfo.complemento : ""}
+                editable={
+                  session?.user.id == clientInfo.representante?.id ||
+                  session?.user.visibilidade == "GERAL"
+                }
                 placeholder="Preencha aqui algum complemento do endereço."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -555,15 +618,17 @@ function EditClient({
               />
             </div>
           </div>
-
-          <div className="my-2 flex w-full items-center justify-end px-4">
-            <button
-              onClick={() => mutate()}
-              className="font-medium text-[#15599a] duration-300 ease-in-out hover:scale-110"
-            >
-              SALVAR
-            </button>
-          </div>
+          {session?.user.id == clientInfo.representante?.id ||
+          session?.user.visibilidade == "GERAL" ? (
+            <div className="my-2 flex w-full items-center justify-end px-4">
+              <button
+                onClick={() => mutate()}
+                className="font-medium text-[#15599a] duration-300 ease-in-out hover:scale-110"
+              >
+                SALVAR
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

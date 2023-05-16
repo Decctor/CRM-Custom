@@ -52,6 +52,7 @@ function Users() {
   function handleOpenModal(user: IUsuario) {
     setActiveUserModal({ isOpen: true, user: user });
   }
+  console.log(users);
   return (
     <div className="flex h-full">
       <Sidebar />

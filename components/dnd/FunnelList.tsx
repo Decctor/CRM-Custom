@@ -8,10 +8,12 @@ interface IFunnelListProps {
   items: {
     id: number | string;
     name: string;
+    responsavel: string;
     [key: string]: string | unknown;
   }[];
 }
 function FunnelList({ stageName, items, id }: IFunnelListProps) {
+  console.log("ITEMS", items);
   return (
     <Droppable droppableId={id.toString()}>
       {(provided) => (

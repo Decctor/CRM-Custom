@@ -260,7 +260,8 @@ export default function Home() {
     let add;
     let active;
   }
-
+  console.log(projects);
+  console.log("RESPONSAVEIS", responsibles);
   useEffect(() => {
     if (!funnel) {
       setFunnel(getOptions(session, responsibles).activeFunnel);
@@ -341,6 +342,10 @@ export default function Home() {
                           return {
                             id: item._id ? item._id : "",
                             name: item.nome,
+                            responsavel: item.responsavel.nome,
+                            responsavel_avatar: responsibles?.filter(
+                              (resp) => resp.id == item.responsavel.id
+                            )[0].avatar_url,
                           };
                         }
                       )}
