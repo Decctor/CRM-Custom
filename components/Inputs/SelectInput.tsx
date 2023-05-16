@@ -12,6 +12,7 @@ type SelectInputProps<T> = {
   width?: string;
   label: string;
   value: T | null;
+  editable?: boolean;
   selectedItemLabel: string;
   options: SelectOption<T>[] | null;
   handleChange: (value: T) => void;
@@ -22,6 +23,7 @@ function SelectInput<T>({
   width,
   label,
   value,
+  editable = true,
   options,
   selectedItemLabel,
   handleChange,
@@ -114,7 +116,9 @@ function SelectInput<T>({
           />
         ) : (
           <p
-            onClick={() => setSelectMenuIsOpen((prev) => !prev)}
+            onClick={() => {
+              if (editable) setSelectMenuIsOpen((prev) => !prev);
+            }}
             className="grow cursor-pointer text-[#353432]"
           >
             {selectedId && options
@@ -125,12 +129,16 @@ function SelectInput<T>({
         {selectMenuIsOpen ? (
           <IoMdArrowDropup
             style={{ cursor: "pointer" }}
-            onClick={() => setSelectMenuIsOpen((prev) => !prev)}
+            onClick={() => {
+              if (editable) setSelectMenuIsOpen((prev) => !prev);
+            }}
           />
         ) : (
           <IoMdArrowDropdown
             style={{ cursor: "pointer" }}
-            onClick={() => setSelectMenuIsOpen((prev) => !prev)}
+            onClick={() => {
+              if (editable) setSelectMenuIsOpen((prev) => !prev);
+            }}
           />
         )}
       </div>

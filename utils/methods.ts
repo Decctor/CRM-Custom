@@ -1,5 +1,12 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { IClient, IKit, IRepresentative, IResponsible } from "./models";
+import {
+  IClient,
+  IKit,
+  IProject,
+  IRepresentative,
+  IResponsible,
+  ISession,
+} from "./models";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
@@ -124,5 +131,29 @@ export function useClients(): UseQueryResult<IClient[], Error> {
       }
     },
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useProjects(
+  funnel: number | null,
+  responsible: string | null,
+  session: ISession | null
+): UseQueryResult<IProject[], Error> {
+  return useQuery({
+    queryKey: ["projects", funnel, responsible],
+    queryFn: async (): Promise<IProject[]> => {
+      try {
+        const { data } = await axios.get(
+          `/api/projects?responsible=${responsible}&funnel=${funnel}`
+        );
+        return data.data;
+      } catch (error) {
+        toast.error(
+          "Erro ao buscar informações desse cliente. Por favor, tente novamente mais tarde."
+        );
+        return [];
+      }
+    },
+    enabled: !!session?.user,
   });
 }

@@ -222,7 +222,7 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
 
   const { id, responsavel } = req.query;
   if (
-    session.user.visibilidade == "PRÓPRIA" &&
+    !session.user.permissoes.projetos.editar &&
     responsavel != session.user.id
   ) {
     throw new createHttpError.Unauthorized(

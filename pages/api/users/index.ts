@@ -70,24 +70,21 @@ const userSchema = z.object({
       visualizar: z.boolean(),
       editar: z.boolean(),
     }),
-    tabelaVenda: z.object({
-      visualizarItens: z.boolean(),
-      habitarDesabilitarItens: z.boolean(),
-      editarQuantidades: z.boolean(),
-      adicionarItens: z.boolean(),
+    propostas: z.object({
       visualizarPrecos: z.boolean(),
+      editarPrecos: z.boolean(),
       visualizarMargem: z.boolean(),
       editarMargem: z.boolean(),
     }),
     projetos: z.object({
       serResponsavel: z.boolean(),
-      editarResponsavel: z.boolean(),
+      editar: z.boolean(),
       visualizarDocumentos: z.boolean(),
       editarDocumentos: z.boolean(),
     }),
     clientes: z.object({
       serRepresentante: z.boolean(),
-      editarRepresentante: z.boolean(),
+      editar: z.boolean(),
     }),
   }),
 });
@@ -136,75 +133,92 @@ const editUserSchema = z.object({
   _id: z.string().optional(),
   nome: z
     .string({ required_error: "Por favor, preencha o nome do usuário" })
-    .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." }),
+    .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." })
+    .optional(),
   telefone: z.string().optional(),
   email: z
     .string({ required_error: "Por favor, preencha o email do usuário." })
-    .email("Por favor, preencha um email válido."),
-  senha: z.string({
-    required_error: "Por favor, preencha a senha do usuário.",
-  }),
+    .email("Por favor, preencha um email válido.")
+    .optional(),
+  senha: z
+    .string({
+      required_error: "Por favor, preencha a senha do usuário.",
+    })
+    .optional(),
   avatar_url: z.string().optional(),
-  visibilidade: z.union([
-    z.literal("PRÓPRIA"),
-    z.literal("GERAL"),
-    z.array(z.string()),
-  ]), // z.string().or(z.string().array())
-  funisVisiveis: z.union([z.array(z.number()), z.literal("TODOS")], {
-    required_error:
-      "Por favor, especifique a quais funis o usuário terá acesso.",
-  }),
+  visibilidade: z
+    .union([z.literal("PRÓPRIA"), z.literal("GERAL"), z.array(z.string())])
+    .optional(), // z.string().or(z.string().array())
+  funisVisiveis: z
+    .union([z.array(z.number()), z.literal("TODOS")], {
+      required_error:
+        "Por favor, especifique a quais funis o usuário terá acesso.",
+    })
+    .optional(),
   grupoPermissaoId: z
     .number({ required_error: "Grupo de permissão necessário." })
-    .or(z.string({ required_error: "Grupo de permissão necessário." })),
+    .or(z.string({ required_error: "Grupo de permissão necessário." }))
+    .optional(),
   comissao: z
     .object({
       id: z.number(),
       nome: z.string(),
     })
-    .nullable(),
+    .nullable()
+    .optional(),
   permissoes: z.object({
-    usuarios: z.object({
-      visualizar: z.boolean(),
-      editar: z.boolean(),
-    }),
-    comissoes: z.object({
-      visualizarComissaoResponsavel: z.boolean(),
-      editarComissaoResponsavel: z.boolean(),
-      visualizarComissaoRepresentante: z.boolean(),
-      editarComissaoRepresentante: z.boolean(),
-    }),
-    dimensionamento: z.object({
-      editarPremissas: z.boolean(),
-      editarFatorDeGeracao: z.boolean(),
-      editarInclinacao: z.boolean(),
-      editarDesvio: z.boolean(),
-      editarDesempenho: z.boolean(),
-      editarSombreamento: z.boolean(),
-    }),
-    kits: z.object({
-      visualizar: z.boolean(),
-      editar: z.boolean(),
-    }),
-    tabelaVenda: z.object({
-      visualizarItens: z.boolean(),
-      habitarDesabilitarItens: z.boolean(),
-      editarQuantidades: z.boolean(),
-      adicionarItens: z.boolean(),
-      visualizarPrecos: z.boolean(),
-      visualizarMargem: z.boolean(),
-      editarMargem: z.boolean(),
-    }),
-    projetos: z.object({
-      serResponsavel: z.boolean(),
-      editarResponsavel: z.boolean(),
-      visualizarDocumentos: z.boolean(),
-      editarDocumentos: z.boolean(),
-    }),
-    clientes: z.object({
-      serRepresentante: z.boolean(),
-      editarRepresentante: z.boolean(),
-    }),
+    usuarios: z
+      .object({
+        visualizar: z.boolean(),
+        editar: z.boolean(),
+      })
+      .optional(),
+    comissoes: z
+      .object({
+        visualizarComissaoResponsavel: z.boolean(),
+        editarComissaoResponsavel: z.boolean(),
+        visualizarComissaoRepresentante: z.boolean(),
+        editarComissaoRepresentante: z.boolean(),
+      })
+      .optional(),
+    dimensionamento: z
+      .object({
+        editarPremissas: z.boolean(),
+        editarFatorDeGeracao: z.boolean(),
+        editarInclinacao: z.boolean(),
+        editarDesvio: z.boolean(),
+        editarDesempenho: z.boolean(),
+        editarSombreamento: z.boolean(),
+      })
+      .optional(),
+    kits: z
+      .object({
+        visualizar: z.boolean(),
+        editar: z.boolean(),
+      })
+      .optional(),
+    propostas: z
+      .object({
+        visualizarPrecos: z.boolean(),
+        editarPrecos: z.boolean(),
+        visualizarMargem: z.boolean(),
+        editarMargem: z.boolean(),
+      })
+      .optional(),
+    projetos: z
+      .object({
+        serResponsavel: z.boolean(),
+        editar: z.boolean(),
+        visualizarDocumentos: z.boolean(),
+        editarDocumentos: z.boolean(),
+      })
+      .optional(),
+    clientes: z
+      .object({
+        serRepresentante: z.boolean(),
+        editar: z.boolean(),
+      })
+      .optional(),
   }),
 });
 

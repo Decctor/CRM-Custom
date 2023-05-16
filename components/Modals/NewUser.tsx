@@ -47,24 +47,21 @@ interface IUserInfo {
           visualizar: boolean;
           editar: boolean;
         };
-        tabelaVenda: {
-          visualizarItens: boolean;
-          habitarDesabilitarItens: boolean;
-          editarQuantidades: boolean;
-          adicionarItens: boolean;
+        propostas: {
           visualizarPrecos: boolean;
+          editarPrecos: boolean;
           visualizarMargem: boolean;
           editarMargem: boolean;
         };
         projetos: {
           serResponsavel: boolean;
-          editarResponsavel: boolean;
+          editar: boolean;
           visualizarDocumentos: boolean;
           editarDocumentos: boolean;
         };
         clientes: {
           serRepresentante: boolean;
-          editarRepresentante: boolean;
+          editar: boolean;
         };
       }
     | any;

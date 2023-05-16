@@ -63,16 +63,17 @@ export interface IUsuario {
   comissao: Comissao | null;
   permissoes: {
     usuarios: {
-      visualizar: boolean;
-      editar: boolean;
+      visualizar: boolean; // visualizar área de usuário em auth/users
+      editar: boolean; // editar informações de usuários em auth/users
     };
     comissoes: {
-      visualizarComissaoResponsavel: boolean;
-      editarComissaoResponsavel: boolean;
-      visualizarComissaoRepresentante: boolean;
-      editarComissaoRepresentante: boolean;
+      visualizarComissaoResponsavel: boolean; // visualizar comissões dos responsáveis de todos os projetos
+      editarComissaoResponsavel: boolean; // editar comissões dos responsáveis de todos os projetos
+      visualizarComissaoRepresentante: boolean; // visualizar comissões dos representante de todos os projetos
+      editarComissaoRepresentante: boolean; // editar comissões dos representante de todos os projetos
     };
     dimensionamento: {
+      // a definir necessidade desse campo de autorizações
       editarPremissas: boolean;
       editarFatorDeGeracao: boolean;
       editarInclinacao: boolean;
@@ -81,31 +82,77 @@ export interface IUsuario {
       editarSombreamento: boolean;
     };
     kits: {
-      visualizar: boolean;
-      editar: boolean;
+      visualizar: boolean; // visualizar área de kits e kits possíveis
+      editar: boolean; // editar e criar kits
     };
-    tabelaVenda: {
-      visualizarItens: boolean;
-      habitarDesabilitarItens: boolean;
-      editarQuantidades: boolean;
-      adicionarItens: boolean;
-      visualizarPrecos: boolean;
-      visualizarMargem: boolean;
-      editarMargem: boolean;
+    propostas: {
+      visualizarPrecos: boolean; // visualizar o detalhamento de custos
+      editarPrecos: boolean; // editar custo dos itens que compoe o preço de uma proposta
+      visualizarMargem: boolean; // visualizar margem de lucro de propostas
+      editarMargem: boolean; // editar margem de lucro de propostas
     };
     projetos: {
-      serResponsavel: boolean;
-      editarResponsavel: boolean;
-      visualizarDocumentos: boolean;
-      editarDocumentos: boolean;
+      serResponsavel: boolean; // habilitado a ser responsável de projetos
+      editar: boolean; // editar informações de todos os projetos
+      visualizarDocumentos: boolean; // visualizar documentos anexados de todos os projetos
+      editarDocumentos: boolean; // editar documentos anexados de todos os projetos
     };
     clientes: {
-      serRepresentante: boolean;
-      editarRepresentante: boolean;
+      serRepresentante: boolean; // habilitado a ser representante de clientes
+      editar: boolean; // editar informações de todos os clientes
     };
   };
 }
-
+export interface ISession {
+  user: {
+    /** The user's postal address. */
+    id: string;
+    name: string;
+    email: string;
+    visibilidade: "GERAL" | "PRÓPRIA" | string[];
+    funisVisiveis: number[] | "TODOS";
+    permissoes: {
+      usuarios: {
+        visualizar: boolean;
+        editar: boolean;
+      };
+      comissoes: {
+        visualizarComissaoResponsavel: boolean;
+        editarComissaoResponsavel: boolean;
+        visualizarComissaoRepresentante: boolean;
+        editarComissaoRepresentante: boolean;
+      };
+      dimensionamento: {
+        editarPremissas: boolean;
+        editarFatorDeGeracao: boolean;
+        editarInclinacao: boolean;
+        editarDesvio: boolean;
+        editarDesempenho: boolean;
+        editarSombreamento: boolean;
+      };
+      kits: {
+        visualizar: boolean;
+        editar: boolean;
+      };
+      propostas: {
+        visualizarPrecos: boolean;
+        editarPrecos: boolean;
+        visualizarMargem: boolean;
+        editarMargem: boolean;
+      };
+      projetos: {
+        serResponsavel: boolean;
+        editar: boolean;
+        visualizarDocumentos: boolean;
+        editarDocumentos: boolean;
+      };
+      clientes: {
+        serRepresentante: boolean;
+        editar: boolean;
+      };
+    };
+  };
+}
 export interface IRepresentative {
   nome: string;
   id: string;

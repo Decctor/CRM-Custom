@@ -224,7 +224,7 @@ function EditClient({
                         }
                         editable={
                           session?.user.id == clientInfo.representante?.id ||
-                          session?.user.visibilidade == "GERAL"
+                          session?.user.permissoes.clientes.editar
                         }
                         onChange={(selected) =>
                           setNewProject((prev) => ({
@@ -257,7 +257,7 @@ function EditClient({
                         }
                         editable={
                           session?.user.id == clientInfo.representante?.id ||
-                          session?.user.visibilidade == "GERAL"
+                          session?.user.permissoes.clientes.editar
                         }
                         onChange={(selected) =>
                           setNewProject((prev) => ({
@@ -351,7 +351,7 @@ function EditClient({
                   }
                   editable={
                     session?.user.id == clientInfo.representante?.id ||
-                    session?.user.visibilidade == "GERAL"
+                    session?.user.permissoes.clientes.editar
                   }
                   options={
                     representatives
@@ -386,7 +386,7 @@ function EditClient({
                 value={clientInfo.nome}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o nome do cliente."
                 handleChange={(value) =>
@@ -399,7 +399,7 @@ function EditClient({
                 value={clientInfo.cpfCnpj}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o CPF ou CNPJ do cliente."
                 handleChange={(value) =>
@@ -417,7 +417,7 @@ function EditClient({
                 value={clientInfo.telefonePrimario}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o telefone primário do cliente."
                 handleChange={(value) =>
@@ -438,7 +438,7 @@ function EditClient({
                 }
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o telefone secundário do cliente."
                 handleChange={(value) =>
@@ -456,7 +456,7 @@ function EditClient({
                 value={clientInfo.email}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o email do cliente."
                 handleChange={(value) =>
@@ -470,7 +470,7 @@ function EditClient({
                 value={clientInfo.cep}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o CEP do cliente."
                 handleChange={(value) =>
@@ -493,7 +493,7 @@ function EditClient({
                 }
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 options={[
                   {
@@ -530,7 +530,7 @@ function EditClient({
                 }
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 options={
                   clientInfo.uf
@@ -561,7 +561,7 @@ function EditClient({
                 value={clientInfo.bairro}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o bairro do cliente."
                 handleChange={(value) =>
@@ -574,7 +574,7 @@ function EditClient({
                 value={clientInfo.endereco}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o logradouro do cliente."
                 handleChange={(value) =>
@@ -589,7 +589,7 @@ function EditClient({
                 value={clientInfo.numeroOuIdentificador}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui o número ou identificador da residência do cliente."
                 handleChange={(value) =>
@@ -605,7 +605,7 @@ function EditClient({
                 value={clientInfo.complemento ? clientInfo.complemento : ""}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
-                  session?.user.visibilidade == "GERAL"
+                  session?.user.permissoes.clientes.editar
                 }
                 placeholder="Preencha aqui algum complemento do endereço."
                 handleChange={(value) =>
@@ -619,7 +619,7 @@ function EditClient({
             </div>
           </div>
           {session?.user.id == clientInfo.representante?.id ||
-          session?.user.visibilidade == "GERAL" ? (
+          session?.user.permissoes.clientes.editar ? (
             <div className="my-2 flex w-full items-center justify-end px-4">
               <button
                 onClick={() => mutate()}

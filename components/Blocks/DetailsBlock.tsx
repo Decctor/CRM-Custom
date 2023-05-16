@@ -3,22 +3,22 @@ import SelectInput from "../Inputs/SelectInput";
 import TextInput from "../Inputs/TextInput";
 import DateInput from "../Inputs/DateInput";
 import { formatDate } from "@/utils/methods";
-import { IProject } from "@/utils/models";
+import { IProject, ISession } from "@/utils/models";
 import { AiOutlineCheck } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 type DetailsBlockType = {
   info: IProject;
+  session: ISession | null;
 };
-function DetailsBlock({ info }: DetailsBlockType) {
+function DetailsBlock({ info, session }: DetailsBlockType) {
   const [infoHolder, setInfoHolder] = useState<IProject | undefined>(info);
   const queryClient = useQueryClient();
 
   const { mutate: updateClient } = useMutation({
     mutationKey: ["editClient"],
     mutationFn: async (changes: { [key: string]: any }) => {
-      console.log("CHANGES", changes);
       try {
         const { data } = await axios.put(
           `/api/clients?id=${info.clienteId}&representative=${info.cliente?.representante?.id}`,
@@ -31,7 +31,6 @@ function DetailsBlock({ info }: DetailsBlockType) {
         if (data.message) toast.success(data.message);
         return "OK";
       } catch (error) {
-        console.log("ERROR", error);
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
           toast.error(errorMsg);
@@ -48,7 +47,6 @@ function DetailsBlock({ info }: DetailsBlockType) {
   const { mutate: updateProject } = useMutation({
     mutationKey: ["editProject"],
     mutationFn: async (changes: { [key: string]: any }) => {
-      console.log("CHANGES", changes);
       try {
         const { data } = await axios.put(
           `/api/projects?id=${info._id}&responsavel=${info.responsavel?.id}`,
@@ -107,6 +105,10 @@ function DetailsBlock({ info }: DetailsBlockType) {
                     ? formatDate(infoHolder.cliente.dataNascimento)
                     : undefined
                 }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
                 handleChange={(value) => {
                   if (value)
                     setInfoHolder((prev: any) => ({
@@ -163,6 +165,10 @@ function DetailsBlock({ info }: DetailsBlockType) {
                     ? infoHolder?.cliente.rg
                     : ""
                 }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
                 handleChange={(value) => {
                   if (infoHolder)
                     setInfoHolder((prev: any) => ({
@@ -198,6 +204,10 @@ function DetailsBlock({ info }: DetailsBlockType) {
                 label="ESTADO CIVIL"
                 value={
                   infoHolder?.cliente ? infoHolder?.cliente.estadoCivil : null
+                }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
                 }
                 options={[
                   {
@@ -278,6 +288,10 @@ function DetailsBlock({ info }: DetailsBlockType) {
                     ? infoHolder?.cliente.profissao
                     : ""
                 }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
                 handleChange={(value) => {
                   if (infoHolder)
                     setInfoHolder((prev: any) => ({
@@ -325,6 +339,10 @@ function DetailsBlock({ info }: DetailsBlockType) {
                     ? infoHolder?.cliente.ondeTrabalha
                     : ""
                 }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
                 handleChange={(value) => {
                   if (infoHolder)
                     setInfoHolder((prev: any) => ({
@@ -370,6 +388,10 @@ function DetailsBlock({ info }: DetailsBlockType) {
                     ? infoHolder?.titularInstalacao
                     : ""
                 }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
                 handleChange={(value) => {
                   if (infoHolder)
                     setInfoHolder((prev: any) => ({
@@ -408,6 +430,10 @@ function DetailsBlock({ info }: DetailsBlockType) {
               <SelectInput
                 label="TIPO DO TITULAR"
                 value={infoHolder?.tipoTitular}
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
                 options={[
                   {
                     id: 1,
@@ -461,6 +487,10 @@ function DetailsBlock({ info }: DetailsBlockType) {
               <SelectInput
                 label="TIPO DA LIGAÇÃO"
                 value={infoHolder?.tipoLigacao}
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
                 options={[
                   {
                     id: 1,

@@ -13,7 +13,6 @@ interface FunnelListItemProps {
   };
 }
 function FunnelListItem({ item, index }: FunnelListItemProps) {
-  console.log("ITEM", item);
   return (
     <Draggable draggableId={item.id.toString()} index={index}>
       {(provided) => (
@@ -21,7 +20,7 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={` shadow-xs flex min-h-[100px] w-full flex-col justify-between border border-gray-100 bg-[#fff] p-2 shadow-sm`}
+          className="flex min-h-[100px] w-full flex-col justify-between rounded border border-gray-200 bg-[#fff] p-2 shadow-sm"
         >
           <div className="flex flex-col">
             <div className="h-1 w-1/3 rounded-sm bg-blue-400"></div>

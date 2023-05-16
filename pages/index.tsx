@@ -17,7 +17,7 @@ import NewClientModal from "@/components/Modals/NewClient";
 import LoadingPage from "@/components/utils/LoadingPage";
 import { Funnel } from "../utils/models";
 import { funnels } from "@/utils/constants";
-import { useResponsibles } from "@/utils/methods";
+import { useProjects, useResponsibles } from "@/utils/methods";
 import LoadingComponent from "@/components/utils/LoadingComponent";
 import { IProject, IResponsible } from "@/utils/models";
 import { Session } from "next-auth";
@@ -77,14 +77,16 @@ type UpdateObjFunnelStage = {
 function getStageProjects(
   funnelId: number | null,
   stageId: number,
-  projects: IProject[]
+  projects: IProject[] | undefined
 ) {
-  let stageProjects = projects.filter(
-    (project) =>
-      project.funis?.filter((funnel) => funnel.id == funnelId)[0].etapaId ==
-      stageId
-  );
-  return stageProjects;
+  if (projects) {
+    let stageProjects = projects.filter(
+      (project) =>
+        project.funis?.filter((funnel) => funnel.id == funnelId)[0].etapaId ==
+        stageId
+    );
+    return stageProjects;
+  } else return [];
 }
 function getOptions(
   session: Session | null,
@@ -160,27 +162,31 @@ export default function Home() {
   const [funnel, setFunnel] = useState<number | null>(
     getOptions(session, responsibles).activeFunnel
   );
-
-  const {
-    data: projects = [],
-    isLoading: projectsLoading,
-  }: UseQueryResult<IProject[], Error> = useQuery({
-    queryKey: ["projects", funnel, responsible],
-    queryFn: async (): Promise<IProject[]> => {
-      try {
-        const { data } = await axios.get(
-          `/api/projects?responsible=${responsible}&funnel=${funnel}`
-        );
-        return data.data;
-      } catch (error) {
-        toast.error(
-          "Erro ao buscar informações desse cliente. Por favor, tente novamente mais tarde."
-        );
-        return [];
-      }
-    },
-    enabled: !!session?.user,
-  });
+  const { data: projects, isLoading: projectsLoading } = useProjects(
+    funnel,
+    responsible,
+    session
+  );
+  // const {
+  //   data: projects = [],
+  //   isLoading: projectsLoading,
+  // }: UseQueryResult<IProject[], Error> = useQuery({
+  //   queryKey: ["projects", funnel, responsible],
+  //   queryFn: async (): Promise<IProject[]> => {
+  //     try {
+  //       const { data } = await axios.get(
+  //         `/api/projects?responsible=${responsible}&funnel=${funnel}`
+  //       );
+  //       return data.data;
+  //     } catch (error) {
+  //       toast.error(
+  //         "Erro ao buscar informações desse cliente. Por favor, tente novamente mais tarde."
+  //       );
+  //       return [];
+  //     }
+  //   },
+  //   enabled: !!session?.user,
+  // });
 
   const { mutate } = useMutation({
     mutationKey: ["updateObjFunnelStage"],
@@ -239,7 +245,7 @@ export default function Home() {
     if (!destination) return;
     if (destination.droppableId == source.droppableId) return;
 
-    let project = projects.filter((x) => x._id == draggableId)[0];
+    let project = projects?.filter((x) => x._id == draggableId)[0];
     if (project && funnel) {
       const setOfFunnelsInProject = project.funis?.map((funnel) => funnel.id);
       const indexOfFunnelInProject = setOfFunnelsInProject?.indexOf(funnel);
@@ -260,8 +266,7 @@ export default function Home() {
     let add;
     let active;
   }
-  console.log(projects);
-  console.log("RESPONSAVEIS", responsibles);
+
   useEffect(() => {
     if (!funnel) {
       setFunnel(getOptions(session, responsibles).activeFunnel);
@@ -315,7 +320,7 @@ export default function Home() {
                   : null */}
             <DropdownSelect
               categoryName="Funis"
-              selectedItemLabel="FUNIL PADRÃO"
+              selectedItemLabel="NÃO DEFINIDO"
               value={funnel}
               options={getOptions(session, responsibles).funnelOptions}
               onChange={(selected) => setFunnel(selected.value)}

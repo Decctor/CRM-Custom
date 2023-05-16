@@ -53,13 +53,11 @@ function MultipleSelectInput<T>({
     var ids = selectedIds ? [...selectedIds] : [];
     if (!ids?.includes(id)) {
       ids.push(id);
-      console.log(ids);
       itemsSelected = options?.filter((option) => ids?.includes(option.id));
       itemsSelected = itemsSelected?.map((item) => item.value);
     } else {
       let index = ids.indexOf(id);
       ids.splice(index, 1);
-      console.log(ids);
       itemsSelected = options?.filter((option) => ids?.includes(option.id));
       itemsSelected = itemsSelected?.map((item) => item.value);
     }
@@ -104,7 +102,6 @@ function MultipleSelectInput<T>({
       document.removeEventListener("click", (e) => handleClickOutside(e), true);
     };
   }, [onClickOutside]);
-  console.log(selectedIds);
   return (
     <div
       ref={ref}

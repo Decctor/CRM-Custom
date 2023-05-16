@@ -3,9 +3,16 @@ type TextInputProps = {
   width?: string;
   label: string;
   value: string | undefined;
+  editable?: boolean;
   handleChange: (value: string | undefined) => void;
 };
-function DateInput({ width, label, value, handleChange }: TextInputProps) {
+function DateInput({
+  width,
+  label,
+  value,
+  editable = true,
+  handleChange,
+}: TextInputProps) {
   const inputIdentifier = label.toLowerCase().replace(" ", "_");
   return (
     <div
@@ -18,6 +25,7 @@ function DateInput({ width, label, value, handleChange }: TextInputProps) {
         {label}
       </label>
       <input
+        readOnly={!editable}
         value={value}
         onChange={(e) => {
           handleChange(e.target.value != "" ? e.target.value : undefined);

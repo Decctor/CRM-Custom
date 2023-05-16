@@ -183,7 +183,7 @@ const editClients: NextApiHandler<PutResponse> = async (req, res) => {
   // if(session.user.id)
   const { id, representative } = req.query;
   if (
-    session.user.visibilidade == "PRÓPRIA" &&
+    !session.user.permissoes.clientes.editar &&
     representative != session.user.id
   ) {
     throw new createHttpError.Unauthorized(

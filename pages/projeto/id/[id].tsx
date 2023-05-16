@@ -87,9 +87,9 @@ function Projeto() {
                   <GoKebabVertical />
                 </div>
               </div>
-              <div className="mt-3 flex w-full grow gap-1">
-                <div className="flex h-full w-[50%] flex-col justify-around gap-2">
-                  <div className="flex items-center gap-2">
+              <div className="mt-3 flex w-full grow flex-col gap-1 lg:flex-row">
+                <div className="flex h-full w-full flex-col items-start justify-around gap-2 lg:w-[50%] lg:items-center">
+                  <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <AiOutlineUser
                       style={{ color: "#15599a", fontSize: "20px" }}
                     />
@@ -97,13 +97,13 @@ function Projeto() {
                       {project.cliente ? project.cliente.nome : "-"}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <MdEmail style={{ color: "#15599a", fontSize: "20px" }} />
                     <p className="font-Poppins text-sm text-gray-500">
                       {project.cliente ? project.cliente.email : "-"}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <BsTelephoneFill
                       style={{ color: "#15599a", fontSize: "20px" }}
                     />
@@ -112,8 +112,8 @@ function Projeto() {
                     </p>
                   </div>
                 </div>
-                <div className="flex h-full w-[50%] flex-col justify-around gap-2">
-                  <div className="flex items-center gap-2">
+                <div className="flex h-full w-full flex-col items-start justify-around gap-2 lg:w-[50%] lg:items-center">
+                  <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <HiIdentification
                       style={{ color: "#15599a", fontSize: "20px" }}
                     />
@@ -121,7 +121,7 @@ function Projeto() {
                       {project.cliente ? project.cliente.cpfCnpj : "-"}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <FaCity style={{ color: "#15599a", fontSize: "20px" }} />
                     <p className="font-Poppins text-sm text-gray-500">
                       {project.cliente
@@ -129,7 +129,7 @@ function Projeto() {
                         : "-"}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <GiPositionMarker
                       style={{ color: "#15599a", fontSize: "20px" }}
                     />
@@ -170,7 +170,7 @@ function Projeto() {
           </div>
           <div className="flex w-full flex-col gap-6 lg:flex-row">
             <div className="w-full lg:w-[40%]">
-              <DetailsBlock info={project} />
+              <DetailsBlock info={project} session={session} />
             </div>
             <div className="w-full rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]"></div>
           </div>
