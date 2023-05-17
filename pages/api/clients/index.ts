@@ -63,7 +63,7 @@ const createClient: NextApiHandler<PostResponse> = async (req, res) => {
   const collection = db.collection("clients");
   let dbRes = await collection.insertOne({
     ...client,
-    dataInsercao: new Date(),
+    dataInsercao: new Date().toISOString(),
   });
   res
     .status(201)

@@ -137,14 +137,16 @@ export function useClients(): UseQueryResult<IClient[], Error> {
 export function useProjects(
   funnel: number | null,
   responsible: string | null,
+  after: string | undefined,
+  before: string | undefined,
   session: ISession | null
 ): UseQueryResult<IProject[], Error> {
   return useQuery({
-    queryKey: ["projects", funnel, responsible],
+    queryKey: ["projects", funnel, responsible, after, before],
     queryFn: async (): Promise<IProject[]> => {
       try {
         const { data } = await axios.get(
-          `/api/projects?responsible=${responsible}&funnel=${funnel}`
+          `/api/projects?responsible=${responsible}&funnel=${funnel}&after=${after}&before=${before}`
         );
         return data.data;
       } catch (error) {

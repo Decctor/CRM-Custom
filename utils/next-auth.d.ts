@@ -9,6 +9,7 @@ declare module "next-auth" {
       id: string;
       name: string;
       email: string;
+      image: string;
       visibilidade: "GERAL" | "PRÓPRIA" | string[];
       funisVisiveis: number[] | "TODOS";
       permissoes: {

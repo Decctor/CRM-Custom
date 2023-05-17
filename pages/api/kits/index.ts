@@ -80,7 +80,7 @@ const createKit: NextApiHandler<PostResponse> = async (req, res) => {
   const kit = kitSchema.parse(req.body);
   const dbRes = await collection.insertOne({
     ...kit,
-    dataInsercao: new Date(),
+    dataInsercao: new Date().toISOString(),
   });
   res.status(201).json({
     data: kit,

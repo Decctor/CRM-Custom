@@ -14,7 +14,7 @@ export const Sidebar = () => {
   const { data: session } = useSession();
   const [sidebarExtended, setSidebarExtended] = useState(false);
   const { pathname, push } = useRouter();
-
+  console.log(session);
   if (pathname.includes("/auth/signin")) return null;
   return (
     <AnimatePresence>
@@ -108,6 +108,20 @@ export const Sidebar = () => {
             }
           />
         </div>
+        {session?.user.image ? (
+          <div className="flex w-full items-center justify-center">
+            <div className="relative h-[37px] w-[37px]">
+              <Image
+                src={session?.user.image}
+                alt="USUÁRIO"
+                title="CONFIGURAÇÕES"
+                fill={true}
+                style={{ borderRadius: "100%" }}
+              />
+            </div>
+          </div>
+        ) : null}
+
         <div className="flex w-full flex-col">
           {session?.user.permissoes.usuarios.visualizar ? (
             <SidebarItem

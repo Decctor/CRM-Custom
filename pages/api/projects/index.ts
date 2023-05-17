@@ -77,13 +77,13 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
   let dbRes = await collection.insertOne({
     ...project,
     identificador: identificador,
-    dataInsercao: new Date(),
+    dataInsercao: new Date().toISOString(),
   });
   res.status(201).json({
     data: {
       ...project,
       identificador: identificador,
-      dataInsercao: new Date(),
+      dataInsercao: new Date().toISOString(),
     },
     message: "Projeto criado com sucesso.",
   });
@@ -97,7 +97,8 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
   await validateAuthentication(req);
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projects");
-  const { id, responsible, funnel } = req.query;
+  const { id, responsible, funnel, after, before } = req.query;
+  console.log(req.query);
   if (id && typeof id === "string") {
     const project = await collection
       .aggregate([
@@ -137,6 +138,19 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
     if (funnel == "null" && responsible != "null") {
       queryParam = {
         "responsavel.id": responsible,
+      };
+    }
+    if (after != "undefined" && before != "undefined") {
+      queryParam = {
+        ...queryParam,
+        $and: [
+          {
+            dataInsercao: {
+              $gte: after,
+            },
+          },
+          { dataInsercao: { $lte: before } },
+        ],
       };
     }
     console.log("QUERY PARAM", queryParam);
@@ -221,6 +235,7 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
   );
 
   const { id, responsavel } = req.query;
+
   if (
     !session.user.permissoes.projetos.editar &&
     responsavel != session.user.id

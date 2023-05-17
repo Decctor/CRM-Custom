@@ -186,8 +186,8 @@ export interface IProject {
   etiquetasIds?: number[];
   funis?: { id: number; etapaId: number }[];
   notas?: { id: number; data: Date; usuario: string; mensagem: string }[];
-  dataInsercao: Date;
-  dataConclusao?: Date;
+  dataInsercao: string;
+  dataConclusao?: string;
 }
 export interface IClient {
   _id?: string;

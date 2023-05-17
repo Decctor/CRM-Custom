@@ -12,8 +12,6 @@ import axios, { Axios, AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import toast from "react-hot-toast";
-import { AiOutlinePlus } from "react-icons/ai";
-import NewClientModal from "@/components/Modals/NewClient";
 import LoadingPage from "@/components/utils/LoadingPage";
 import { Funnel } from "../utils/models";
 import { funnels } from "@/utils/constants";
@@ -21,7 +19,8 @@ import { useProjects, useResponsibles } from "@/utils/methods";
 import LoadingComponent from "@/components/utils/LoadingComponent";
 import { IProject, IResponsible } from "@/utils/models";
 import { Session } from "next-auth";
-
+import { IoIosCalendar } from "react-icons/io";
+import PeriodDropdownFilter from "@/components/Inputs/PeriodDropdownFilter";
 {
   // Exemplo de mutation com tratamento de erros
   /**
@@ -73,7 +72,10 @@ type UpdateObjFunnelStage = {
   newStageId: string;
   responsibleId: string;
 };
-
+type DateFilterType = {
+  after: string | undefined;
+  before: string | undefined;
+};
 function getStageProjects(
   funnelId: number | null,
   stageId: number,
@@ -159,12 +161,18 @@ export default function Home() {
   const [responsible, setResponsible] = useState<string | null>(
     getOptions(session, responsibles).activeResponsible
   );
+  const [dateParam, setDateParam] = useState<DateFilterType>({
+    after: undefined,
+    before: undefined,
+  });
   const [funnel, setFunnel] = useState<number | null>(
     getOptions(session, responsibles).activeFunnel
   );
   const { data: projects, isLoading: projectsLoading } = useProjects(
     funnel,
     responsible,
+    dateParam.after,
+    dateParam.before,
     session
   );
   // const {
@@ -212,6 +220,8 @@ export default function Home() {
         "projects",
         funnel,
         responsible,
+        dateParam.after,
+        dateParam.before,
       ]);
       // Updating project reference
       let project = projectsSnapshot.filter(
@@ -281,11 +291,11 @@ export default function Home() {
     <div className="flex h-full">
       <Sidebar />
       <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
-        <div className="flex flex-col items-center justify-between border-b border-[#fead61] pb-2 xl:flex-row">
+        <div className="flex flex-col items-center border-b border-[#fead61] pb-2 xl:flex-row">
           <div className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
             FUNIL
           </div>
-          <div className="flex flex-col items-center gap-2 xl:flex-row">
+          <div className="flex grow flex-col items-center justify-end  gap-2 xl:flex-row">
             {/*<button
               onClick={() => setNewProjectModalIsOpen(true)}
               className="flex h-[40px] min-w-[250px] items-center justify-center gap-2 rounded-md border bg-[#15599a] p-2 text-sm font-medium text-white shadow-sm duration-300 ease-in-out hover:scale-105"
@@ -293,6 +303,11 @@ export default function Home() {
               <p>Novo Projeto</p>
               <AiOutlinePlus style={{ fontSize: "18px" }} />
             </button> */}
+            <PeriodDropdownFilter
+              initialAfter={dateParam.after}
+              initialBefore={dateParam.before}
+              setDateParam={setDateParam}
+            />
             <DropdownSelect
               categoryName="Usuários"
               selectedItemLabel="Todos"

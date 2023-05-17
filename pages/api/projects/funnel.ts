@@ -28,6 +28,7 @@ const updateFunnelSchema = z.object({
 });
 
 const updateObjFunnelStage: NextApiHandler<PutResponse> = async (req, res) => {
+  console.log("CHAMADA DE ALTERAÇÂO DE FUNIL", req.body);
   const session = await validateAuthorization(
     req,
     "projetos",

@@ -222,10 +222,6 @@ function EditClient({
                         value={
                           newProject.funis[0] ? newProject.funis[0].id : null
                         }
-                        editable={
-                          session?.user.id == clientInfo.representante?.id ||
-                          session?.user.permissoes.clientes.editar
-                        }
                         onChange={(selected) =>
                           setNewProject((prev) => ({
                             ...prev,
@@ -254,10 +250,6 @@ function EditClient({
                           newProject.funis[0]?.id
                             ? newProject.funis[0].etapaId
                             : null
-                        }
-                        editable={
-                          session?.user.id == clientInfo.representante?.id ||
-                          session?.user.permissoes.clientes.editar
                         }
                         onChange={(selected) =>
                           setNewProject((prev) => ({
@@ -321,15 +313,16 @@ function EditClient({
                       Sem projetos vinculados...
                     </p>
                   )}
-
-                  <button
-                    onClick={() =>
-                      setNewProject((prev) => ({ ...prev, isOpen: true }))
-                    }
-                    className="mt-4 justify-self-end bg-transparent font-Poppins font-bold text-green-500"
-                  >
-                    NOVO PROJETO
-                  </button>
+                  {session?.user.permissoes.projetos.serResponsavel ? (
+                    <button
+                      onClick={() =>
+                        setNewProject((prev) => ({ ...prev, isOpen: true }))
+                      }
+                      className="mt-4 justify-self-end bg-transparent font-Poppins font-bold text-green-500"
+                    >
+                      NOVO PROJETO
+                    </button>
+                  ) : null}
                 </>
               )}
             </div>
