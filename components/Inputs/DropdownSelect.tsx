@@ -32,6 +32,7 @@ function DropdownSelect<T extends {}>({
   const [selectedId, setSelectedId] = useState<number | string | null>(value);
   const [selectMenuIsOpen, setSelectMenuIsOpen] = useState<boolean>(false);
   const [searchFilter, setSearchFilter] = useState<string>("");
+
   function handleFilter(value: string) {
     setSearchFilter(value);
     if (!items) return;
@@ -65,7 +66,6 @@ function DropdownSelect<T extends {}>({
     setSelectedId(value);
     setItems(options);
   }, [options, value]);
-
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (ref.current && !ref.current.contains(event.target)) {
@@ -77,6 +77,7 @@ function DropdownSelect<T extends {}>({
       document.removeEventListener("click", (e) => handleClickOutside(e), true);
     };
   }, [onClickOutside]);
+  console.log(selectedId, categoryName);
   return (
     <div
       ref={ref}
@@ -101,8 +102,8 @@ function DropdownSelect<T extends {}>({
             }}
             className="grow cursor-pointer text-[#353432]"
           >
-            {selectedId && options
-              ? options.filter((item) => item.id == selectedId)[0].label
+            {selectedId != undefined && options
+              ? options.filter((item) => item.id == selectedId)[0]?.label
               : categoryName}
           </p>
         )}
@@ -131,13 +132,13 @@ function DropdownSelect<T extends {}>({
             <div
               onClick={() => resetState()}
               className={`flex w-full cursor-pointer items-center rounded p-1 px-2 hover:bg-gray-100 ${
-                !selectedId ? "bg-gray-100" : ""
+                !(selectedId != undefined) ? "bg-gray-100" : ""
               }`}
             >
               <p className="grow font-medium text-[#353432]">
                 {selectedItemLabel}
               </p>
-              {!selectedId ? (
+              {!(selectedId != undefined) ? (
                 <HiCheck style={{ color: "#fead61", fontSize: "20px" }} />
               ) : null}
             </div>

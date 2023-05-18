@@ -21,7 +21,9 @@ function Clientes() {
   const [editClientId, setEditClientId] = useState<string | null>(null);
   // Queries and functions
   const { data: representatives = [] } = useRepresentatives();
-  const { data: clients = [] } = useClients();
+  const { data: clients = [] } = useClients(
+    session?.user.visibilidade != "GERAL" ? session?.user.id : null
+  );
   const { data: editClient, refetch }: UseQueryResult<IClient, Error> =
     useQuery({
       queryKey: ["editModal", editClientId],

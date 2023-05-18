@@ -317,7 +317,7 @@ function EditUser({ user, closeModal }: EditUserProps) {
                 <DropdownSelect
                   selectedItemLabel="A SELECIONAR"
                   categoryName="COMISSÃO"
-                  value={userInfo.comissao ? userInfo.comissao.id : ""}
+                  value={userInfo.comissao ? userInfo.comissao.id : null}
                   options={comissionTable.map((value) => {
                     return {
                       id: value.id,

@@ -111,12 +111,16 @@ export function useKits(onlyActive?: boolean): UseQueryResult<IKit[], Error> {
     refetchOnWindowFocus: false,
   });
 }
-export function useClients(): UseQueryResult<IClient[], Error> {
+export function useClients(
+  representative: string | null | undefined
+): UseQueryResult<IClient[], Error> {
   return useQuery({
     queryKey: ["clients"],
     queryFn: async (): Promise<IClient[]> => {
       try {
-        const { data } = await axios.get("/api/clients");
+        const { data } = await axios.get(
+          `/api/clients?representative=${representative}`
+        );
         return data.data;
       } catch (error) {
         if (error instanceof AxiosError) {

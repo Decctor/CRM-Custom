@@ -82,7 +82,6 @@ function EditClient({
         queryClient.invalidateQueries({ queryKey: ["clients"] });
         if (data.message) toast.success(data.message);
       } catch (error) {
-        console.log("ERROR", error);
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
           toast.error(errorMsg);
@@ -107,7 +106,6 @@ function EditClient({
         descricao: newProject.descricao,
         funis: newProject.funis,
       };
-      console.log("INSERT", insertObj);
       try {
         const { data } = await axios.post("/api/projects", insertObj);
         if (data.message) toast.success(data.message);
@@ -120,7 +118,6 @@ function EditClient({
         // queryClient.invalidateQueries({ queryKey: ["clients"] });
         updateInfo();
       } catch (error) {
-        console.log("ERROR", error);
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
           toast.error(errorMsg);
@@ -137,6 +134,7 @@ function EditClient({
   useEffect(() => {
     setClientInfo(client);
   }, [client]);
+  console.log(clientInfo);
   return (
     <div
       id="defaultModal"
@@ -289,8 +287,8 @@ function EditClient({
                         <div className="w-[25%] text-center">REPRESENTANTE</div>
                         <div className="w-[20%] text-center">CRIAÇÃO</div>
                       </div>
-                      {clientInfo.projetos.map((projeto) => (
-                        <div className="flex w-full items-center">
+                      {clientInfo.projetos.map((projeto, index) => (
+                        <div key={index} className="flex w-full items-center">
                           <div className="w-[30%] py-1 text-center">
                             {projeto.nome}
                           </div>
@@ -481,8 +479,8 @@ function EditClient({
                 categoryName="ESTADO"
                 value={
                   clientInfo.uf
-                    ? Object.keys(stateCities).indexOf(clientInfo.uf)
-                    : ""
+                    ? Object.keys(stateCities).indexOf(clientInfo.uf) + 1
+                    : null
                 }
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
@@ -505,11 +503,19 @@ function EditClient({
                     selectedItem.value == "MG" ||
                     selectedItem.value == "GO"
                   ) {
-                    setClientInfo({ ...clientInfo, uf: selectedItem.value });
+                    setClientInfo({
+                      ...clientInfo,
+                      uf: selectedItem.value,
+                      cidade: undefined,
+                    });
                   }
                 }}
                 onReset={() => {
-                  setClientInfo((prev) => ({ ...prev, uf: null }));
+                  setClientInfo((prev) => ({
+                    ...prev,
+                    uf: null,
+                    cidade: null,
+                  }));
                 }}
                 width="100%"
               />
@@ -519,7 +525,7 @@ function EditClient({
                 value={
                   clientInfo.cidade && clientInfo.uf
                     ? stateCities[clientInfo.uf].indexOf(clientInfo.cidade)
-                    : ""
+                    : null
                 }
                 editable={
                   session?.user.id == clientInfo.representante?.id ||

@@ -21,7 +21,7 @@ interface IUserInfo {
   telefone: string;
   visibilidade: "GERAL" | "PRÓPRIA" | string[];
   funisVisiveis: number[] | "TODOS";
-  grupoPermissaoId: string | number;
+  grupoPermissaoId: string | number | null;
   comissao: Comissao | null;
   permissoes:
     | {
@@ -75,7 +75,7 @@ function NewUserModal({ closeModal }: NewUserModalProps) {
     telefone: "",
     visibilidade: "PRÓPRIA",
     funisVisiveis: "TODOS",
-    grupoPermissaoId: "",
+    grupoPermissaoId: null,
     permissoes: null,
     comissao: null,
   });
@@ -90,7 +90,7 @@ function NewUserModal({ closeModal }: NewUserModalProps) {
           telefone: "",
           visibilidade: "PRÓPRIA",
           funisVisiveis: [],
-          grupoPermissaoId: "",
+          grupoPermissaoId: null,
           permissoes: null,
           comissao: null,
         });
@@ -213,7 +213,7 @@ function NewUserModal({ closeModal }: NewUserModalProps) {
                   onReset={() =>
                     setUserInfo((prev) => ({
                       ...prev,
-                      grupoPermissaoId: "",
+                      grupoPermissaoId: null,
                       permissoes: undefined,
                     }))
                   }
@@ -229,7 +229,7 @@ function NewUserModal({ closeModal }: NewUserModalProps) {
                 <DropdownSelect
                   selectedItemLabel="A SELECIONAR"
                   categoryName="COMISSÃO"
-                  value={userInfo.comissao ? userInfo.comissao.id : ""}
+                  value={userInfo.comissao ? userInfo.comissao.id : null}
                   options={comissionTable.map((value) => {
                     return {
                       id: value.id,

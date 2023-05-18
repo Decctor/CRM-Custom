@@ -24,7 +24,7 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
         >
           <div className="flex flex-col">
             <div className="h-1 w-1/3 rounded-sm bg-blue-400"></div>
-            <h1 className="text-lg font-medium text-[#353432]">{item.name}</h1>
+            <h1 className="font-medium text-[#353432]">{item.name}</h1>
           </div>
 
           <div className="flex w-full items-center justify-between">

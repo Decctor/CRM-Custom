@@ -235,7 +235,7 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
                   value={
                     clientInfo.uf
                       ? Object.keys(stateCities).indexOf(clientInfo.uf) + 1
-                      : ""
+                      : null
                   }
                   options={[
                     {
@@ -269,7 +269,7 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
                   value={
                     clientInfo.cidade && clientInfo.uf
                       ? stateCities[clientInfo.uf].indexOf(clientInfo.cidade)
-                      : ""
+                      : null
                   }
                   options={
                     clientInfo.uf

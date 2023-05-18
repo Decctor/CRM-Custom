@@ -78,7 +78,8 @@ const getClients: NextApiHandler<GetResponse> = async (req, res) => {
   await validateAuthentication(req);
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("clients");
-  const { id } = req.query;
+  const { id, representative } = req.query;
+  console.log(req.query);
   if (id && typeof id === "string") {
     const client = await collection
       .aggregate([
@@ -100,7 +101,17 @@ const getClients: NextApiHandler<GetResponse> = async (req, res) => {
       .toArray();
     res.status(200).json({ data: client[0] });
   } else {
-    const clients = await collection.find({}).toArray();
+    var queryParam = {};
+    if (typeof representative != "string")
+      throw "ID de representante inválido.";
+    if (representative != "null") {
+      queryParam = {
+        "representante.id": representative,
+      };
+    }
+    const clients = await collection
+      .aggregate([{ $match: { ...queryParam } }])
+      .toArray();
     res.status(200).json({ data: clients });
   }
 };

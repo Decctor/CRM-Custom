@@ -121,7 +121,6 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
     const formattedObj = { ...project[0], cliente: project[0].cliente[0] };
     res.status(200).json({ data: formattedObj });
   } else {
-    console.log;
     var queryParam = {};
     if (typeof responsible != "string") throw "ID de responsável inválido.";
     if (funnel != "null" && responsible != "null") {

@@ -206,7 +206,7 @@ export interface IClient {
   numeroOuIdentificador: string;
   complemento?: string;
   uf: "MG" | "GO" | null;
-  cidade: string;
+  cidade?: string | null;
   dataNascimento?: string;
   rg?: string;
   estadoCivil?: string;
