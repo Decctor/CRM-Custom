@@ -61,7 +61,42 @@ export function useRepresentatives(): UseQueryResult<IRepresentative[], Error> {
         return [];
       }
     },
+    onError(err) {
+      console.log("ERRO ONERROR", err);
+      return err;
+    },
     refetchOnWindowFocus: false,
+  });
+}
+export function useProject(
+  projectId: string,
+  enabled: boolean
+): UseQueryResult<IProject, Error> {
+  return useQuery({
+    queryKey: ["projects", projectId],
+    queryFn: async () => {
+      console.log("IDp", projectId);
+      try {
+        const { data } = await axios.get(`/api/projects?id=${projectId}`);
+        console.log("DATA", data.data);
+        return data.data;
+      } catch (error) {
+        console.log("ERRO", error);
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+          throw error;
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+        }
+        return;
+      }
+    },
+    enabled: enabled,
+    refetchOnWindowFocus: false,
+    retry: 2,
   });
 }
 export function useResponsibles(): UseQueryResult<IResponsible[], Error> {
@@ -83,8 +118,42 @@ export function useResponsibles(): UseQueryResult<IResponsible[], Error> {
         return [];
       }
     },
+    cacheTime: 300000,
+    staleTime: 0,
     refetchOnWindowFocus: false,
   });
+}
+export function useResponsibleInfo(
+  responsibleId: string | undefined
+): IResponsible | null {
+  const { data: responsible } = useQuery({
+    queryKey: ["responsible", responsibleId],
+    queryFn: async (): Promise<IResponsible | null> => {
+      try {
+        const { data } = await axios.get(
+          `/api/responsibles?id=${responsibleId}`
+        );
+        return data.data;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+        }
+        return null;
+      }
+    },
+    refetchOnWindowFocus: false,
+    cacheTime: 300000,
+    staleTime: 0,
+    enabled: !!responsibleId,
+  });
+
+  if (responsible) return responsible;
+  else return null;
 }
 export function useKits(onlyActive?: boolean): UseQueryResult<IKit[], Error> {
   return useQuery({

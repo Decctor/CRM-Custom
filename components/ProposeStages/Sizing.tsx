@@ -1,15 +1,41 @@
-import React, { SetStateAction } from "react";
+import { IProposeInfo } from "@/utils/models";
+import React, { SetStateAction, useState } from "react";
 
 type SizingProps = {
-  setProposeInfo: (value: any) => void;
-  proposeInfo: any;
+  setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
+  proposeInfo: IProposeInfo;
+  moveToNextStage: React.Dispatch<React.SetStateAction<number>>;
 };
-function Sizing({ proposeInfo, setProposeInfo }: SizingProps) {
+function Sizing({ proposeInfo, setProposeInfo, moveToNextStage }: SizingProps) {
+  const [validationMsg, setValidationMsg] = useState({ text: "", color: "" });
+  function handleProceed() {
+    if (proposeInfo.consumoEnergiaMensal <= 0) {
+      setValidationMsg({
+        text: "Por favor, preencha um valor de consumo válido.",
+        color: "text-red-500",
+      });
+      return;
+    }
+    if (proposeInfo.tarifa <= 0) {
+      setValidationMsg({
+        text: "Por favor, preencha um valor de tarifa válido.",
+        color: "text-red-500",
+      });
+      return;
+    }
+    if (proposeInfo.tarifaTUSD <= 0) {
+      setValidationMsg({
+        text: "Por favor, preencha um valor de tarifa TUSD válido.",
+        color: "text-red-500",
+      });
+      return;
+    }
+    moveToNextStage(2);
+  }
   return (
     <>
-      <div className="flex w-full flex-col gap-4 py-4 lg:flex-row">
+      <div className="flex w-full flex-col gap-4 py-4">
         <div className="flex w-full flex-col gap-4">
-          <h1 className="font-bold">UNIDADE GERADORA</h1>
           <div className="flex w-full items-center gap-2">
             <div className="flex w-full flex-col gap-1 lg:w-[50%]">
               <p className="text-md font-light text-gray-500">
@@ -112,58 +138,41 @@ function Sizing({ proposeInfo, setProposeInfo }: SizingProps) {
               </select>
             </div>
           </div>
-        </div>
-        <div className="flex w-full flex-col gap-4">
-          <h1 className="font-bold">CARACTERÍSTICAS</h1>
-          <div className="flex w-full items-center gap-2">
-            <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-              <p className="text-md font-light text-gray-500">
-                Tipo de telhado
-              </p>
-              <select
-                value={proposeInfo.tipoTelhado}
-                onChange={(e) =>
-                  setProposeInfo((prev) => ({
-                    ...prev,
-                    tipoTelhado: e.target.value,
-                  }))
-                }
-                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-              >
-                <option value="Carport">Carport</option>
-                <option value="Cerâmico">Cerâmico</option>
-                <option value="Fibrocimento">Fibrocimento</option>
-                <option value="Laje">Laje</option>
-                <option value="Shingle">Shingle</option>
-                <option value="Metálico">Metálico</option>
-                <option value="Zipado">Zipado</option>
-                <option value="Solo">Solo</option>
-                <option value="Sem estrutura">Sem estrutura</option>
-              </select>
-            </div>
-            <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-              <p className="text-md font-light text-gray-500">Sombreamento</p>
-              <select
-                value={proposeInfo.sombreamento}
-                onChange={(e) =>
-                  setProposeInfo((prev) => ({
-                    ...prev,
-                    sombreamento: e.target.value,
-                  }))
-                }
-                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-              >
-                <option value="Nenhum">Nenhum</option>
-                <option value="Pouco">Pouco</option>
-                <option value="Médio">Médio</option>
-                <option value="Alto">Alto</option>
-              </select>
-            </div>
+          <div className="flex w-full flex-col self-center lg:w-[50%] ">
+            <p className="text-md font-light text-gray-500">Tipo de telhado</p>
+            <select
+              value={proposeInfo.tipoTelhado}
+              onChange={(e) =>
+                setProposeInfo((prev) => ({
+                  ...prev,
+                  tipoTelhado: e.target.value,
+                }))
+              }
+              className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
+            >
+              <option value="Carport">Carport</option>
+              <option value="Cerâmico">Cerâmico</option>
+              <option value="Fibrocimento">Fibrocimento</option>
+              <option value="Laje">Laje</option>
+              <option value="Shingle">Shingle</option>
+              <option value="Metálico">Metálico</option>
+              <option value="Zipado">Zipado</option>
+              <option value="Solo">Solo</option>
+              <option value="Sem estrutura">Sem estrutura</option>
+            </select>
           </div>
         </div>
       </div>
-      <div className="flex w-full items-center justify-end px-1">
-        <button className="rounded bg-gray-400 p-2 font-bold hover:bg-black hover:text-white">
+      <div className="flex w-full items-center justify-end gap-2 px-1">
+        {validationMsg.text ? (
+          <p className={`text-sm ${validationMsg.color} italic`}>
+            {validationMsg.text}
+          </p>
+        ) : null}
+        <button
+          onClick={handleProceed}
+          className="rounded p-2 font-bold hover:bg-black hover:text-white"
+        >
           Prosseguir
         </button>
       </div>

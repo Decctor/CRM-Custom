@@ -8,6 +8,7 @@ import { AiOutlineCheck } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { customersAcquisitionChannels } from "@/utils/constants";
 type DetailsBlockType = {
   info: IProject;
   session: ISession | null;
@@ -96,6 +97,9 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
           <h1 className="font-bold text-black">Detalhes</h1>
         </div>
         <div className="mt-3 flex w-full flex-col gap-2">
+          <h1 className="text-center text-sm font-medium text-[#fead61]">
+            DADOS ADICIONAIS DO CLIENTE
+          </h1>
           <div className="flex w-full gap-2">
             <div className="grow">
               <DateInput
@@ -379,6 +383,64 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
               />
             </button>
           </div>
+
+          <div className="flex w-full gap-2">
+            <div className="grow">
+              <SelectInput
+                label="CANAL DE AQUISIÇÃO"
+                value={
+                  infoHolder?.cliente ? infoHolder?.cliente.canalVenda : null
+                }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                options={customersAcquisitionChannels}
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      cliente: { ...prev?.cliente, canalVenda: value },
+                    }));
+                }}
+                onReset={() => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      cliente: { ...prev?.cliente, canalVenda: null },
+                    }));
+                }}
+                selectedItemLabel="NÃO DEFINIDO"
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={
+                infoHolder?.cliente?.canalVenda == info.cliente?.canalVenda
+              }
+              onClick={() =>
+                updateData(
+                  "CLIENTE",
+                  "canalVenda",
+                  infoHolder?.cliente?.canalVenda
+                )
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.cliente?.canalVenda != info.cliente?.canalVenda
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <h1 className="text-center text-sm font-medium text-[#fead61]">
+            DADOS DA INSTALAÇÃO
+          </h1>
           <div className="flex w-full gap-2">
             <div className="grow">
               <TextInput
@@ -533,6 +595,67 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
                   fontSize: "18px",
                   color:
                     infoHolder?.tipoLigacao != info.tipoLigacao
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <div className="flex w-full gap-2">
+            <div className="grow">
+              <SelectInput
+                label="TIPO DA INSTALAÇÃO"
+                value={infoHolder?.tipoInstalacao}
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                options={[
+                  {
+                    id: 1,
+                    label: "URBANO",
+                    value: "URBANO",
+                  },
+                  {
+                    id: 2,
+                    label: "RURAL",
+                    value: "RURAL",
+                  },
+                ]}
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      tipoInstalacao: value,
+                    }));
+                }}
+                onReset={() => {
+                  if (infoHolder?.cliente)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      tipoInstalacao: null,
+                    }));
+                }}
+                selectedItemLabel="NÃO DEFINIDO"
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={infoHolder?.tipoInstalacao == info.tipoInstalacao}
+              onClick={() =>
+                updateData(
+                  "PROJETO",
+                  "tipoInstalacao",
+                  infoHolder?.tipoInstalacao
+                )
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.tipoInstalacao != info.tipoInstalacao
                       ? "rgb(34,197,94)"
                       : "rgb(156,163,175)",
                 }}

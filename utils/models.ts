@@ -216,3 +216,32 @@ export interface IClient {
   dataInsercao?: Date | null;
   projetos?: IProject[];
 }
+export interface IProposeInfo {
+  consumoEnergiaMensal: number;
+  tarifa: number;
+  tarifaTUSD: number;
+  tensao: string;
+  fase: string;
+  fatorSimultaneidade: number;
+  tipoTelhado: string;
+}
+export type ProjectActivity = {
+  _id?: string;
+  projetoId?: string;
+  titulo: string;
+  categoria: "ATIVIDADE" | null;
+  tipo: "LIGAÇÃO" | "REUNIÃO" | "VISITA TÉCNICA";
+  dataVencimento?: string;
+  observacoes: string;
+  dataInsercao?: string;
+  dataConclusao?: string;
+  responsavelId?: string;
+};
+export type ProjectNote = {
+  _id?: string;
+  projetoId?: string;
+  categoria: "ANOTAÇÃO" | null;
+  anotacao: string;
+  dataInsercao?: string;
+  responsavelId?: string;
+};

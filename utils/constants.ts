@@ -1,17 +1,5 @@
 import { Funnel } from "./models";
 
-export const customersAcquisitionChannels = [
-  { label: "NÃO DEFINIDO", value: "NÃO DEFINIDO" },
-  {
-    label: "CALCULADORA SOLAR",
-    value: "CALCULADORA SOLAR",
-  },
-  { label: "GOOGLE ADS", value: "GOOGLE ADS" },
-  { label: "FACEBOOK ADS", value: "FACEBOOK ADS" },
-  { label: "INDICAÇÃO", value: "INDICAÇÃO" },
-  { label: "PASSIVO", value: "PASSIVO" },
-  { label: "PROSPECÇÃO ATIVA", value: "PROSPECÇÃO ATIVA" },
-];
 export const funnels: Funnel[] = [
   {
     id: 1,
@@ -36,6 +24,51 @@ export const funnels: Funnel[] = [
       { id: 3, nome: "Criação de Proposta" },
     ],
   },
+];
+export const customersAcquisitionChannels = [
+  {
+    id: 1,
+    label: "NETWORK",
+    value: "NETWORK",
+  },
+  {
+    id: 2,
+    label: "INSIDE SALES",
+    value: "INSIDE SALES",
+  },
+  {
+    id: 3,
+    label: "INDICAÇÃO DE AMIGO",
+    value: "INDICAÇÃO DE AMIGO",
+  },
+  {
+    id: 4,
+    label: "CALCULADORA SOLAR",
+    value: "CALCULADORA SOLAR",
+  },
+  { id: 5, label: "GOOGLE ADS", value: "GOOGLE ADS" },
+  { id: 6, label: "FACEBOOK ADS", value: "FACEBOOK ADS" },
+  {
+    id: 7,
+    label: "PORTA A PORTA",
+    value: "PORTA A PORTA",
+  },
+  {
+    id: 8,
+    label: "TELEVENDAS",
+    value: "TELEVENDAS",
+  },
+  {
+    id: 9,
+    label: "EVENTO",
+    value: "EVENTO",
+  },
+  {
+    id: 10,
+    label: "PASSIVO",
+    value: "PASSIVO",
+  },
+  { id: 11, label: "PROSPECÇÃO ATIVA", value: "PROSPECÇÃO ATIVA" },
 ];
 export const roles = [
   {

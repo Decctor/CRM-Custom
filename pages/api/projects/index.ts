@@ -98,7 +98,6 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projects");
   const { id, responsible, funnel, after, before } = req.query;
-  console.log(req.query);
   if (id && typeof id === "string") {
     const project = await collection
       .aggregate([
@@ -118,6 +117,9 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         },
       ])
       .toArray();
+    console.log(project.length == 0);
+    if (project.length == 0)
+      throw new createHttpError.BadRequest("ID de projeto inválido.");
     const formattedObj = { ...project[0], cliente: project[0].cliente[0] };
     res.status(200).json({ data: formattedObj });
   } else {
@@ -152,7 +154,6 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         ],
       };
     }
-    console.log("QUERY PARAM", queryParam);
     const projects = await collection
       .aggregate([
         {

@@ -10,7 +10,7 @@ import LoadingComponent from "@/components/utils/LoadingComponent";
 import { IProject } from "@/utils/models";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
-import { BsTelephoneFill } from "react-icons/bs";
+import { BsClipboardCheck, BsTelephoneFill } from "react-icons/bs";
 import { FaCity } from "react-icons/fa";
 import { GiPositionMarker } from "react-icons/gi";
 import { HiIdentification } from "react-icons/hi";
@@ -21,7 +21,10 @@ import DateInput from "@/components/Inputs/DateInput";
 import dayjs from "dayjs";
 import SelectInput from "@/components/Inputs/SelectInput";
 import { formatDate } from "@/utils/methods";
-import DetailsBlock from "@/components/Blocks/DetailsBlock";
+import DetailsBlock from "@/components/ProjectBlocks/DetailsBlock";
+import { TbNotes } from "react-icons/tb";
+import ProjectHistoryBlock from "@/components/ProjectBlocks/ProjectHistoryBlock";
+import Link from "next/link";
 function Projeto() {
   const { data: session } = useSession({
     required: true,
@@ -144,17 +147,16 @@ function Projeto() {
             </div>
             <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
               <div className="flex  h-[40px] items-center justify-between border-b border-gray-200 pb-2">
-                <div className="flex items-center justify-start gap-10">
+                <div className="flex items-center justify-center gap-10">
                   <h1 className="w-[120px] cursor-pointer border-b border-blue-500 p-1 text-center font-bold text-black hover:border-blue-500">
                     Propostas
                   </h1>
-                  <h1 className="cursor-pointer border-b border-white p-1 pb-1 font-bold text-black hover:border-blue-500">
-                    Documentos
-                  </h1>
                 </div>
-                <button className="rounded bg-green-600 p-1 text-sm font-bold text-white">
-                  GERAR PROPOSTA
-                </button>
+                <Link href={`/projeto/proposta/${project._id}`}>
+                  <button className="rounded bg-green-600 p-1 text-sm font-bold text-white">
+                    GERAR PROPOSTA
+                  </button>
+                </Link>
               </div>
               <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
                 <div className="flex h-[50px] w-full justify-center">
@@ -172,7 +174,9 @@ function Projeto() {
             <div className="w-full lg:w-[40%]">
               <DetailsBlock info={project} session={session} />
             </div>
-            <div className="w-full rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]"></div>
+            <div className="w-full lg:w-[60%]">
+              <ProjectHistoryBlock projectId={project._id} session={session} />
+            </div>
           </div>
         </div>
       </div>

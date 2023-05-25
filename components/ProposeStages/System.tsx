@@ -1,6 +1,11 @@
+import { IProposeInfo } from "@/utils/models";
 import React from "react";
 
-function System() {
+type SystemProps = {
+  setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
+  proposeInfo: IProposeInfo;
+};
+function System({ proposeInfo, setProposeInfo }: SystemProps) {
   return (
     <div className="flex w-full flex-col py-4">
       <h1 className="font-bold">KITS FECHADOS</h1>

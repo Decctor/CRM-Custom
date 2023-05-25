@@ -5,15 +5,21 @@ type CheckboxInputProps = {
   labelTrue: string;
   labelFalse: string;
   handleChange: (value: boolean) => void;
+  padding?: string;
 };
 function CheckboxInput({
   labelTrue,
   labelFalse,
   checked,
   handleChange,
+  padding = "0.75rem",
 }: CheckboxInputProps) {
   return (
-    <div className="flex w-full items-center justify-center gap-2 p-3">
+    <div
+      className={`flex w-full items-center justify-center gap-2 ${
+        padding ? `p-[${padding}]` : "p-3"
+      }`}
+    >
       <div
         className={`flex h-[16px] w-[16px] cursor-pointer items-center justify-center rounded-full border-2 border-[#15599a] ${
           checked ? "bg-[#15599a]" : ""
