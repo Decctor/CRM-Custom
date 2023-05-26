@@ -189,3 +189,25 @@ export const leadscoreProduto = [
   { label: "2", value: "2" },
   { label: "3", value: "3" },
 ];
+
+export const structureTypes = [
+  { label: "Carport", value: "Carport" },
+  { label: "Cerâmico", value: "Cerâmico" },
+  { label: "Fibrocimento", value: "Fibrocimento" },
+  { label: "Laje", value: "Laje" },
+  { label: "Metálico", value: "Metálico" },
+  { label: "Zipado", value: "Zipado" },
+  { label: "Solo", value: "Solo" },
+  { label: "Sem estrutura", value: "Sem estrutura" },
+] as const;
+
+export const phases = [
+  { label: "Monofásico", value: "Monofásico" },
+  { label: "Bifásico", value: "Bifásico" },
+  { label: "Trifásico", value: "Trifásico" },
+] as const;
+export const proposeVoltageOptions = [
+  { label: "127/220V", value: "127/220V" },
+  { label: "220/380V", value: "220/380V" },
+  { label: "277/480V", value: "277/480V" },
+] as const;

@@ -13,6 +13,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { AiOutlineMinus } from "react-icons/ai";
+import { structureTypes } from "@/utils/constants";
 type ModalNewKitProps = {
   isOpen: boolean;
   setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +30,7 @@ type ModuleInfo = {
   fabricante: string;
   modelo: string;
   qtde: number;
+  potencia: number;
 };
 type CreationMsgType = {
   text: string;
@@ -114,6 +116,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     fabricante: "",
     modelo: "",
     qtde: 1,
+    potencia: 0,
   });
 
   function addInverterToKit() {
@@ -168,9 +171,10 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
       fabricante: "",
       modelo: "",
       qtde: 1,
+      potencia: 0,
     });
   }
-  console.log(status);
+  console.log(moduleHolder);
   return (
     <div
       id="defaultModal"
@@ -310,16 +314,10 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                           )
                         : null
                     }
-                    options={[
-                      { id: 1, label: "CARPORT", value: "CARPORT" },
-                      { id: 2, label: "CERÂMICO", value: "CERÂMICO" },
-                      { id: 3, label: "FIBROCIMENTO", value: "FIBROCIMENTO" },
-                      { id: 4, label: "LAJE", value: "LAJE" },
-                      { id: 5, label: "SHINGLE", value: "SHINGLE" },
-                      { id: 6, label: "METÁLICO", value: "METÁLICO" },
-                      { id: 7, label: "ZÍPADO", value: "ZÍPADO" },
-                      { id: 8, label: "SOLO", value: "SOLO" },
-                    ]}
+                    options={structureTypes.map((type, index) => ({
+                      ...type,
+                      id: index + 1,
+                    }))}
                     selectedItemLabel="NÃO DEFINIDO"
                     handleChange={(value: string[] | []) =>
                       setKitInfo((prev) => ({
@@ -449,6 +447,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                         id: value.id,
                         fabricante: value.fabricante,
                         modelo: value.modelo,
+                        potencia: value.potencia,
                       }))
                     }
                     onReset={() =>
@@ -457,6 +456,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                         fabricante: "",
                         modelo: "",
                         qtde: 1,
+                        potencia: 0,
                       })
                     }
                     selectedItemLabel="NÃO DEFINIDO"

@@ -1,3 +1,8 @@
+import {
+  phases,
+  proposeVoltageOptions,
+  structureTypes,
+} from "@/utils/constants";
 import { IProposeInfo } from "@/utils/models";
 import React, { SetStateAction, useState } from "react";
 
@@ -9,21 +14,21 @@ type SizingProps = {
 function Sizing({ proposeInfo, setProposeInfo, moveToNextStage }: SizingProps) {
   const [validationMsg, setValidationMsg] = useState({ text: "", color: "" });
   function handleProceed() {
-    if (proposeInfo.consumoEnergiaMensal <= 0) {
+    if (proposeInfo.premissas.consumoEnergiaMensal <= 0) {
       setValidationMsg({
         text: "Por favor, preencha um valor de consumo válido.",
         color: "text-red-500",
       });
       return;
     }
-    if (proposeInfo.tarifa <= 0) {
+    if (proposeInfo.premissas.tarifaEnergia <= 0) {
       setValidationMsg({
         text: "Por favor, preencha um valor de tarifa válido.",
         color: "text-red-500",
       });
       return;
     }
-    if (proposeInfo.tarifaTUSD <= 0) {
+    if (proposeInfo.premissas.tarifaTUSD <= 0) {
       setValidationMsg({
         text: "Por favor, preencha um valor de tarifa TUSD válido.",
         color: "text-red-500",
@@ -43,11 +48,14 @@ function Sizing({ proposeInfo, setProposeInfo, moveToNextStage }: SizingProps) {
               </p>
               <input
                 type="number"
-                value={proposeInfo.consumoEnergiaMensal.toString()}
+                value={proposeInfo.premissas.consumoEnergiaMensal.toString()}
                 onChange={(e) =>
                   setProposeInfo((prev) => ({
                     ...prev,
-                    consumoEnergiaMensal: Number(e.target.value),
+                    premissas: {
+                      ...prev.premissas,
+                      consumoEnergiaMensal: Number(e.target.value),
+                    },
                   }))
                 }
                 className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
@@ -57,11 +65,14 @@ function Sizing({ proposeInfo, setProposeInfo, moveToNextStage }: SizingProps) {
               <p className="text-md font-light text-gray-500">Tarifa (R$)</p>
               <input
                 type="number"
-                value={proposeInfo.tarifa.toString()}
+                value={proposeInfo.premissas.tarifaEnergia.toString()}
                 onChange={(e) =>
                   setProposeInfo((prev) => ({
                     ...prev,
-                    tarifa: Number(e.target.value),
+                    premissas: {
+                      ...prev.premissas,
+                      tarifaEnergia: Number(e.target.value),
+                    },
                   }))
                 }
                 className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
@@ -75,11 +86,14 @@ function Sizing({ proposeInfo, setProposeInfo, moveToNextStage }: SizingProps) {
               </p>
               <input
                 type="number"
-                value={proposeInfo.tarifaTUSD.toString()}
+                value={proposeInfo.premissas.tarifaTUSD.toString()}
                 onChange={(e) =>
                   setProposeInfo((prev) => ({
                     ...prev,
-                    tarifaTUSD: Number(e.target.value),
+                    premissas: {
+                      ...prev.premissas,
+                      tarifaTUSD: Number(e.target.value),
+                    },
                   }))
                 }
                 className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
@@ -91,11 +105,14 @@ function Sizing({ proposeInfo, setProposeInfo, moveToNextStage }: SizingProps) {
               </p>
               <input
                 type="number"
-                value={proposeInfo.tarifa.toString()}
+                value={proposeInfo.premissas.fatorSimultaneidade.toString()}
                 onChange={(e) =>
                   setProposeInfo((prev) => ({
                     ...prev,
-                    tarifa: Number(e.target.value),
+                    premissas: {
+                      ...prev.premissas,
+                      fatorSimultaneidade: Number(e.target.value),
+                    },
                   }))
                 }
                 className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
@@ -106,59 +123,70 @@ function Sizing({ proposeInfo, setProposeInfo, moveToNextStage }: SizingProps) {
             <div className="flex w-full flex-col gap-1 lg:w-[50%]">
               <p className="text-md font-light text-gray-500">Tensão da Rede</p>
               <select
-                value={proposeInfo.tensao}
-                onChange={(e) =>
+                value={proposeInfo.premissas.tensaoRede}
+                onChange={({ target }) =>
                   setProposeInfo((prev) => ({
                     ...prev,
-                    tensao: e.target.value,
+                    premissas: {
+                      ...prev.premissas,
+                      tensaoRede: target.value,
+                    },
                   }))
                 }
                 className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
               >
-                <option>127/220V</option>
-                <option>220/380V</option>
-                <option>277/480V</option>
+                {proposeVoltageOptions.map((voltageOption, index) => (
+                  <option key={index} value={voltageOption.value}>
+                    {voltageOption.label}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex w-full flex-col gap-1 lg:w-[50%]">
               <p className="text-md font-light text-gray-500">Fase</p>
               <select
-                value={proposeInfo.fase}
+                value={proposeInfo.premissas.fase}
                 onChange={(e) =>
                   setProposeInfo((prev) => ({
                     ...prev,
-                    fase: e.target.value,
+                    premissas: {
+                      ...prev.premissas,
+                      fase: e.target.value,
+                    },
                   }))
                 }
                 className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
               >
-                <option>Monofásico</option>
-                <option>Bifásico</option>
-                <option>Trifásico</option>
+                {phases.map((phase, index) => (
+                  <option key={index} value={phase.value}>
+                    {phase.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
           <div className="flex w-full flex-col self-center lg:w-[50%] ">
-            <p className="text-md font-light text-gray-500">Tipo de telhado</p>
+            <p className="text-md font-light text-gray-500">
+              Tipo de estrutura
+            </p>
             <select
-              value={proposeInfo.tipoTelhado}
+              value={proposeInfo.premissas.tipoEstrutura}
               onChange={(e) =>
                 setProposeInfo((prev) => ({
                   ...prev,
-                  tipoTelhado: e.target.value,
+                  premissas: {
+                    ...prev.premissas,
+                    tipoEstrutura: e.target.value,
+                  },
                 }))
               }
               className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
             >
-              <option value="Carport">Carport</option>
-              <option value="Cerâmico">Cerâmico</option>
-              <option value="Fibrocimento">Fibrocimento</option>
-              <option value="Laje">Laje</option>
-              <option value="Shingle">Shingle</option>
-              <option value="Metálico">Metálico</option>
-              <option value="Zipado">Zipado</option>
-              <option value="Solo">Solo</option>
-              <option value="Sem estrutura">Sem estrutura</option>
+              {structureTypes.map((type, index) => (
+                <option key={index} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
             </select>
           </div>
         </div>

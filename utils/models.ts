@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-
+import { phases, proposeVoltageOptions, structureTypes } from "./constants";
 type Etiqueta = {
   id: number;
   nome: string;
@@ -216,14 +216,21 @@ export interface IClient {
   dataInsercao?: Date | null;
   projetos?: IProject[];
 }
+
 export interface IProposeInfo {
-  consumoEnergiaMensal: number;
-  tarifa: number;
-  tarifaTUSD: number;
-  tensao: string;
-  fase: string;
-  fatorSimultaneidade: number;
-  tipoTelhado: string;
+  projeto: {
+    nome?: string;
+    id?: string;
+  };
+  premissas: {
+    consumoEnergiaMensal: number;
+    tarifaEnergia: number;
+    tarifaTUSD: number;
+    tensaoRede: (typeof proposeVoltageOptions)[number]["value"] | string;
+    fase: (typeof phases)[number]["value"] | string;
+    fatorSimultaneidade: number;
+    tipoEstrutura: (typeof structureTypes)[number]["label"] | string;
+  };
 }
 export type ProjectActivity = {
   _id?: string;

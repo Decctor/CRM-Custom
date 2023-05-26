@@ -41,6 +41,86 @@ export function formatToPhone(value: string): string {
 export function formatDate(value: any) {
   return new Date(value).toISOString().slice(0, 10);
 }
+
+export function useKitQueryPipelines(
+  type: "TODOS OS KITS" | "KITS POR PREMISSA",
+  payload: any
+) {
+  switch (type) {
+    case "TODOS OS KITS":
+      return [
+        {
+          $addFields: {
+            potPico: {
+              $reduce: {
+                input: "$modulos",
+                initialValue: 0,
+                in: {
+                  $add: [
+                    "$$value",
+                    {
+                      $multiply: ["$$this.potencia", "$$this.qtde"],
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      ];
+    case "KITS POR PREMISSA":
+      return [
+        {
+          $addFields: {
+            potPico: {
+              $reduce: {
+                input: "$modulos",
+                initialValue: 0,
+                in: {
+                  $add: [
+                    "$$value",
+                    {
+                      $multiply: ["$$this.potencia", "$$this.qtde"],
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+        {
+          $match: {
+            $and: [
+              { potPico: { $gte: payload.min } },
+              { potPico: { $lte: payload.max } },
+            ],
+          },
+        },
+      ];
+    default:
+      return [
+        {
+          $addFields: {
+            potPico: {
+              $reduce: {
+                input: "$modulos",
+                initialValue: 0,
+                in: {
+                  $add: [
+                    "$$value",
+                    {
+                      $multiply: ["$$this.potencia", "$$this.qtde"],
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      ];
+  }
+}
+
 // Hooks
 export function useRepresentatives(): UseQueryResult<IRepresentative[], Error> {
   return useQuery({
