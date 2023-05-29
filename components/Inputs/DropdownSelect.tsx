@@ -77,7 +77,7 @@ function DropdownSelect<T extends {}>({
       document.removeEventListener("click", (e) => handleClickOutside(e), true);
     };
   }, [onClickOutside]);
-  console.log(selectedId, categoryName);
+
   return (
     <div
       ref={ref}

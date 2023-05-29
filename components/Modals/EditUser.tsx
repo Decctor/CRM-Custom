@@ -104,7 +104,6 @@ function EditUser({ user, closeModal }: EditUserProps) {
           changes: changes,
           changePassword: user.senha != userInfo.senha,
         });
-        console.log("res", data);
         queryClient.invalidateQueries({ queryKey: ["users"] });
         toast.success(data.message);
       } catch (error) {

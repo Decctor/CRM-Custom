@@ -22,7 +22,7 @@ function getPeakPotByModules(modules: ModuleType[]) {
 }
 function ProposeKit({ kit, handleSelect }: KitCardProps) {
   return (
-    <div className="flex h-[290px] w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg">
+    <div className="flex min-h-[290px] w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg">
       <h1 className="text-center text-lg font-medium text-gray-800">
         {kit.nome}
       </h1>

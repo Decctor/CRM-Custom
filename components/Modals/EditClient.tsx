@@ -134,7 +134,7 @@ function EditClient({
   useEffect(() => {
     setClientInfo(client);
   }, [client]);
-  console.log(clientInfo);
+
   return (
     <div
       id="defaultModal"

@@ -13,7 +13,6 @@ interface IFunnelListProps {
   }[];
 }
 function FunnelList({ stageName, items, id }: IFunnelListProps) {
-  console.log("ITEMS", items);
   return (
     <Droppable droppableId={id.toString()}>
       {(provided) => (

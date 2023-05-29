@@ -1,5 +1,5 @@
 import { Sidebar } from "@/components/Sidebar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdOptions } from "react-icons/io";
 import { MdAttachMoney, MdSell } from "react-icons/md";
 import { SlEnergy } from "react-icons/sl";
@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import LoadingPage from "@/components/utils/LoadingPage";
 import { IProposeInfo, ISession } from "@/utils/models";
+import Sale from "@/components/ProposeStages/Sale";
 function checkQueryEnableStatus(session: ISession | null, queryId: any) {
   if (session?.user && typeof queryId === "string") {
     return true;
@@ -47,10 +48,19 @@ function PropostaPage() {
       fase: "Bifásico",
       fatorSimultaneidade: 0,
       tipoEstrutura: "Fibrocimento",
+      distancia: 0,
     },
   });
-  console.log("PROJETO", project);
-  console.log("PROPOSTA", proposeInfo);
+  useEffect(() => {
+    setProposeInfo((prev) => ({
+      ...prev,
+      projeto: {
+        id: project?._id,
+        nome: project?.nome,
+      },
+    }));
+  }, [project]);
+  console.log(proposeInfo);
   if (isLoading) return <LoadingPage />;
   if (error) {
     return (
@@ -306,12 +316,22 @@ function PropostaPage() {
             {proposeStage == 1 ? (
               <Sizing
                 proposeInfo={proposeInfo}
+                project={project}
                 setProposeInfo={setProposeInfo}
                 moveToNextStage={() => setProposeStage((prev) => prev + 1)}
               />
             ) : null}
             {proposeStage == 2 ? (
               <System
+                proposeInfo={proposeInfo}
+                setProposeInfo={setProposeInfo}
+                project={project}
+                moveToPreviousStage={() => setProposeStage((prev) => prev - 1)}
+                moveToNextStage={() => setProposeStage((prev) => prev + 1)}
+              />
+            ) : null}
+            {proposeStage == 3 ? (
+              <Sale
                 proposeInfo={proposeInfo}
                 setProposeInfo={setProposeInfo}
                 project={project}

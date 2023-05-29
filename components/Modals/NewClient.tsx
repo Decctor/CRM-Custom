@@ -75,7 +75,6 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
           cidade: "",
         });
       } catch (error) {
-        console.log("ERROR", error);
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
           toast.error(errorMsg);
@@ -89,7 +88,7 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
       }
     },
   });
-  console.log(clientInfo);
+
   return (
     <div
       id="defaultModal"

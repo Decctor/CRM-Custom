@@ -155,10 +155,9 @@ export function useProject(
   return useQuery({
     queryKey: ["projects", projectId],
     queryFn: async () => {
-      console.log("IDp", projectId);
       try {
         const { data } = await axios.get(`/api/projects?id=${projectId}`);
-        console.log("DATA", data.data);
+
         return data.data;
       } catch (error) {
         console.log("ERRO", error);

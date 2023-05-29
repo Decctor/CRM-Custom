@@ -66,6 +66,7 @@ const kitSchema = z.object({
         fabricante: z.string(),
         modelo: z.string(),
         qtde: z.number(),
+        potencia: z.number(),
       })
     )
     .min(1, "Por favor, adicione ao menos um módulo."),

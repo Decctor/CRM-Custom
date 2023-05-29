@@ -60,16 +60,16 @@ function ActivityBlock({ event, projectId }: ActivityBlockProps) {
             padding="0.25rem"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <BsFillCalendarCheckFill
-            style={{ fontSize: "20px", color: "rgb(34,197,94)" }}
-          />
-          <p>
-            {event.dataConclusao
-              ? dayjs(event.dataConclusao).format("DD/MM/YYYY hh:mm")
-              : null}
-          </p>{" "}
-        </div>
+        {event.dataConclusao ? (
+          <div className="flex items-center gap-2">
+            <BsFillCalendarCheckFill
+              style={{ fontSize: "20px", color: "rgb(34,197,94)" }}
+            />
+            <p>{dayjs(event.dataConclusao).format("DD/MM/YYYY hh:mm")}</p>{" "}
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">

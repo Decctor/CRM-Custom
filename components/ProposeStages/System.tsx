@@ -95,7 +95,8 @@ function System({
     setProposeInfo((prev) => ({
       ...prev,
       kit: {
-        kitId: kit._id,
+        kitId: kit._id ? kit._id : "",
+        nome: kit.nome,
         topologia: topology,
         modulos: modules,
         inversores: inverters,
@@ -136,8 +137,9 @@ function System({
         {kitsLoading ? <LoadingComponent /> : null}
         {kitsSuccess ? (
           kits.length > 0 ? (
-            kits.map((kit) => (
+            kits.map((kit, index) => (
               <ProposeKit
+                key={index}
                 kit={kit}
                 handleSelect={(value) => selectKit(value)}
               />

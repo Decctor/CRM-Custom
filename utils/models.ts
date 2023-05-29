@@ -29,6 +29,7 @@ export type ModuleType = {
   fabricante: string;
   modelo: string;
   qtde: number;
+  potencia: number;
 };
 type StructureComponent = {
   insumo: string;
@@ -37,11 +38,11 @@ type StructureComponent = {
   medida: string;
 };
 export interface IKit {
-  _id?: ObjectId;
+  _id?: string;
   nome: string;
   categoria: "ON-GRID" | "OFF-GRID" | "BOMBA SOLAR";
   topologia: "INVERSOR" | "MICRO-INVERSOR";
-  preco: Number;
+  preco: number;
   ativo: boolean;
   fornecedor: string;
   estruturasCompativeis: string[];
@@ -230,7 +231,39 @@ export interface IProposeInfo {
     fase: (typeof phases)[number]["value"] | string;
     fatorSimultaneidade: number;
     tipoEstrutura: (typeof structureTypes)[number]["label"] | string;
+    distancia: number;
   };
+  kit?: {
+    kitId: string;
+    nome: string;
+    topologia: string;
+    modulos: ModuleType[];
+    inversores: InverterType[];
+    preco: number;
+  };
+  precificacao?: {
+    instalacao: {
+      custo: number;
+      vendaProposto: number;
+      vendaFinal: number;
+    };
+    maoDeObra: {
+      custo: number;
+      vendaProposto: number;
+      vendaFinal: number;
+    };
+    projeto: {
+      custo: number;
+      vendaProposto: number;
+      vendaFinal: number;
+    };
+    venda: {
+      custo: number;
+      vendaProposto: number;
+      vendaFinal: number;
+    };
+  };
+  valorProposta?: number;
 }
 export type ProjectActivity = {
   _id?: string;

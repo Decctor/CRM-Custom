@@ -3,16 +3,53 @@ import {
   proposeVoltageOptions,
   structureTypes,
 } from "@/utils/constants";
-import { IProposeInfo } from "@/utils/models";
+import { IProject, IProposeInfo } from "@/utils/models";
+import { useQuery } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
 import React, { SetStateAction, useState } from "react";
+import { toast } from "react-hot-toast";
 
 type SizingProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
+  project: IProject;
   moveToNextStage: React.Dispatch<React.SetStateAction<number>>;
 };
-function Sizing({ proposeInfo, setProposeInfo, moveToNextStage }: SizingProps) {
+function Sizing({
+  proposeInfo,
+  setProposeInfo,
+  project,
+  moveToNextStage,
+}: SizingProps) {
   const [validationMsg, setValidationMsg] = useState({ text: "", color: "" });
+
+  const { data } = useQuery({
+    queryKey: ["distance", proposeInfo.projeto.id],
+    queryFn: async (): Promise<number> => {
+      try {
+        const { data } = await axios.get(
+          `/api/utils/distance?destination=${`${project.cliente?.cidade}, ${project.cliente?.uf}, BRASIL`}&origin=${"ITUIUTABA, MG, BRASIL"}`
+        );
+        setProposeInfo((prev) => ({
+          ...prev,
+          premissas: { ...prev.premissas, distancia: data.data },
+        }));
+        return data.data;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+        }
+        return 0;
+      }
+    },
+    enabled: !!project.cliente,
+  });
+
   function handleProceed() {
     if (proposeInfo.premissas.consumoEnergiaMensal <= 0) {
       setValidationMsg({

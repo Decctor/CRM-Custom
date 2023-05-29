@@ -14,7 +14,7 @@ export const Sidebar = () => {
   const { data: session } = useSession();
   const [sidebarExtended, setSidebarExtended] = useState(false);
   const { pathname, push } = useRouter();
-  console.log(session);
+
   if (pathname.includes("/auth/signin")) return null;
   return (
     <AnimatePresence>
