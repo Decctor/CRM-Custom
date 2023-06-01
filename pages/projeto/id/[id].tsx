@@ -172,7 +172,7 @@ function Projeto() {
           </div>
           <div className="flex w-full flex-col gap-6 lg:flex-row">
             <div className="w-full lg:w-[40%]">
-              <DetailsBlock info={project} session={session} />
+              <DetailsBlock info={project} session={session} id={query._id} />
             </div>
             <div className="w-full lg:w-[60%]">
               <ProjectHistoryBlock projectId={project._id} session={session} />

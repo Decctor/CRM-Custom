@@ -212,7 +212,7 @@ const editClients: NextApiHandler<PutResponse> = async (req, res) => {
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("clients");
   const changes = editClientSchema.parse(req.body.changes);
-  console.log(changes);
+
   if (typeof id === "string") {
     const data = await collection.findOneAndUpdate(
       {

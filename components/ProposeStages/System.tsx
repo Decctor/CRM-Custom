@@ -83,7 +83,6 @@ function System({
       }
     },
     onError(err) {
-      console.log("ERRO ONERROR", err);
       return err;
     },
   });

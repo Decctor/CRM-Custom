@@ -1,5 +1,46 @@
 import { Funnel } from "./models";
-
+export const fileTypes = {
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+    title: "WORD",
+    extension: ".docx",
+  },
+  "image/png": {
+    title: "IMAGEM (.PNG)",
+    extension: ".png",
+  },
+  "image/jpeg": {
+    title: "IMAGEM(.JPEG)",
+    extension: ".jpeg",
+  },
+  "image/tiff": {
+    title: "IMAGEM(.TIFF)",
+    extension: ".tiff",
+  },
+  "application/pdf": {
+    title: "PDF",
+    extension: ".pdf",
+  },
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+    title: "EXCEL",
+    extension: ".xlsx",
+  },
+  "text/xml": {
+    title: "XML",
+    extension: ".xml",
+  },
+  "video/mp4": {
+    title: "MP4",
+    extension: ".mp4",
+  },
+  "application/vnd.sealed.tiff": {
+    title: "IMAGEM(.TIFF)",
+    extension: ".tiff",
+  },
+  "image/vnd.sealedmedia.softseal.jpg": {
+    title: "IMAGEM(.JPG)",
+    extension: ".jpg",
+  },
+};
 export const funnels: Funnel[] = [
   {
     id: 1,
@@ -23,6 +64,60 @@ export const funnels: Funnel[] = [
       { id: 2, nome: "Para Qualificar" },
       { id: 3, nome: "Criação de Proposta" },
     ],
+  },
+];
+export const creditors = [
+  {
+    label: "BANCO DO BRASIL",
+    value: "BANCO DO BRASIL",
+  },
+  {
+    label: "BRADESCO",
+    value: "BRADESCO",
+  },
+  {
+    label: "BV FINANCEIRA",
+    value: "BV FINANCEIRA",
+  },
+  {
+    label: "CAIXA",
+    value: "CAIXA",
+  },
+  {
+    label: "COOPACREDI",
+    value: "COOPACREDI",
+  },
+  {
+    label: "CREDICAMPINA",
+    value: "CREDICAMPINA",
+  },
+  {
+    label: "CREDIPONTAL",
+    value: "CREDIPONTAL",
+  },
+  {
+    label: "SANTANDER",
+    value: "SANTANDER",
+  },
+  {
+    label: "SOL FÁCIL",
+    value: "SOL FÁCIL",
+  },
+  {
+    label: "SICRED",
+    value: "SICRED",
+  },
+  {
+    label: "SICOOB ARACOOP",
+    value: "SICOOB ARACOOP",
+  },
+  {
+    label: "SICOOB",
+    value: "SICOOB",
+  },
+  {
+    label: "NÃO DEFINIDO",
+    value: "NÃO DEFINIDO",
   },
 ];
 export const customersAcquisitionChannels = [
@@ -211,3 +306,16 @@ export const proposeVoltageOptions = [
   { label: "220/380V", value: "220/380V" },
   { label: "277/480V", value: "277/480V" },
 ] as const;
+export const firebaseServiceAccount = {
+  type: "service_account",
+  project_id: "sistemaampere",
+  private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+  private_key: process.env.FIREBASE_PRIVATE_KEY,
+  client_email: process.env.FIREBASE_CLIENT_EMAIL,
+  client_id: process.env.FIREBASE_CLIENT_ID,
+  auth_uri: "https://accounts.google.com/o/oauth2/auth",
+  token_uri: "https://oauth2.googleapis.com/token",
+  auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+  client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
+  universe_domain: "googleapis.com",
+};

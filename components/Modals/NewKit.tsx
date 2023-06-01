@@ -45,7 +45,7 @@ interface IKitInfo {
   fornecedor: string | null;
   estruturasCompativeis: string[] | [];
   incluiEstrutura: boolean;
-  incluiTranformador: boolean;
+  incluiTransformador: boolean;
   inversores: InverterInfo[] | [];
   modulos: ModuleInfo[] | [];
 }
@@ -60,7 +60,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     fornecedor: null,
     estruturasCompativeis: [],
     incluiEstrutura: false,
-    incluiTranformador: false,
+    incluiTransformador: false,
     inversores: [],
     modulos: [],
   });
@@ -85,7 +85,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
           fornecedor: null,
           estruturasCompativeis: [],
           incluiEstrutura: false,
-          incluiTranformador: false,
+          incluiTransformador: false,
           inversores: [],
           modulos: [],
         });
@@ -351,13 +351,13 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                 </div>
                 <div className="w-1/2">
                   <CheckboxInput
-                    checked={kitInfo.incluiTranformador}
+                    checked={kitInfo.incluiTransformador}
                     labelTrue="INCLUSO TRANSFORMADOR"
                     labelFalse="NÃO INCLUSO TRANSFORMADOR"
                     handleChange={(value) =>
                       setKitInfo((prev) => ({
                         ...prev,
-                        incluiTranformador: value,
+                        incluiTransformador: value,
                       }))
                     }
                   />

@@ -37,9 +37,15 @@ function Kits() {
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
           <div className="flex flex-col items-center justify-between border-b border-[#fead61] pb-2 xl:flex-row">
-            <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
-              KITS
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
+                KITS
+              </h1>
+              <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
+                ({kits.length})
+              </h1>
+            </div>
+
             {session?.user.permissoes.kits.editar ? (
               <button
                 onClick={() => setNewKitModalIsOpen(true)}

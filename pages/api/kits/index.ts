@@ -46,7 +46,7 @@ const kitSchema = z.object({
   incluiEstrutura: z.boolean({
     required_error: "Preencha sobre a inclusão de estrutura no kit.",
   }),
-  incluiTranformador: z.boolean({
+  incluiTransformador: z.boolean({
     required_error: "Preencha sobre a inclusão de transformador no kit.",
   }),
   inversores: z
@@ -107,6 +107,11 @@ const getKits: NextApiHandler<GetResponse> = async (req, res) => {
         {
           $match: {
             ativo: true,
+          },
+        },
+        {
+          $sort: {
+            preco: -1,
           },
         },
       ])

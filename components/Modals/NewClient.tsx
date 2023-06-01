@@ -249,7 +249,6 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
                     },
                   ]}
                   onChange={(selectedItem) => {
-                    console.log(selectedItem);
                     if (
                       selectedItem.value == "MG" ||
                       selectedItem.value == "GO"

@@ -3,6 +3,7 @@ type NumberInputProps = {
   width?: string;
   label: string;
   value: number | null;
+  editable?: boolean;
   placeholder: string;
   handleChange: (value: number) => void;
 };
@@ -10,6 +11,7 @@ function NumberInput({
   width,
   label,
   value,
+  editable = true,
   placeholder,
   handleChange,
 }: NumberInputProps) {
@@ -25,6 +27,7 @@ function NumberInput({
         {label}
       </label>
       <input
+        readOnly={!editable}
         value={value ? value.toString() : undefined}
         onChange={(e) => handleChange(Number(e.target.value))}
         id={inputIdentifier}

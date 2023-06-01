@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SelectInput from "../Inputs/SelectInput";
 import TextInput from "../Inputs/TextInput";
 import DateInput from "../Inputs/DateInput";
@@ -8,12 +8,19 @@ import { AiOutlineCheck } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { customersAcquisitionChannels } from "@/utils/constants";
+import { creditors, customersAcquisitionChannels } from "@/utils/constants";
+import NumberInput from "../Inputs/NumberInput";
+import SingleFileInput from "../Inputs/SingleFileInput";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/services/firebase";
+import { FirebaseError } from "firebase/app";
 type DetailsBlockType = {
   info: IProject;
   session: ISession | null;
+  id: string | string[] | undefined;
 };
-function DetailsBlock({ info, session }: DetailsBlockType) {
+
+function DetailsBlock({ info, session, id }: DetailsBlockType) {
   const [infoHolder, setInfoHolder] = useState<IProject | undefined>(info);
   const queryClient = useQueryClient();
 
@@ -27,8 +34,7 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
             changes: changes,
           }
         );
-
-        queryClient.invalidateQueries({ queryKey: ["projects", info._id] });
+        queryClient.invalidateQueries({ queryKey: ["projects", id] });
         if (data.message) toast.success(data.message);
         return "OK";
       } catch (error) {
@@ -55,13 +61,11 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
             changes: changes,
           }
         );
-        console.log(info._id);
-        console.log("MUTATION", data);
+
         queryClient.invalidateQueries({ queryKey: ["projects", info._id] });
         if (data.message) toast.success(data.message);
         return "OK";
       } catch (error) {
-        console.log("ERROR", error);
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
           toast.error(errorMsg);
@@ -75,6 +79,47 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
       }
     },
   });
+  async function handleAttachment(fileKey: string, file: File) {
+    console.log("FUI CHAMADO", fileKey);
+    try {
+      let storageName = `crm/projetos/${infoHolder?.nome}/${fileKey}-${infoHolder?._id}`;
+      const fileRef = ref(storage, storageName);
+      const res = await uploadBytes(fileRef, file).catch((err) => {
+        if (err instanceof FirebaseError)
+          switch (err.code) {
+            case "storage/unauthorized":
+              throw "Usuário não autorizado para upload de arquivos.";
+            case "storage/canceled":
+              throw "O upload de arquivos foi cancelado pelo usuário.";
+
+            case "storage/retry-limit-exceeded":
+              throw "Tempo de envio de arquivo excedido, tente novamente.";
+
+            case "storage/invalid-checksum":
+              throw "Ocorreu um erro na checagem do arquivo enviado, tente novamente.";
+
+            case "storage/unknown":
+              throw "Erro de origem desconhecida no upload de arquivos.";
+          }
+      });
+
+      const url = await getDownloadURL(ref(storage, res.metadata.fullPath));
+      updateData("PROJETO", "anexos", {
+        [fileKey]: url,
+      });
+    } catch (error) {
+      // A full list of error codes is available at
+      // https://firebase.google.com/docs/storage/web/handle-errors
+      if (typeof error == "string") {
+        toast.error(error);
+      } else {
+        toast.error(
+          "Houve um erro no envio dos arquivos. Por favor, tente novamente."
+        );
+      }
+    }
+  }
+
   function updateData(
     toUpdate: "CLIENTE" | "PROJETO",
     field: string,
@@ -83,6 +128,7 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
     let obj = {
       [field]: value,
     };
+    console.log("OBJECTO", obj);
     if (toUpdate == "CLIENTE") {
       updateClient(obj);
     }
@@ -90,6 +136,7 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
       updateProject(obj);
     }
   }
+
   return (
     <div className="flex w-full flex-col gap-6 lg:flex-row">
       <div className="flex w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">
@@ -461,7 +508,7 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
                       titularInstalacao: value,
                     }));
                 }}
-                placeholder="Preencha aqui o profissão do cliente."
+                placeholder="Preencha aqui o títular da instalação do cliente."
                 width="100%"
               />
             </div>
@@ -481,6 +528,57 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
                   fontSize: "18px",
                   color:
                     infoHolder?.titularInstalacao != info.titularInstalacao
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <div className="flex w-full gap-2">
+            <div className="grow">
+              <TextInput
+                label="NÚMERO DE INSTALAÇÃO DA CONCESSIONÁRIA"
+                value={
+                  infoHolder?.cliente &&
+                  infoHolder?.numeroInstalacaoConcessionaria
+                    ? infoHolder?.numeroInstalacaoConcessionaria
+                    : ""
+                }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      numeroInstalacaoConcessionaria: value,
+                    }));
+                }}
+                placeholder="Preencha aqui o número de instalação do cliente com a consessionária."
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={
+                infoHolder?.numeroInstalacaoConcessionaria ==
+                info.numeroInstalacaoConcessionaria
+              }
+              onClick={() =>
+                updateData(
+                  "PROJETO",
+                  "numeroInstalacaoConcessionaria",
+                  infoHolder?.numeroInstalacaoConcessionaria
+                )
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.numeroInstalacaoConcessionaria !=
+                    info.numeroInstalacaoConcessionaria
                       ? "rgb(34,197,94)"
                       : "rgb(156,163,175)",
                 }}
@@ -661,6 +759,183 @@ function DetailsBlock({ info, session }: DetailsBlockType) {
                 }}
               />
             </button>
+          </div>
+          <h1 className="text-center text-sm font-medium text-[#fead61]">
+            OUTROS
+          </h1>
+          <div className="flex w-full gap-2">
+            <div className="grow">
+              <SelectInput
+                label="CREDOR"
+                value={infoHolder?.credor}
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                options={creditors.map((item, index) => ({
+                  ...item,
+                  id: index + 1,
+                }))}
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      credor: value,
+                    }));
+                }}
+                onReset={() => {
+                  if (infoHolder?.cliente)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      credor: null,
+                    }));
+                }}
+                selectedItemLabel="NÃO DEFINIDO"
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={infoHolder?.credor == info.credor}
+              onClick={() =>
+                updateData("PROJETO", "credor", infoHolder?.credor)
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.credor != info.credor
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <div className="flex w-full gap-2">
+            <div className="grow">
+              <NumberInput
+                label="PADRÃO DE ENTRADA"
+                placeholder="Preencha aqui o preço do padrão de entrada, se houver troca."
+                value={
+                  infoHolder?.servicosAdicionais?.padrao
+                    ? infoHolder?.servicosAdicionais?.padrao
+                    : null
+                }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      servicosAdicionais: {
+                        ...prev.servicosAdicionais,
+                        padrao: Number(value),
+                      },
+                    }));
+                }}
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={
+                infoHolder?.servicosAdicionais?.padrao ==
+                info.servicosAdicionais?.padrao
+              }
+              onClick={() =>
+                updateData("PROJETO", "servicosAdicionais", {
+                  padrao: infoHolder?.servicosAdicionais?.padrao,
+                })
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.servicosAdicionais?.padrao !=
+                    info.servicosAdicionais?.padrao
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <div className="flex w-full gap-2">
+            <div className="grow">
+              <NumberInput
+                label="SERVIÇOS EXTRA"
+                placeholder="Preencha aqui o preço de serviços extra, se houverem."
+                value={
+                  infoHolder?.servicosAdicionais?.outros
+                    ? infoHolder?.servicosAdicionais?.outros
+                    : null
+                }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      servicosAdicionais: {
+                        ...prev.servicosAdicionais,
+                        outros: Number(value),
+                      },
+                    }));
+                }}
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={
+                infoHolder?.servicosAdicionais?.outros ==
+                info.servicosAdicionais?.outros
+              }
+              onClick={() =>
+                updateData("PROJETO", "servicosAdicionais", {
+                  outros: infoHolder?.servicosAdicionais?.outros,
+                })
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.servicosAdicionais?.outros !=
+                    info.servicosAdicionais?.outros
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <h1 className="text-center text-sm font-medium text-[#fead61]">
+            ANEXOS
+          </h1>
+          <div className="w-full">
+            <SingleFileInput
+              label="DOCUMENTO COM FOTO"
+              fileKey={"documentoComFoto"}
+              handleAttachment={handleAttachment}
+              currentFileUrl={infoHolder?.anexos?.documentoComFoto}
+              info={info}
+              infoHolder={infoHolder}
+            />
+          </div>
+          <div className="w-full">
+            <SingleFileInput
+              label="IPTU"
+              fileKey={"iptu"}
+              handleAttachment={handleAttachment}
+              currentFileUrl={infoHolder?.anexos?.iptu}
+              info={info}
+              infoHolder={infoHolder}
+            />
           </div>
         </div>
       </div>

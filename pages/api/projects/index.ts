@@ -4,6 +4,8 @@ import {
   validateAuthentication,
   validateAuthorization,
 } from "@/utils/api";
+import { creditors } from "@/utils/constants";
+import { formatUpdateSetObject } from "@/utils/methods";
 import { IProject } from "@/utils/models";
 import createHttpError from "http-errors";
 import { ObjectId } from "mongodb";
@@ -117,7 +119,6 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         },
       ])
       .toArray();
-    console.log(project.length == 0);
     if (project.length == 0)
       throw new createHttpError.BadRequest("ID de projeto inválido.");
     const formattedObj = { ...project[0], cliente: project[0].cliente[0] };
@@ -214,11 +215,26 @@ const editProjectSchema = z.object({
     })
     .optional(),
   titularInstalacao: z.string().optional(),
+  numeroInstalacaoConcessionaria: z.string().optional(),
   tipoTitular: z
     .union([z.literal("PESSOA FISICA"), z.literal("PESSOA JURIDICA")])
     .optional(),
   tipoLigacao: z.union([z.literal("EXISTENTE"), z.literal("NOVA")]).optional(),
   tipoInstalacao: z.union([z.literal("URBANO"), z.literal("RURAL")]).optional(),
+  credor: z.string().optional(),
+  servicosAdicionais: z
+    .object({
+      padrao: z.number().optional().nullable(),
+      outros: z.number().optional().nullable(),
+    })
+    .optional(),
+  anexos: z
+    .object({
+      documentoComFoto: z.string().optional().nullable(),
+      iptu: z.string().optional().nullable(),
+      contaDeEnergia: z.string().optional().nullable(),
+    })
+    .optional(),
   descricao: z.string().optional(),
   funis: z
     .array(z.object({ id: z.number(), etapaId: z.number() }), {
@@ -254,15 +270,37 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
     );
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projects");
+  console.log("BODY", req.body);
   const changes = editProjectSchema.parse(req.body.changes);
+  // var setObj: any = {};
+  // console.log(changes);
+  // Object.entries(changes).forEach((entry) => {
+  //   if (typeof entry[1] == "object") {
+  //     console.log("PELO IF");
+  //     const tag = entry[0];
+  //     // Object.keys(entry[1]).forEach((x) => {
+  //     //   console.log(`${tag}.${x}`);
+  //     // });
+  //     Object.entries(entry[1]).forEach((insideEntry) => {
+  //       console.log({ [`${tag}.${insideEntry[0]}`]: insideEntry[1] });
+  //       setObj[`${tag}.${insideEntry[0]}`] = insideEntry[1];
+  //     });
+  //   } else {
+  //     console.log("PELO ELSE");
+  //     const tag = entry[0];
+  //     console.log(tag);
+  //   }
+  // });
   console.log(changes);
+  const setObj = formatUpdateSetObject(changes);
+  console.log("RECEIVED OBJ", setObj);
   if (typeof id === "string") {
     const data = await collection.findOneAndUpdate(
       {
         _id: new ObjectId(id),
       },
       {
-        $set: { ...changes },
+        $set: { ...setObj },
       },
       {
         returnNewDocument: true,

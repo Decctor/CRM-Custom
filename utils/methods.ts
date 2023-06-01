@@ -3,13 +3,52 @@ import {
   IClient,
   IKit,
   IProject,
+  IProposeInfo,
   IRepresentative,
   IResponsible,
   ISession,
+  ModuleType,
 } from "./models";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-
+import Modules from "../utils/pvmodules.json";
+import genFactors from "../utils/generationFactors.json";
+function getPeakPotByModules(modules: ModuleType[] | undefined) {
+  if (modules) {
+    var peakPotSum = 0;
+    for (let i = 0; i < modules.length; i++) {
+      const moduleInfo = Modules.find((mod) => mod.id == modules[i].id);
+      if (moduleInfo) {
+        peakPotSum = peakPotSum + modules[i].qtde * moduleInfo.potencia;
+      }
+    }
+    return peakPotSum / 1000;
+  } else {
+    return 0;
+  }
+}
+function getModulesQty(modules: ModuleType[] | undefined) {
+  if (modules) {
+    var totalModulesQty = 0;
+    for (let i = 0; i < modules.length; i++) {
+      totalModulesQty = totalModulesQty + modules[i].qtde;
+    }
+    return totalModulesQty;
+  } else {
+    return 0;
+  }
+}
+function getEstimatedGen(
+  peakPower: number,
+  city: string | undefined | null,
+  uf: string | undefined | null
+): number {
+  if (!city || !uf) return 127 * peakPower;
+  const cityFactors = genFactors[city as keyof typeof genFactors];
+  const genFactor = cityFactors.fatorGen;
+  if (!genFactor) return 127 * peakPower;
+  else return genFactor * peakPower;
+}
 export function formatToCPForCNPJ(value: string): string {
   const cnpjCpf = value.replace(/\D/g, "");
 
@@ -41,7 +80,79 @@ export function formatToPhone(value: string): string {
 export function formatDate(value: any) {
   return new Date(value).toISOString().slice(0, 10);
 }
-
+export function formatUpdateSetObject(changes: object) {
+  var setObj: any = {};
+  console.log(changes);
+  Object.entries(changes).forEach((entry) => {
+    if (typeof entry[1] == "object") {
+      console.log("PELO IF");
+      const tag = entry[0];
+      // Object.keys(entry[1]).forEach((x) => {
+      //   console.log(`${tag}.${x}`);
+      // });
+      Object.entries(entry[1]).forEach((insideEntry) => {
+        console.log({ [`${tag}.${insideEntry[0]}`]: insideEntry[1] });
+        setObj[`${tag}.${insideEntry[0]}`] = insideEntry[1];
+      });
+    } else {
+      const tag = entry[0];
+      const value = entry[1];
+      setObj[tag] = value;
+    }
+  });
+  return setObj;
+}
+export function getProposeObject(project: IProject, propose: IProposeInfo) {
+  const obj = {
+    title: propose.projeto.nome,
+    fontSize: 10,
+    textColor: "#333333",
+    data: {
+      idProposta: project._id,
+      nomeCliente: project.cliente?.nome,
+      cpfCnpjCliente: project.cliente?.cpfCnpj,
+      cidadeUfCliente: `${project.cliente?.cidade} - ${project.cliente?.uf}`,
+      enderecoCliente: `${project.cliente?.endereco}`,
+      nomeVendedor: project.responsavel.nome,
+      potPico: getPeakPotByModules(propose.kit?.modulos),
+      consumoMedio: propose.premissas.consumoEnergiaMensal,
+      gastoMensalAtual:
+        propose.premissas.consumoEnergiaMensal *
+        propose.premissas.tarifaEnergia,
+      gastoAnualAtual: `R$ ${(
+        propose.premissas.consumoEnergiaMensal *
+        propose.premissas.tarifaEnergia *
+        12
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      qtdeModulos: getModulesQty(propose.kit?.modulos),
+      geracaoEstimada: getEstimatedGen(
+        getPeakPotByModules(propose.kit?.modulos),
+        project.cliente?.cidade,
+        project.cliente?.uf
+      ),
+      precoFinal: `R$ ${propose.valorProposta?.toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      gasto25AnosAtual: `R$ ${(
+        propose.premissas.consumoEnergiaMensal *
+        propose.premissas.tarifaEnergia *
+        12 *
+        25
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      inversores: "Inversores",
+      qtdeInversores: "Quantidade de Inversores",
+      modulos: "Modulos",
+    },
+  };
+  return obj;
+}
 export function useKitQueryPipelines(
   type: "TODOS OS KITS" | "KITS POR PREMISSA",
   payload: any

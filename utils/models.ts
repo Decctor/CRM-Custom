@@ -1,5 +1,10 @@
 import { ObjectId } from "mongodb";
-import { phases, proposeVoltageOptions, structureTypes } from "./constants";
+import {
+  creditors,
+  phases,
+  proposeVoltageOptions,
+  structureTypes,
+} from "./constants";
 type Etiqueta = {
   id: number;
   nome: string;
@@ -47,7 +52,7 @@ export interface IKit {
   fornecedor: string;
   estruturasCompativeis: string[];
   incluiEstrutura: boolean;
-  incluiTranformador: boolean;
+  incluiTransformador: boolean;
   inversores: InverterType[];
   modulos: ModuleType[];
 }
@@ -180,9 +185,20 @@ export interface IProject {
   clienteId: string;
   cliente?: IClient; // ajustar pós criação da interface de Cliente
   titularInstalacao?: string;
+  numeroInstalacaoConcessionaria?: string;
   tipoTitular?: "PESSOA FISICA" | "PESSOA JURIDICA";
   tipoLigacao?: "EXISTENTE" | "NOVA";
   tipoInstalacao?: "URBANO" | "RURAL";
+  credor?: (typeof creditors)[number]["value"];
+  servicosAdicionais?: {
+    padrao?: number;
+    outros?: number;
+  };
+  anexos?: {
+    documentoComFoto?: string;
+    iptu?: string;
+    contaDeEnergia?: string;
+  };
   descricao?: string;
   etiquetasIds?: number[];
   funis?: { id: number; etapaId: number }[];

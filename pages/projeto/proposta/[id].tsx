@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import LoadingPage from "@/components/utils/LoadingPage";
 import { IProposeInfo, ISession } from "@/utils/models";
 import Sale from "@/components/ProposeStages/Sale";
+import Propose from "@/components/ProposeStages/Propose";
 function checkQueryEnableStatus(session: ISession | null, queryId: any) {
   if (session?.user && typeof queryId === "string") {
     return true;
@@ -336,6 +337,14 @@ function PropostaPage() {
                 setProposeInfo={setProposeInfo}
                 project={project}
                 moveToPreviousStage={() => setProposeStage((prev) => prev - 1)}
+                moveToNextStage={() => setProposeStage((prev) => prev + 1)}
+              />
+            ) : null}
+            {proposeStage == 4 ? (
+              <Propose
+                proposeInfo={proposeInfo}
+                setProposeInfo={setProposeInfo}
+                project={project}
                 moveToNextStage={() => setProposeStage((prev) => prev + 1)}
               />
             ) : null}
