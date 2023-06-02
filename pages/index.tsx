@@ -15,12 +15,18 @@ import toast from "react-hot-toast";
 import LoadingPage from "@/components/utils/LoadingPage";
 import { Funnel } from "../utils/models";
 import { funnels } from "@/utils/constants";
-import { useProjects, useResponsibles } from "@/utils/methods";
+import {
+  useProjects,
+  useRepresentatives,
+  useResponsibles,
+} from "@/utils/methods";
 import LoadingComponent from "@/components/utils/LoadingComponent";
 import { IProject, IResponsible } from "@/utils/models";
 import { Session } from "next-auth";
 import { IoIosCalendar } from "react-icons/io";
 import PeriodDropdownFilter from "@/components/Inputs/PeriodDropdownFilter";
+import { AiOutlinePlus } from "react-icons/ai";
+import NewProject from "@/components/Modals/NewProject";
 {
   // Exemplo de mutation com tratamento de erros
   /**
@@ -154,6 +160,8 @@ function getOptions(
 
 export default function Home() {
   const queryClient = useQueryClient();
+  const [newProjectModalIsOpen, setNewProjectModalIsOpen] =
+    useState<boolean>(false);
   const { data: session, status } = useSession({ required: true });
 
   const { data: responsibles } = useResponsibles();
@@ -296,13 +304,13 @@ export default function Home() {
             FUNIL
           </div>
           <div className="flex grow flex-col items-center justify-end  gap-2 xl:flex-row">
-            {/*<button
+            <button
               onClick={() => setNewProjectModalIsOpen(true)}
               className="flex h-[40px] min-w-[250px] items-center justify-center gap-2 rounded-md border bg-[#15599a] p-2 text-sm font-medium text-white shadow-sm duration-300 ease-in-out hover:scale-105"
             >
               <p>Novo Projeto</p>
               <AiOutlinePlus style={{ fontSize: "18px" }} />
-            </button> */}
+            </button>
             <PeriodDropdownFilter
               initialAfter={dateParam.after}
               initialBefore={dateParam.before}
@@ -395,9 +403,12 @@ export default function Home() {
           </DragDropContext>
         ) : null}
       </div>
-      {/* {newProjectModalIsOpen ? (
-        <NewClientModal closeModal={() => setNewProjectModalIsOpen(false)} />
-      ) : null} */}
+      {newProjectModalIsOpen ? (
+        <NewProject
+          responsibles={responsibles ? responsibles : []}
+          closeModal={() => setNewProjectModalIsOpen(false)}
+        />
+      ) : null}
     </div>
   );
 }

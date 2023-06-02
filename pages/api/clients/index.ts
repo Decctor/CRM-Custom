@@ -35,9 +35,10 @@ const clientSchema = z.object({
     required_error: "Por favor, preencha o telefone do cliente.",
   }),
   telefoneSecundario: z.string().optional(),
-  email: z
-    .string({ required_error: "Por favor, preencha o email do cliente." })
-    .email({ message: "Por favor, preencha um email válido." }),
+  email: z.string({
+    required_error: "Por favor, preencha o email do cliente.",
+  }),
+
   cep: z.string({ required_error: "Por favor, preencha o CEP do cliente." }),
   bairro: z.string({
     required_error: "Por favor, preencha o bairro do cliente.",
@@ -65,9 +66,11 @@ const createClient: NextApiHandler<PostResponse> = async (req, res) => {
     ...client,
     dataInsercao: new Date().toISOString(),
   });
-  res
-    .status(201)
-    .json({ data: client, message: "Cliente criado com sucesso." });
+
+  res.status(201).json({
+    data: { ...client, _id: dbRes.insertedId },
+    message: "Cliente criado com sucesso.",
+  });
 };
 
 type GetResponse = {
