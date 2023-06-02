@@ -48,6 +48,7 @@ function SingleFileInput({
     const metadata = await getMetadata(fileRef);
 
     const filePath = fileRef.fullPath;
+
     const extension = fileTypes[metadata.contentType]?.extension;
 
     try {
@@ -120,13 +121,14 @@ function SingleFileInput({
         {!!file || (!file && !currentFileUrl) ? (
           <button
             disabled={!file}
-            onClick={() => {
+            onClick={async () => {
               // updateData("PROJETO", "servicosAdicionais", {
               //   outros: infoHolder?.servicosAdicionais?.outros,
               // })
               console.log("UEPA");
               if (file) {
-                handleAttachment(fileKey, file);
+                await handleAttachment(fileKey, file);
+                setFile(null);
               }
             }}
             className="cursor-pointer pb-4 text-green-200"

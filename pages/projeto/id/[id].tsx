@@ -1,5 +1,5 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -7,8 +7,8 @@ import { toast } from "react-hot-toast";
 import { GoKebabVertical } from "react-icons/go";
 import { Sidebar } from "@/components/Sidebar";
 import LoadingComponent from "@/components/utils/LoadingComponent";
-import { IProject } from "@/utils/models";
-import { AiOutlineUser } from "react-icons/ai";
+import { IProject, IProposeInfo } from "@/utils/models";
+import { AiOutlineStar, AiOutlineUser } from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
 import { BsClipboardCheck, BsTelephoneFill } from "react-icons/bs";
 import { FaCity } from "react-icons/fa";
@@ -20,40 +20,84 @@ import TextInput from "@/components/Inputs/TextInput";
 import DateInput from "@/components/Inputs/DateInput";
 import dayjs from "dayjs";
 import SelectInput from "@/components/Inputs/SelectInput";
-import { formatDate } from "@/utils/methods";
+import {
+  checkQueryEnableStatus,
+  formatDate,
+  useProject,
+} from "@/utils/methods";
 import DetailsBlock from "@/components/ProjectBlocks/DetailsBlock";
 import { TbNotes } from "react-icons/tb";
 import ProjectHistoryBlock from "@/components/ProjectBlocks/ProjectHistoryBlock";
 import Link from "next/link";
+
 function Projeto() {
   const { data: session } = useSession({
     required: true,
   });
   const { query } = useRouter();
-  const [infoHolder, setInfoHolder] = useState<IProject | undefined>();
 
+  // const {
+  //   data: project,
+  //   isLoading: projectLoading,
+  //   isSuccess: projectSuccess,
+  //   isError: projectError,
+  // }: UseQueryResult<IProject, Error> = useQuery({
+  //   queryKey: ["projectPage"],
+  //   queryFn: async () => {
+  //     try {
+  //       const { data } = await axios.get(`/api/projects?id=${query.id}`);
+  //       console.log("FETCH", data);
+
+  //       return data.data;
+  //     } catch (error) {
+  //       toast.error(
+  //         "Erro ao buscar informações desse cliente. Por favor, tente novamente mais tarde."
+  //       );
+  //       return error;
+  //     }
+  //   },
+  //   enabled: !!session?.user,
+  // });
   const {
     data: project,
     isLoading: projectLoading,
     isSuccess: projectSuccess,
     isError: projectError,
-  }: UseQueryResult<IProject, Error> = useQuery({
-    queryKey: ["projects", query.id],
-    queryFn: async () => {
+  } = useProject(
+    typeof query.id === "string" ? query.id : "",
+    checkQueryEnableStatus(session, query.id)
+  );
+  const {
+    data: projectProposes,
+    isLoading: projectProposesLoading,
+    isSuccess: projectProposesSuccess,
+    isError: projectProposesError,
+  } = useQuery<IProposeInfo[]>({
+    queryKey: ["projectProposes", project?._id],
+    queryFn: async (): Promise<IProposeInfo[]> => {
       try {
-        const { data } = await axios.get(`/api/projects?id=${query.id}`);
-        console.log("FETCH", data);
-        setInfoHolder(data.data);
-        return data.data;
-      } catch (error) {
-        toast.error(
-          "Erro ao buscar informações desse cliente. Por favor, tente novamente mais tarde."
+        const { data } = await axios.get(
+          `/api/proposes?projectId=${project?._id}`
         );
-        return error;
+        console.log(data);
+        return data;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+          throw error;
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+          throw error;
+        }
+        throw error;
       }
     },
-    enabled: !!session?.user,
+    enabled: !!project,
   });
+  if (projectLoading) return <LoadingComponent />;
 
   if (projectError)
     return (
@@ -66,8 +110,6 @@ function Projeto() {
         </div>
       </div>
     );
-
-  if (projectLoading) return <LoadingComponent />;
 
   if (projectSuccess)
     return (
@@ -159,24 +201,73 @@ function Projeto() {
                 </Link>
               </div>
               <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
-                <div className="flex h-[50px] w-full justify-center">
-                  <h1>TESTE</h1>
+                <div className="flex h-[30px] min-h-[30px] w-full items-center rounded bg-black">
+                  <h1 className="w-1/4 text-center text-white">NOME</h1>
+                  <h1 className="w-1/4 text-center text-white">POTÊNCIA</h1>
+                  <h1 className="w-1/4 text-center text-white">VALOR</h1>
+                  <h1 className="w-1/4 text-center text-white">
+                    DATA INSERÇÃO
+                  </h1>
                 </div>
-                <div className="h-[50px] w-full"></div>
-                <div className="h-[50px] w-full">a</div>
-                <div className="h-[50px] w-full">a</div>
-                <div className="h-[50px] w-full">a</div>
-                <div className="h-[50px] w-full">a</div>
+                {projectProposesSuccess ? (
+                  projectProposes.length > 0 ? (
+                    projectProposes.map((propose, index) => (
+                      <div key={index} className="flex w-full items-center">
+                        <div className="flex w-1/4 items-center justify-center gap-2">
+                          {propose._id == project.propostaAtiva ? (
+                            <AiOutlineStar style={{ color: "#15599a" }} />
+                          ) : null}
+                          <h1 className="text-center">{propose.nome}</h1>
+                        </div>
+
+                        <h1 className="w-1/4 text-center">
+                          {propose.potenciaPico?.toLocaleString("pt-br", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}{" "}
+                          kWp
+                        </h1>
+                        <h1 className="w-1/4 text-center">
+                          R${" "}
+                          {propose.valorProposta?.toLocaleString("pt-br", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </h1>
+                        <h1 className="w-1/4 text-center">
+                          {propose.dataInsercao
+                            ? dayjs(propose.dataInsercao).format("DD/MM/YYYY")
+                            : null}
+                        </h1>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="flex grow items-center justify-center">
+                      Sem propostas vinculadas a esse projeto.
+                    </p>
+                  )
+                ) : null}
               </div>
             </div>
           </div>
           <div className="flex w-full flex-col gap-6 lg:flex-row">
-            <div className="w-full lg:w-[40%]">
-              <DetailsBlock info={project} session={session} id={query._id} />
-            </div>
-            <div className="w-full lg:w-[60%]">
-              <ProjectHistoryBlock projectId={project._id} session={session} />
-            </div>
+            {project._id ? (
+              <div className="w-full lg:w-[40%]">
+                <DetailsBlock
+                  info={project}
+                  session={session}
+                  projectId={project._id}
+                />
+              </div>
+            ) : null}
+            {project._id ? (
+              <div className="w-full lg:w-[60%]">
+                <ProjectHistoryBlock
+                  projectId={project._id}
+                  session={session}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

@@ -79,7 +79,7 @@ const getClients: NextApiHandler<GetResponse> = async (req, res) => {
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("clients");
   const { id, representative } = req.query;
-  console.log(req.query);
+
   if (id && typeof id === "string") {
     const client = await collection
       .aggregate([

@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import {
   creditors,
   phases,
+  proposeTemplates,
   proposeVoltageOptions,
   structureTypes,
 } from "./constants";
@@ -184,6 +185,8 @@ export interface IProject {
   };
   clienteId: string;
   cliente?: IClient; // ajustar pós criação da interface de Cliente
+  propostas?: IProposeInfo[];
+  propostaAtiva?: string;
   titularInstalacao?: string;
   numeroInstalacaoConcessionaria?: string;
   tipoTitular?: "PESSOA FISICA" | "PESSOA JURIDICA";
@@ -235,6 +238,9 @@ export interface IClient {
 }
 
 export interface IProposeInfo {
+  _id?: string;
+  nome?: string;
+  template?: (typeof proposeTemplates)[number]["value"];
   projeto: {
     nome?: string;
     id?: string;
@@ -279,7 +285,9 @@ export interface IProposeInfo {
       vendaFinal: number;
     };
   };
+  potenciaPico?: number;
   valorProposta?: number;
+  dataInsercao?: string;
 }
 export type ProjectActivity = {
   _id?: string;

@@ -306,6 +306,10 @@ export const proposeVoltageOptions = [
   { label: "220/380V", value: "220/380V" },
   { label: "277/480V", value: "277/480V" },
 ] as const;
+
+export const proposeTemplates = [
+  { label: "TEMPLATE SIMPLES", value: "TEMPLATE SIMPLES" },
+] as const;
 export const firebaseServiceAccount = {
   type: "service_account",
   project_id: "sistemaampere",

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import SelectInput from "../Inputs/SelectInput";
 import TextInput from "../Inputs/TextInput";
 import DateInput from "../Inputs/DateInput";
-import { formatDate } from "@/utils/methods";
+import {
+  checkQueryEnableStatus,
+  formatDate,
+  useProject,
+} from "@/utils/methods";
 import { IProject, ISession } from "@/utils/models";
 import { AiOutlineCheck } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,19 +15,25 @@ import { toast } from "react-hot-toast";
 import { creditors, customersAcquisitionChannels } from "@/utils/constants";
 import NumberInput from "../Inputs/NumberInput";
 import SingleFileInput from "../Inputs/SingleFileInput";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  UploadResult,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import { storage } from "@/services/firebase";
 import { FirebaseError } from "firebase/app";
 type DetailsBlockType = {
   info: IProject;
   session: ISession | null;
-  id: string | string[] | undefined;
+  projectId: string;
 };
 
-function DetailsBlock({ info, session, id }: DetailsBlockType) {
-  const [infoHolder, setInfoHolder] = useState<IProject | undefined>(info);
+function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
+  const [infoHolder, setInfoHolder] = useState<IProject>(info);
   const queryClient = useQueryClient();
 
+  // Update/mutate functions
   const { mutate: updateClient } = useMutation({
     mutationKey: ["editClient"],
     mutationFn: async (changes: { [key: string]: any }) => {
@@ -34,9 +44,7 @@ function DetailsBlock({ info, session, id }: DetailsBlockType) {
             changes: changes,
           }
         );
-        queryClient.invalidateQueries({ queryKey: ["projects", id] });
-        if (data.message) toast.success(data.message);
-        return "OK";
+        return data;
       } catch (error) {
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
@@ -49,6 +57,11 @@ function DetailsBlock({ info, session, id }: DetailsBlockType) {
           return;
         }
       }
+    },
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries({ queryKey: ["project", projectId] });
+      // await queryClient.refetchQueries({ queryKey: ["project"] });
+      if (data.message) toast.success(data.message);
     },
   });
   const { mutate: updateProject } = useMutation({
@@ -61,10 +74,9 @@ function DetailsBlock({ info, session, id }: DetailsBlockType) {
             changes: changes,
           }
         );
-
-        queryClient.invalidateQueries({ queryKey: ["projects", info._id] });
-        if (data.message) toast.success(data.message);
-        return "OK";
+        // queryClient.invalidateQueries({ queryKey: ["project"] });
+        // if (data.message) toast.success(data.message);
+        return data;
       } catch (error) {
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
@@ -78,9 +90,14 @@ function DetailsBlock({ info, session, id }: DetailsBlockType) {
         }
       }
     },
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries({ queryKey: ["project", projectId] });
+      // await queryClient.refetchQueries({ queryKey: ["project"] });
+      if (data.message) toast.success(data.message);
+    },
   });
+
   async function handleAttachment(fileKey: string, file: File) {
-    console.log("FUI CHAMADO", fileKey);
     try {
       let storageName = `crm/projetos/${infoHolder?.nome}/${fileKey}-${infoHolder?._id}`;
       const fileRef = ref(storage, storageName);
@@ -102,11 +119,27 @@ function DetailsBlock({ info, session, id }: DetailsBlockType) {
               throw "Erro de origem desconhecida no upload de arquivos.";
           }
       });
+      const uploadResult = res as UploadResult;
+      if ("metadata" in uploadResult) {
+        const url = await getDownloadURL(
+          ref(storage, uploadResult.metadata.fullPath)
+        );
+        if (infoHolder) {
+          setInfoHolder((prev) => ({
+            ...prev,
+            anexos: {
+              ...prev.anexos,
+              [fileKey]: url,
+            },
+          }));
+        }
 
-      const url = await getDownloadURL(ref(storage, res.metadata.fullPath));
-      updateData("PROJETO", "anexos", {
-        [fileKey]: url,
-      });
+        updateData("PROJETO", "anexos", {
+          [fileKey]: url,
+        });
+      } else {
+        throw "Houve um erro no envio dos arquivos. Por favor, tente novamente.";
+      }
     } catch (error) {
       // A full list of error codes is available at
       // https://firebase.google.com/docs/storage/web/handle-errors
@@ -128,7 +161,7 @@ function DetailsBlock({ info, session, id }: DetailsBlockType) {
     let obj = {
       [field]: value,
     };
-    console.log("OBJECTO", obj);
+
     if (toUpdate == "CLIENTE") {
       updateClient(obj);
     }
@@ -923,6 +956,16 @@ function DetailsBlock({ info, session, id }: DetailsBlockType) {
               fileKey={"documentoComFoto"}
               handleAttachment={handleAttachment}
               currentFileUrl={infoHolder?.anexos?.documentoComFoto}
+              info={info}
+              infoHolder={infoHolder}
+            />
+          </div>
+          <div className="w-full">
+            <SingleFileInput
+              label="CONTA DE ENERGIA"
+              fileKey={"contaDeEnergia"}
+              handleAttachment={handleAttachment}
+              currentFileUrl={infoHolder?.anexos?.contaDeEnergia}
               info={info}
               infoHolder={infoHolder}
             />

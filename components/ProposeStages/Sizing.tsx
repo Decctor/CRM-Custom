@@ -48,6 +48,7 @@ function Sizing({
       }
     },
     enabled: !!project.cliente,
+    refetchOnWindowFocus: false,
   });
 
   function handleProceed() {

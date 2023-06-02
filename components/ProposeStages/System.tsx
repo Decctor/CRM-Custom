@@ -6,7 +6,7 @@ import axios, { AxiosError } from "axios";
 import LoadingComponent from "../utils/LoadingComponent";
 import Kit from "../Cards/Kit";
 import { ImSad } from "react-icons/im";
-import { useKitQueryPipelines } from "@/utils/methods";
+import { getPeakPotByModules, useKitQueryPipelines } from "@/utils/methods";
 import { toast } from "react-hot-toast";
 import ProposeKit from "../Cards/ProposeKit";
 
@@ -101,6 +101,7 @@ function System({
         inversores: inverters,
         preco: price,
       },
+      potenciaPico: getPeakPotByModules(modules),
     }));
     moveToNextStage(null);
   }
@@ -134,6 +135,18 @@ function System({
 
       <div className="flex w-full grow flex-wrap justify-center gap-2">
         {kitsLoading ? <LoadingComponent /> : null}
+        {kitsError ? (
+          <div className="flex flex-col items-center justify-center gap-4">
+            <ImSad style={{ fontSize: "50px", color: "#fead61" }} />
+            <p className="w-full text-center text-sm italic text-gray-600 lg:w-[50%]">
+              Houve um erro na busca dos kits. Por favor, tente
+              <strong className="text-[#15599a]">
+                "Mostrar todos os kits"
+              </strong>
+              . Se o erro persistir, tente recarregar a página.
+            </p>
+          </div>
+        ) : null}
         {kitsSuccess ? (
           kits.length > 0 ? (
             kits.map((kit, index) => (

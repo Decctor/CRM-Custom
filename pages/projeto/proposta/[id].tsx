@@ -52,6 +52,7 @@ function PropostaPage() {
       distancia: 0,
     },
   });
+
   useEffect(() => {
     setProposeInfo((prev) => ({
       ...prev,
@@ -132,7 +133,7 @@ function PropostaPage() {
               </div>
               <div
                 className={`flex items-center justify-center gap-1 ${
-                  proposeStage == 4 ? "text-[#15599a]" : "text-gray-600"
+                  proposeStage == 5 ? "text-[#15599a]" : "text-gray-600"
                 } `}
               >
                 <MdAttachMoney style={{ fontSize: "23px" }} />
@@ -140,7 +141,7 @@ function PropostaPage() {
               </div>
               <div
                 className={`flex items-center justify-center gap-1 ${
-                  proposeStage == 5 ? "text-[#15599a]" : "text-gray-600"
+                  proposeStage == 4 ? "text-[#15599a]" : "text-gray-600"
                 } `}
               >
                 <ImFileEmpty style={{ fontSize: "23px" }} />

@@ -13,7 +13,7 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import Modules from "../utils/pvmodules.json";
 import genFactors from "../utils/generationFactors.json";
-function getPeakPotByModules(modules: ModuleType[] | undefined) {
+export function getPeakPotByModules(modules: ModuleType[] | undefined) {
   if (modules) {
     var peakPotSum = 0;
     for (let i = 0; i < modules.length; i++) {
@@ -49,6 +49,7 @@ function getEstimatedGen(
   if (!genFactor) return 127 * peakPower;
   else return genFactor * peakPower;
 }
+
 export function formatToCPForCNPJ(value: string): string {
   const cnpjCpf = value.replace(/\D/g, "");
 
@@ -102,6 +103,7 @@ export function formatUpdateSetObject(changes: object) {
   });
   return setObj;
 }
+
 export function getProposeObject(project: IProject, propose: IProposeInfo) {
   const obj = {
     title: propose.projeto.nome,
@@ -114,7 +116,7 @@ export function getProposeObject(project: IProject, propose: IProposeInfo) {
       cidadeUfCliente: `${project.cliente?.cidade} - ${project.cliente?.uf}`,
       enderecoCliente: `${project.cliente?.endereco}`,
       nomeVendedor: project.responsavel.nome,
-      potPico: getPeakPotByModules(propose.kit?.modulos),
+      potPico: propose.potenciaPico,
       consumoMedio: propose.premissas.consumoEnergiaMensal,
       gastoMensalAtual:
         propose.premissas.consumoEnergiaMensal *
@@ -132,7 +134,10 @@ export function getProposeObject(project: IProject, propose: IProposeInfo) {
         getPeakPotByModules(propose.kit?.modulos),
         project.cliente?.cidade,
         project.cliente?.uf
-      ),
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
       precoFinal: `R$ ${propose.valorProposta?.toLocaleString("pt-br", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
@@ -231,7 +236,13 @@ export function useKitQueryPipelines(
       ];
   }
 }
-
+export function checkQueryEnableStatus(session: ISession | null, queryId: any) {
+  if (session?.user && typeof queryId === "string") {
+    return true;
+  } else {
+    return false;
+  }
+}
 // Hooks
 export function useRepresentatives(): UseQueryResult<IRepresentative[], Error> {
   return useQuery({
@@ -263,15 +274,14 @@ export function useProject(
   projectId: string,
   enabled: boolean
 ): UseQueryResult<IProject, Error> {
-  return useQuery({
-    queryKey: ["projects", projectId],
+  return useQuery<IProject, Error>({
+    queryKey: ["project", projectId],
     queryFn: async () => {
       try {
         const { data } = await axios.get(`/api/projects?id=${projectId}`);
 
         return data.data;
       } catch (error) {
-        console.log("ERRO", error);
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
           toast.error(errorMsg);
@@ -280,13 +290,12 @@ export function useProject(
         if (error instanceof Error) {
           let errorMsg = error.message;
           toast.error(errorMsg);
+          throw error;
         }
-        return;
+        throw error;
       }
     },
-    enabled: enabled,
-    refetchOnWindowFocus: false,
-    retry: 2,
+    enabled: enabled && !!projectId,
   });
 }
 export function useResponsibles(): UseQueryResult<IResponsible[], Error> {

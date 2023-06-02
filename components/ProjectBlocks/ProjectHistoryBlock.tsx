@@ -100,7 +100,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
       }
     },
   });
-  console.log(history);
+
   return (
     <div className="flex w-full flex-col gap-2 rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">
       <div className="flex h-[40px] items-center justify-between border-b border-gray-200 pb-2">

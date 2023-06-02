@@ -4,6 +4,7 @@ import FullScreenWrapper from "@/components/Wrappers/FullScreenWrapper";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Head from "next/head";
 
 export default function App({
   Component,
@@ -13,6 +14,9 @@ export default function App({
 
   return (
     <SessionProvider session={session}>
+      <Head>
+        <title>CRM Ampère</title>
+      </Head>
       <QueryClientProvider client={queryClient}>
         <FullScreenWrapper>
           <Component {...pageProps} />

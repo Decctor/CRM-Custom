@@ -73,7 +73,7 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
     .toArray();
 
   const identificador = lastInsertedIdentificator[0]
-    ? lastInsertedIdentificator[0].identificador
+    ? lastInsertedIdentificator[0].identificador + 1
     : 1;
 
   let dbRes = await collection.insertOne({
@@ -214,6 +214,7 @@ const editProjectSchema = z.object({
       required_error: "Por favor, especifique o ID do cliente.",
     })
     .optional(),
+  propostaAtiva: z.string().optional(),
   titularInstalacao: z.string().optional(),
   numeroInstalacaoConcessionaria: z.string().optional(),
   tipoTitular: z
@@ -270,7 +271,7 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
     );
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projects");
-  console.log("BODY", req.body);
+
   const changes = editProjectSchema.parse(req.body.changes);
   // var setObj: any = {};
   // console.log(changes);
@@ -291,9 +292,9 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
   //     console.log(tag);
   //   }
   // });
-  console.log(changes);
+
   const setObj = formatUpdateSetObject(changes);
-  console.log("RECEIVED OBJ", setObj);
+
   if (typeof id === "string") {
     const data = await collection.findOneAndUpdate(
       {
@@ -306,6 +307,7 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
         returnNewDocument: true,
       }
     );
+    // console.log(data.value);
     res
       .status(201)
       .json({ data: data.value, message: "Projeto alterado com sucesso." });
