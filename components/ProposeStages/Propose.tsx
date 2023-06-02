@@ -12,6 +12,14 @@ import { toast } from "react-hot-toast";
 import LoadingComponent from "../utils/LoadingComponent";
 import CheckboxInput from "../Inputs/CheckboxInput";
 import Link from "next/link";
+import {
+  UploadResult,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import { storage } from "@/services/firebase";
+import { FirebaseError } from "firebase/app";
 type ProposeProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -21,16 +29,59 @@ type ProposeProps = {
 
 function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
   const [saveAsActive, setSaveAsActive] = useState<boolean>(false);
+  async function handleProposeUpload(file: any) {
+    const tag = `${proposeInfo.nome}${(Math.random() * 1000).toFixed(0)}`;
+    try {
+      let storageName = `crm/projetos/${project?.nome}/${tag}`;
+      const fileRef = ref(storage, storageName);
+      const res = await uploadBytes(fileRef, file).catch((err) => {
+        if (err instanceof FirebaseError)
+          switch (err.code) {
+            case "storage/unauthorized":
+              throw "Usuário não autorizado para upload de arquivos.";
+            case "storage/canceled":
+              throw "O upload de arquivos foi cancelado pelo usuário.";
+
+            case "storage/retry-limit-exceeded":
+              throw "Tempo de envio de arquivo excedido, tente novamente.";
+
+            case "storage/invalid-checksum":
+              throw "Ocorreu um erro na checagem do arquivo enviado, tente novamente.";
+
+            case "storage/unknown":
+              throw "Erro de origem desconhecida no upload de arquivos.";
+          }
+      });
+      const uploadResult = res as UploadResult;
+      if ("metadata" in uploadResult) {
+        const url = await getDownloadURL(
+          ref(storage, uploadResult.metadata.fullPath)
+        );
+        setProposeInfo((prev) => ({ ...prev, linkArquivo: url }));
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        let errorMsg = error.response?.data.error.message;
+        toast.error(errorMsg);
+        return;
+      }
+      if (error instanceof Error) {
+        let errorMsg = error.message;
+        toast.error(errorMsg);
+        return;
+      }
+    }
+  }
   async function handleDownload() {
     const obj = getProposeObject(project, proposeInfo);
     const response = await axios.post("/api/utils/proposePdf", obj, {
       responseType: "blob",
     });
-
+    await handleProposeUpload(response.data);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `PROPOSTA.pdf`);
+    link.setAttribute("download", `PROPOSTA-${project.nome}.pdf`);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -44,6 +95,13 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
     mutationKey: ["createPropose"],
     mutationFn: async (): Promise<IProject | Error> => {
       try {
+        if (!proposeInfo.nome || proposeInfo.nome.length < 2) {
+          throw { message: "Por favor, preencha o nome da proposta." };
+        }
+        if (!proposeInfo.template) {
+          throw { message: "Por favor, preencha o nome da proposta." };
+        }
+        await handleDownload();
         const { data } = await axios.post("/api/proposes", proposeInfo);
         return data.data;
       } catch (error) {
@@ -83,6 +141,7 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
       toast.success("Proposta criada com sucesso.");
     },
   });
+
   return (
     <div className="flex min-h-[400px] w-full flex-col gap-2 py-4">
       {/* <div className="flex w-full items-center justify-center">
@@ -95,16 +154,21 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
           </div>
         ) : null}
         {proposeCreationSuccess ? (
-          <div className="flex min-h-[350px] w-[400px] flex-col items-center justify-center gap-2">
-            <button
-              onClick={handleDownload}
-              className="rounded bg-blue-400 p-1 font-medium text-white"
-            >
-              BAIXAR PROPOSTA
-            </button>
+          <div className="flex min-h-[350px] w-full flex-col items-center justify-center gap-1 lg:w-[600px]">
+            <p className="text-center font-bold text-[#15599a]">
+              A proposta foi gerada com sucesso e vinculada ao projeto em
+              questão.
+            </p>
+            <p className="text-center text-gray-500">
+              Você pode voltar a acessá-la no futuro através da área de controle
+              desse projeto
+            </p>
+            <p className="text-center text-gray-500">
+              Se desejar voltar a área de controle:
+            </p>
             <Link href={`/projeto/id/${project._id}`}>
-              <p className="text-sm italic text-gray-500 underline">
-                Voltar a área de controle do projeto.
+              <p className="text-sm italic text-blue-300 underline hover:text-blue-500">
+                Clique aqui
               </p>
             </Link>
           </div>

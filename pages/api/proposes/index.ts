@@ -1,8 +1,10 @@
 import connectToDatabase from "@/services/mongoclient";
 import { apiHandler, validateAuthentication } from "@/utils/api";
 import { IProposeInfo } from "@/utils/models";
+import createHttpError from "http-errors";
 import { ObjectId } from "mongodb";
 import { NextApiHandler } from "next";
+import { getSession } from "next-auth/react";
 import { z } from "zod";
 
 type PostResponse = {
@@ -135,6 +137,7 @@ const proposeSchema = z.object({
       vendaFinal: z.number(),
     }),
   }),
+  linkArquivo: z.string().optional(),
   potenciaPico: z.number({
     required_error: "Por favor, forneça a potência pico da proposta.",
   }),
@@ -145,16 +148,20 @@ const proposeSchema = z.object({
 
 const createPropose: NextApiHandler<PostResponse> = async (req, res) => {
   await validateAuthentication(req);
-
+  const session = await getSession({ req: req });
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("proposes");
   const propose = proposeSchema.parse(req.body);
-  console.log(propose);
+
   const dbRes = await collection.insertOne({
     ...propose,
+    autor: {
+      nome: session?.user.name,
+      id: session?.user.id,
+    },
     dataInsercao: new Date().toISOString(),
   });
-  console.log(dbRes);
+
   res.status(201).json({
     data: {
       ...propose,
@@ -169,10 +176,42 @@ type GetResponse = {
 };
 const getProposes: NextApiHandler<GetResponse> = async (req, res) => {
   await validateAuthentication(req);
-  const { projectId } = req.query;
+  const { projectId, id } = req.query;
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("proposes");
-  console.log(projectId);
+  if (typeof id === "string") {
+    const propose = await collection
+      .aggregate([
+        {
+          $match: {
+            _id: new ObjectId(id),
+          },
+        },
+        {
+          $addFields: {
+            projetoId: { $toObjectId: "$projeto.id" },
+          },
+        },
+        {
+          $lookup: {
+            from: "projects",
+            localField: "projetoId",
+            foreignField: "_id",
+            as: "infoProjeto",
+          },
+        },
+      ])
+      .toArray();
+    // console.log(proposes);
+    const formattedObj = {
+      ...propose[0],
+      infoProjeto: propose[0].infoProjeto[0],
+    };
+    res.status(200).json(formattedObj);
+  }
+  // else {
+  //   throw new createHttpError.BadRequest("ID de proposta inválido.");
+  // }
   if (typeof projectId === "string") {
     const proposes = await collection
       .aggregate([
@@ -190,9 +229,10 @@ const getProposes: NextApiHandler<GetResponse> = async (req, res) => {
       .toArray();
     // console.log(proposes);
     res.status(200).json(proposes);
-  } else {
-    throw "ID inválido.";
   }
+  // else {
+  //   throw new createHttpError.BadRequest("ID de proposta inválido.");
+  // }
 };
 export default apiHandler({
   GET: getProposes,

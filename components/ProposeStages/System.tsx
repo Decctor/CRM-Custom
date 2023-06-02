@@ -107,6 +107,12 @@ function System({
   }
   return (
     <div className="flex min-h-[400px] w-full flex-col gap-2 py-4">
+      <div className="flex w-full items-center justify-center">
+        <h1 className="text-center font-medium italic text-[#fead61]">
+          Nessa etapa, por favor escolha o kit que melhor se adeque as
+          necessidades desse projeto.
+        </h1>
+      </div>
       <div className="flex items-center justify-between">
         <h1 className="font-bold">KITS FECHADOS</h1>
         <div className="flex items-center gap-2">
@@ -133,7 +139,7 @@ function System({
         </div>
       </div>
 
-      <div className="flex w-full grow flex-wrap justify-center gap-2">
+      <div className="flex w-full grow flex-wrap justify-around gap-2">
         {kitsLoading ? <LoadingComponent /> : null}
         {kitsError ? (
           <div className="flex flex-col items-center justify-center gap-4">

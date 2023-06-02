@@ -245,6 +245,10 @@ export interface IProposeInfo {
     nome?: string;
     id?: string;
   };
+  autor?: {
+    nome?: string;
+    id?: string;
+  };
   premissas: {
     consumoEnergiaMensal: number;
     tarifaEnergia: number;
@@ -285,6 +289,8 @@ export interface IProposeInfo {
       vendaFinal: number;
     };
   };
+  infoProjeto?: IProject;
+  linkArquivo?: string;
   potenciaPico?: number;
   valorProposta?: number;
   dataInsercao?: string;

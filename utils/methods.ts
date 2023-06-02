@@ -7,6 +7,7 @@ import {
   IRepresentative,
   IResponsible,
   ISession,
+  InverterType,
   ModuleType,
 } from "./models";
 import axios, { AxiosError } from "axios";
@@ -103,7 +104,36 @@ export function formatUpdateSetObject(changes: object) {
   });
   return setObj;
 }
-
+function getInverterStr(inverters: InverterType[]) {
+  var str = "";
+  for (let i = 0; i < inverters.length; i++) {
+    if (i < inverters.length - 1) {
+      str =
+        str +
+        `${inverters[i].qtde}x ${inverters[i].fabricante} (${inverters[i].modelo}) & `;
+    } else {
+      str =
+        str +
+        `${inverters[i].qtde}x ${inverters[i].fabricante} (${inverters[i].modelo})`;
+    }
+  }
+  return str;
+}
+function getModulesStr(modules: ModuleType[]) {
+  var str = "";
+  for (let i = 0; i < modules.length; i++) {
+    if (i < modules.length - 1) {
+      str =
+        str +
+        `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].modelo}) & `;
+    } else {
+      str =
+        str +
+        `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].modelo})`;
+    }
+  }
+  return str;
+}
 export function getProposeObject(project: IProject, propose: IProposeInfo) {
   const obj = {
     title: propose.projeto.nome,
@@ -129,6 +159,15 @@ export function getProposeObject(project: IProject, propose: IProposeInfo) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}`,
+      gasto25AnosAtual: `R$ ${(
+        propose.premissas.consumoEnergiaMensal *
+        propose.premissas.tarifaEnergia *
+        12 *
+        25
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
       qtdeModulos: getModulesQty(propose.kit?.modulos),
       geracaoEstimada: getEstimatedGen(
         getPeakPotByModules(propose.kit?.modulos),
@@ -142,18 +181,12 @@ export function getProposeObject(project: IProject, propose: IProposeInfo) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}`,
-      gasto25AnosAtual: `R$ ${(
-        propose.premissas.consumoEnergiaMensal *
-        propose.premissas.tarifaEnergia *
-        12 *
-        25
-      ).toLocaleString("pt-br", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`,
-      inversores: "Inversores",
+
+      inversores: getInverterStr(
+        propose.kit?.inversores ? propose.kit?.inversores : []
+      ),
       qtdeInversores: "Quantidade de Inversores",
-      modulos: "Modulos",
+      modulos: getModulesStr(propose.kit?.modulos ? propose.kit?.modulos : []),
     },
   };
   return obj;

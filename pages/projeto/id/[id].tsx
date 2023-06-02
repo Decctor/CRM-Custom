@@ -217,7 +217,11 @@ function Projeto() {
                           {propose._id == project.propostaAtiva ? (
                             <AiOutlineStar style={{ color: "#15599a" }} />
                           ) : null}
-                          <h1 className="text-center">{propose.nome}</h1>
+                          <Link href={`/proposta/${propose._id}`}>
+                            <h1 className="text-center hover:text-blue-400">
+                              {propose.nome}
+                            </h1>
+                          </Link>
                         </div>
 
                         <h1 className="w-1/4 text-center">

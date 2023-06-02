@@ -32,7 +32,7 @@ function Sizing({
         );
         setProposeInfo((prev) => ({
           ...prev,
-          premissas: { ...prev.premissas, distancia: data.data },
+          premissas: { ...prev.premissas, distancia: Math.ceil(data.data) },
         }));
         return data.data;
       } catch (error) {
@@ -79,6 +79,13 @@ function Sizing({
     <>
       <div className="flex w-full flex-col gap-4 py-4">
         <div className="flex w-full flex-col gap-4">
+          <div className="flex w-full items-center justify-center">
+            <h1 className="text-center font-medium italic text-[#fead61]">
+              Nessa etapa, por favor preencha informações que nos possibilitarão
+              a realizar uma análise primária das necessidades e especificidades
+              técnicas do projeto.
+            </h1>
+          </div>
           <div className="flex w-full items-center gap-2">
             <div className="flex w-full flex-col gap-1 lg:w-[50%]">
               <p className="text-md font-light text-gray-500">
@@ -203,29 +210,48 @@ function Sizing({
               </select>
             </div>
           </div>
-          <div className="flex w-full flex-col self-center lg:w-[50%] ">
-            <p className="text-md font-light text-gray-500">
-              Tipo de estrutura
-            </p>
-            <select
-              value={proposeInfo.premissas.tipoEstrutura}
-              onChange={(e) =>
-                setProposeInfo((prev) => ({
-                  ...prev,
-                  premissas: {
-                    ...prev.premissas,
-                    tipoEstrutura: e.target.value,
-                  },
-                }))
-              }
-              className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-            >
-              {structureTypes.map((type, index) => (
-                <option key={index} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
+          <div className="flex w-full items-center gap-2">
+            <div className="flex w-full flex-col lg:w-[50%] ">
+              <p className="text-md font-light text-gray-500">
+                Tipo de estrutura
+              </p>
+              <select
+                value={proposeInfo.premissas.tipoEstrutura}
+                onChange={(e) =>
+                  setProposeInfo((prev) => ({
+                    ...prev,
+                    premissas: {
+                      ...prev.premissas,
+                      tipoEstrutura: e.target.value,
+                    },
+                  }))
+                }
+                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
+              >
+                {structureTypes.map((type, index) => (
+                  <option key={index} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex w-full flex-col gap-1 lg:w-[50%]">
+              <p className="text-md font-light text-gray-500">Distância (km)</p>
+              <input
+                type="number"
+                value={proposeInfo.premissas.distancia.toString()}
+                onChange={(e) =>
+                  setProposeInfo((prev) => ({
+                    ...prev,
+                    premissas: {
+                      ...prev.premissas,
+                      distancia: Number(e.target.value),
+                    },
+                  }))
+                }
+                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
+              />
+            </div>
           </div>
         </div>
       </div>
