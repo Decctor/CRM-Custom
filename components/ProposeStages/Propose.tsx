@@ -58,6 +58,7 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
           ref(storage, uploadResult.metadata.fullPath)
         );
         setProposeInfo((prev) => ({ ...prev, linkArquivo: url }));
+        return url;
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -77,7 +78,6 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
     const response = await axios.post("/api/utils/proposePdf", obj, {
       responseType: "blob",
     });
-    await handleProposeUpload(response.data);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
@@ -85,6 +85,7 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
     document.body.appendChild(link);
     link.click();
     link.remove();
+    return response.data;
   }
   const {
     mutate: createPropose,
@@ -101,8 +102,16 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
         if (!proposeInfo.template) {
           throw { message: "Por favor, preencha o nome da proposta." };
         }
-        await handleDownload();
-        const { data } = await axios.post("/api/proposes", proposeInfo);
+        const fileToUpload = await handleDownload();
+        const url = await handleProposeUpload(fileToUpload);
+        console.log("PRE CRIAÇÃO", {
+          ...proposeInfo,
+          linkArquivo: url,
+        });
+        const { data } = await axios.post("/api/proposes", {
+          ...proposeInfo,
+          linkArquivo: url,
+        });
         return data.data;
       } catch (error) {
         if (error instanceof AxiosError) {
