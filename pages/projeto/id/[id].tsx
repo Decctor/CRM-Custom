@@ -242,7 +242,7 @@ function Projeto() {
                       </div>
                     ))
                   ) : (
-                    <p className="flex grow items-center justify-center">
+                    <p className="flex grow items-center justify-center italic text-gray-500">
                       Sem propostas vinculadas a esse projeto.
                     </p>
                   )
