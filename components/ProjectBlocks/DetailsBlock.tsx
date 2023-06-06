@@ -6,6 +6,7 @@ import {
   checkQueryEnableStatus,
   formatDate,
   useProject,
+  useResponsibles,
 } from "@/utils/methods";
 import { IProject, ISession } from "@/utils/models";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -23,6 +24,7 @@ import {
 } from "firebase/storage";
 import { storage } from "@/services/firebase";
 import { FirebaseError } from "firebase/app";
+import DropdownSelect from "../Inputs/DropdownSelect";
 type DetailsBlockType = {
   info: IProject;
   session: ISession | null;
@@ -31,6 +33,7 @@ type DetailsBlockType = {
 
 function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
   const [infoHolder, setInfoHolder] = useState<IProject>(info);
+  const { data: responsibles } = useResponsibles();
   const queryClient = useQueryClient();
 
   // Update/mutate functions
@@ -177,6 +180,66 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
           <h1 className="font-bold text-black">Detalhes</h1>
         </div>
         <div className="mt-3 flex w-full flex-col gap-2">
+          <div className="flex w-full gap-2">
+            <div className="flex grow flex-col items-start">
+              <label className="font-sans font-bold  text-[#353432]">
+                RESPONSÁVEL
+              </label>
+              <DropdownSelect
+                categoryName="RESPONSÁVEL"
+                value={
+                  infoHolder?.responsavel ? infoHolder?.responsavel.id : null
+                }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                options={
+                  responsibles
+                    ? responsibles.map((responsavel) => {
+                        return {
+                          id: responsavel.id,
+                          value: responsavel,
+                          label: responsavel.nome,
+                        };
+                      })
+                    : null
+                }
+                onChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      responsavel: {
+                        id: value.value.id,
+                        nome: value.value.nome,
+                      },
+                    }));
+                }}
+                onReset={() => {
+                  console.log("OOPS");
+                }}
+                selectedItemLabel="NÃO DEFINIDO"
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={infoHolder?.responsavel.id == info.responsavel.id}
+              onClick={() =>
+                updateData("PROJETO", "responsavel", infoHolder?.responsavel)
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.responsavel.id != info.responsavel.id
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
           <h1 className="text-center text-sm font-medium text-[#fead61]">
             DADOS ADICIONAIS DO CLIENTE
           </h1>

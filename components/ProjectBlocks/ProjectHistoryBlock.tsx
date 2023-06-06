@@ -41,9 +41,21 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
   const {
     data: history,
     status,
-  }: UseQueryResult<(ProjectActivity | ProjectNote)[], Error> = useQuery({
+  }: UseQueryResult<
+    {
+      open: ProjectActivity[];
+      closed: (ProjectActivity | ProjectNote)[];
+    },
+    Error
+  > = useQuery({
     queryKey: ["projectEventsHistory", projectId],
-    queryFn: async (): Promise<(ProjectActivity | ProjectNote)[] | []> => {
+    queryFn: async (): Promise<
+      | {
+          open: ProjectActivity[];
+          closed: (ProjectActivity | ProjectNote)[];
+        }
+      | []
+    > => {
       try {
         const { data, status } = await axios.get(
           `/api/projects/events?id=${projectId}`
@@ -100,7 +112,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
       }
     },
   });
-
+  console.log(history);
   return (
     <div className="flex w-full flex-col gap-2 rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">
       <div className="flex h-[40px] items-center justify-between border-b border-gray-200 pb-2">
@@ -141,8 +153,8 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
         <div className="flex w-full flex-col gap-2">
           <div className="flex w-full grow flex-col gap-1">
             {history ? (
-              history.length > 0 ? (
-                history.map((event, index) => (
+              history.closed.length > 0 ? (
+                history.closed.map((event, index) => (
                   <>
                     {event.categoria == "ANOTAÇÃO" ? (
                       <NoteCard key={index} event={event} />

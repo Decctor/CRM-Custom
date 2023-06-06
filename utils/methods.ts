@@ -87,13 +87,13 @@ export function formatUpdateSetObject(changes: object) {
   console.log(changes);
   Object.entries(changes).forEach((entry) => {
     if (typeof entry[1] == "object") {
-      console.log("PELO IF");
+      // console.log("PELO IF");
       const tag = entry[0];
       // Object.keys(entry[1]).forEach((x) => {
       //   console.log(`${tag}.${x}`);
       // });
       Object.entries(entry[1]).forEach((insideEntry) => {
-        console.log({ [`${tag}.${insideEntry[0]}`]: insideEntry[1] });
+        // console.log({ [`${tag}.${insideEntry[0]}`]: insideEntry[1] });
         setObj[`${tag}.${insideEntry[0]}`] = insideEntry[1];
       });
     } else {
@@ -104,7 +104,7 @@ export function formatUpdateSetObject(changes: object) {
   });
   return setObj;
 }
-function getInverterStr(inverters: InverterType[]) {
+export function getInverterStr(inverters: InverterType[]) {
   var str = "";
   for (let i = 0; i < inverters.length; i++) {
     if (i < inverters.length - 1) {
@@ -119,7 +119,7 @@ function getInverterStr(inverters: InverterType[]) {
   }
   return str;
 }
-function getModulesStr(modules: ModuleType[]) {
+export function getModulesStr(modules: ModuleType[]) {
   var str = "";
   for (let i = 0; i < modules.length; i++) {
     if (i < modules.length - 1) {

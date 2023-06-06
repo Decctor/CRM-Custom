@@ -24,11 +24,13 @@ import {
   checkQueryEnableStatus,
   formatDate,
   useProject,
+  useResponsibles,
 } from "@/utils/methods";
 import DetailsBlock from "@/components/ProjectBlocks/DetailsBlock";
 import { TbNotes } from "react-icons/tb";
 import ProjectHistoryBlock from "@/components/ProjectBlocks/ProjectHistoryBlock";
 import Link from "next/link";
+import DropdownSelect from "@/components/Inputs/DropdownSelect";
 
 function Projeto() {
   const { data: session } = useSession({
@@ -116,14 +118,17 @@ function Projeto() {
       <div className="flex h-full">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
-          <div className="flex w-full flex-col items-start border-b border-[#fead61] pb-2">
-            <h1 className="flex font-['Roboto'] text-2xl font-bold text-blue-900">
-              {project.nome}
-            </h1>
-            <p className="w-full text-start text-xs italic text-gray-500">
-              {project.descricao}
-            </p>
+          <div className="flex w-full items-center justify-between border-b border-[#fead61] pb-2">
+            <div className="flex w-full flex-col items-start">
+              <h1 className="flex font-['Roboto'] text-2xl font-bold text-blue-900">
+                {project.nome}
+              </h1>
+              <p className="w-full text-start text-xs italic text-gray-500">
+                {project.descricao}
+              </p>
+            </div>
           </div>
+
           <div className="flex w-full flex-col items-start gap-6 py-4 lg:flex-row">
             <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[40%]">
               <div className="flex h-[40px] items-center justify-between border-b border-gray-200 pb-2">
@@ -250,6 +255,12 @@ function Projeto() {
                       Sem propostas vinculadas a esse projeto.
                     </p>
                   )
+                ) : null}
+                {projectProposesError ? (
+                  <p className="flex grow items-center justify-center italic text-gray-500">
+                    Oops, houve um erro na busca das propostas desse projeto.
+                    Tente recarregar a página.
+                  </p>
                 ) : null}
               </div>
             </div>

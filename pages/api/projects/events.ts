@@ -79,7 +79,10 @@ const createEvent: NextApiHandler<PostResponse> = async (req, res) => {
 };
 
 type GetResponse = {
-  data: (ProjectActivity | ProjectNote)[];
+  data: {
+    open: ProjectActivity[];
+    closed: (ProjectActivity | ProjectNote)[];
+  };
 };
 const getEvents: NextApiHandler<GetResponse> = async (req, res) => {
   await validateAuthentication(req);
@@ -93,7 +96,15 @@ const getEvents: NextApiHandler<GetResponse> = async (req, res) => {
     .find({ projetoId: id })
     .sort({ dataInsercao: -1 })
     .toArray();
-  res.status(200).json({ data: events });
+  const open = events.filter(
+    (event: any) => event.categoria == "ATIVIDADE" && !event.dataConclusao
+  );
+  const closed = events.filter(
+    (event: any) =>
+      event.categoria == "ANOTAÇÃO" ||
+      (event.categoria == "ATIVIDADE" && !!event.dataConclusao)
+  );
+  res.status(200).json({ data: { open: open, closed: closed } });
 };
 
 type PutResponse = {

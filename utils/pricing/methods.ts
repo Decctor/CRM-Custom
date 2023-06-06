@@ -160,7 +160,10 @@ function getSalePrice({
     0.05
   );
 }
-export function getPrices(project: IProject, propose: IProposeInfo) {
+export function getPrices(
+  project: IProject | undefined,
+  propose: IProposeInfo
+) {
   const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
   const peakPower = getPeakPotByModules(propose.kit?.modulos); // extract from kit info
   const moduleQty = getModulesQty(propose.kit?.modulos); // extract from kit info
@@ -195,18 +198,18 @@ export function getPrices(project: IProject, propose: IProposeInfo) {
   // Costs
   prices.instalacao.custo = getInstallationCost(peakPower, distance);
   prices.maoDeObra.custo = getLaborPrice(
-    project.cliente?.cidade,
+    project?.cliente?.cidade,
     moduleQty,
     peakPower,
-    project.responsavel.id
+    project?.responsavel.id ? project?.responsavel.id : ""
   );
   prices.projeto.custo = getProjectPrice(peakPower);
   prices.venda.custo = getSalePrice({
     kitPrice: kitPrice,
     peakPower: peakPower,
     moduleQty: moduleQty,
-    city: project.cliente?.cidade,
-    uf: project.cliente?.uf,
+    city: project?.cliente?.cidade,
+    uf: project?.cliente?.uf,
     structureType: propose.premissas.tipoEstrutura,
     laborPrice: prices.maoDeObra.custo,
     projectPrice: prices.projeto.custo,

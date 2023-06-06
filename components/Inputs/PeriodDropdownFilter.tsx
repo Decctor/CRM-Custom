@@ -63,7 +63,7 @@ function PeriodDropdownFilter({
     <div ref={ref} className="relative flex h-[40px] w-[40px] justify-end">
       <div
         onClick={() => setDropdownIsOpen((prev) => !prev)}
-        className="flex w-[40px] cursor-pointer items-center justify-center rounded bg-[#fead61] p-2 duration-300 ease-in-out hover:scale-105 hover:bg-[#eb8423] hover:text-white"
+        className="flex w-[40px] cursor-pointer items-center justify-center rounded bg-[#fead61] p-2 shadow-sm duration-300 ease-in-out hover:scale-105 hover:bg-[#eb8423] hover:text-white"
       >
         <IoIosCalendar />
       </div>
