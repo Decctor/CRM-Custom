@@ -40,6 +40,9 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
 
   const {
     data: history,
+    isLoading: historyLoading,
+    isSuccess: historySuccess,
+    isError: historyError,
     status,
   }: UseQueryResult<
     {
@@ -152,7 +155,51 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
       {view == "HISTORY" ? (
         <div className="flex w-full flex-col gap-2">
           <div className="flex w-full grow flex-col gap-1">
-            {history ? (
+            {historySuccess ? (
+              history.closed.length > 0 || history.open.length > 0 ? (
+                <>
+                  {history.open.length > 0 ? (
+                    <div className="flex w-full flex-col gap-2">
+                      <h1 className="w-full text-start font-medium">
+                        Atividades em aberto
+                      </h1>
+                      {history.open.map((activity, index) => (
+                        <ActivityBlock
+                          key={index}
+                          event={activity}
+                          projectId={projectId ? projectId : ""}
+                        />
+                      ))}
+                      <div className="my-4 h-1 w-full rounded bg-gray-300"></div>
+                    </div>
+                  ) : null}
+
+                  {history.closed.length > 0
+                    ? history.closed.map((event, index) => (
+                        <>
+                          {event.categoria == "ANOTAÇÃO" ? (
+                            <NoteCard key={index} event={event} />
+                          ) : null}
+                          {event.categoria == "ATIVIDADE" ? (
+                            <ActivityBlock
+                              key={index}
+                              event={event}
+                              projectId={projectId ? projectId : ""}
+                            />
+                          ) : null}
+                        </>
+                      ))
+                    : null}
+                </>
+              ) : (
+                <p className="w-full grow text-center italic text-gray-500">
+                  Nenhuma atividade vinculada a esse projeto foi encontrada...
+                </p>
+              )
+            ) : null}
+            {historyLoading ? <LoadingComponent /> : null}
+            {historyError ? <div></div> : null}
+            {/* {history ? (
               history.closed.length > 0 ? (
                 history.closed.map((event, index) => (
                   <>
@@ -177,7 +224,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
               )
             ) : (
               <LoadingComponent />
-            )}
+            )} */}
           </div>
         </div>
       ) : null}

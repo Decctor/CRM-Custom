@@ -16,21 +16,29 @@ type SaleCostArguments = {
 };
 export interface PricesObj {
   instalacao: {
+    margemLucro: number;
+    imposto: number;
     custo: number;
     vendaProposto: number;
     vendaFinal: number;
   };
   maoDeObra: {
+    margemLucro: number;
+    imposto: number;
     custo: number;
     vendaProposto: number;
     vendaFinal: number;
   };
   projeto: {
+    margemLucro: number;
+    imposto: number;
     custo: number;
     vendaProposto: number;
     vendaFinal: number;
   };
   venda: {
+    margemLucro: number;
+    imposto: number;
     custo: number;
     vendaProposto: number;
     vendaFinal: number;
@@ -45,8 +53,12 @@ export const priceDescription: IPriceDescription = {
   projeto: "CUSTOS DE PROJETO",
   venda: "CUSTOS DE VENDA",
 };
-export function getProposedPrice(cost: number, tax = fixedTaxAliquot): number {
-  const proposedPrice = cost / (1 - (fixedMargin + tax));
+export function getProposedPrice(
+  cost: number,
+  tax = fixedTaxAliquot,
+  margin = fixedMargin
+): number {
+  const proposedPrice = cost / (1 - (margin + tax));
   return proposedPrice;
 }
 export function getTaxValue(
@@ -175,21 +187,29 @@ export function getPrices(
 
   var prices: PricesObj = {
     instalacao: {
+      margemLucro: fixedMargin,
+      imposto: fixedTaxAliquot,
       custo: 0,
       vendaProposto: 0,
       vendaFinal: 0,
     },
     maoDeObra: {
+      margemLucro: fixedMargin,
+      imposto: fixedTaxAliquot,
       custo: 0,
       vendaProposto: 0,
       vendaFinal: 0,
     },
     projeto: {
+      margemLucro: fixedMargin,
+      imposto: fixedTaxAliquot,
       custo: 0,
       vendaProposto: 0,
       vendaFinal: 0,
     },
     venda: {
+      margemLucro: fixedMargin,
+      imposto: fixedTaxAliquot,
       custo: 0,
       vendaProposto: 0,
       vendaFinal: 0,

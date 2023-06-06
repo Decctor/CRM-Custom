@@ -146,7 +146,7 @@ function Sizing({
             </div>
             <div className="flex w-full flex-col gap-1 lg:w-[50%]">
               <p className="text-md font-light text-gray-500">
-                Fator de simultaneidade
+                Fator de simultaneidade (%)
               </p>
               <input
                 type="number"
