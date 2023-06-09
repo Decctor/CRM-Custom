@@ -109,22 +109,22 @@ function SpecificProposePage() {
   });
   function getTotals() {
     if (propose?.infoProjeto) {
-      const pricing = getPrices(propose?.infoProjeto, propose);
+      const pricing = propose.precificacao
+        ? propose.precificacao
+        : getPrices(propose?.infoProjeto, propose);
       const kitPrice = propose.kit ? propose.kit.preco : 0;
-      var totalCosts = kitPrice;
+      var totalCosts = 0;
       var totalTaxes = 0;
-      var totalProfits =
-        getMarginValue(kitPrice, getProposedPrice(kitPrice, 0), 0) *
-        getProposedPrice(kitPrice, 0);
-      var finalProposePrice = getProposedPrice(kitPrice, 0);
+      var totalProfits = 0;
+      var finalProposePrice = 0;
       Object.keys(pricing).forEach((priceType) => {
         const cost = pricing[priceType as keyof PricesObj].custo;
         const finalSellingPrice =
           pricing[priceType as keyof PricesObj].vendaFinal;
         const taxValue =
-          getTaxValue(cost, finalSellingPrice) * finalSellingPrice;
+          pricing[priceType as keyof PricesObj].imposto * finalSellingPrice;
         const marginValue =
-          getMarginValue(cost, finalSellingPrice) * finalSellingPrice;
+          pricing[priceType as keyof PricesObj].margemLucro * finalSellingPrice;
 
         totalCosts = totalCosts + cost;
         totalTaxes = totalTaxes + taxValue;
@@ -344,64 +344,19 @@ function SpecificProposePage() {
                     </h1>
                   </div>
                 </div>
-                <div className="flex w-full items-center rounded">
-                  <div className="flex w-4/12 items-center justify-center p-1">
-                    <h1 className="text-gray-500">{propose.kit?.nome}</h1>
-                  </div>
-                  <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="text-gray-500">
-                      R${" "}
-                      {propose.kit?.preco.toLocaleString("pt-br", {
-                        maximumFractionDigits: 2,
-                        minimumFractionDigits: 2,
-                      })}
-                    </h1>
-                  </div>
-                  <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="text-gray-500">-</h1>
-                  </div>
-                  <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="text-gray-500">
-                      R${" "}
-                      {propose.kit
-                        ? (
-                            getMarginValue(
-                              propose.kit.preco,
-                              getProposedPrice(propose.kit.preco, 0),
-                              0
-                            ) * getProposedPrice(propose.kit.preco, 0)
-                          ).toLocaleString("pt-br", {
-                            maximumFractionDigits: 2,
-                            minimumFractionDigits: 2,
-                          })
-                        : 0}
-                    </h1>
-                  </div>
-                  <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="text-gray-500">
-                      R${" "}
-                      {propose.kit
-                        ? getProposedPrice(propose.kit.preco, 0).toLocaleString(
-                            "pt-br",
-                            {
-                              maximumFractionDigits: 2,
-                              minimumFractionDigits: 2,
-                            }
-                          )
-                        : "-"}
-                    </h1>
-                  </div>
-                </div>
                 {Object.keys(getPrices(propose?.infoProjeto, propose)).map(
                   (priceType, index) => {
-                    const description = priceDescription[priceType];
-                    const cost = getPrices(propose?.infoProjeto, propose)[
-                      priceType as keyof PricesObj
-                    ].custo;
-                    const finalSellingPrice = getPrices(
-                      propose?.infoProjeto,
-                      propose
-                    )[priceType as keyof PricesObj].vendaFinal;
+                    const description =
+                      priceType == "kit"
+                        ? propose.kit?.nome
+                        : priceDescription[priceType];
+                    const cost = propose.precificacao
+                      ? propose.precificacao[priceType as keyof PricesObj].custo
+                      : 0;
+                    const finalSellingPrice = propose.precificacao
+                      ? propose.precificacao[priceType as keyof PricesObj]
+                          .vendaFinal
+                      : 0;
                     const taxValue =
                       getTaxValue(cost, finalSellingPrice) * finalSellingPrice;
                     const marginValue =
@@ -511,40 +466,19 @@ function SpecificProposePage() {
                     </h1>
                   </div>
                 </div>
-                <div className="flex w-full items-center rounded">
-                  <div className="flex w-8/12 items-center justify-center p-1">
-                    <h1 className="text-gray-500">{propose.kit?.nome}</h1>
-                  </div>
-                  <div className="flex w-4/12 items-center justify-center p-1">
-                    <h1 className="text-gray-500">
-                      R${" "}
-                      {propose.kit
-                        ? getProposedPrice(propose.kit.preco, 0).toLocaleString(
-                            "pt-br",
-                            {
-                              maximumFractionDigits: 2,
-                              minimumFractionDigits: 2,
-                            }
-                          )
-                        : "-"}
-                    </h1>
-                  </div>
-                </div>
                 {Object.keys(getPrices(propose?.infoProjeto, propose)).map(
                   (priceType, index) => {
-                    const description = priceDescription[priceType];
-                    const cost = getPrices(propose?.infoProjeto, propose)[
-                      priceType as keyof PricesObj
-                    ].custo;
-                    const finalSellingPrice = getPrices(
-                      propose?.infoProjeto,
-                      propose
-                    )[priceType as keyof PricesObj].vendaFinal;
-                    const taxValue =
-                      getTaxValue(cost, finalSellingPrice) * finalSellingPrice;
-                    const marginValue =
-                      getMarginValue(cost, finalSellingPrice) *
-                      finalSellingPrice;
+                    const description =
+                      priceType == "kit"
+                        ? propose.kit?.nome
+                        : priceDescription[priceType];
+                    const cost = propose.precificacao
+                      ? propose.precificacao[priceType as keyof PricesObj].custo
+                      : 0;
+                    const finalSellingPrice = propose.precificacao
+                      ? propose.precificacao[priceType as keyof PricesObj]
+                          .vendaFinal
+                      : 0;
                     return (
                       <div
                         className="flex w-full items-center rounded"

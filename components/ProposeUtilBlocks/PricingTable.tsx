@@ -25,20 +25,33 @@ function PricingTable({ pricing, setPricing, proposeInfo }: PricingTableProps) {
     priceTag: null,
   });
   function getTotals() {
+    // const kitPrice = proposeInfo.kit ? proposeInfo.kit.preco : 0;
+    // var totalCosts = kitPrice;
+    // var totalTaxes = 0;
+    // var totalProfits =
+    //   getMarginValue(kitPrice, getProposedPrice(kitPrice, 0), 0) *
+    //   getProposedPrice(kitPrice, 0);
     const kitPrice = proposeInfo.kit ? proposeInfo.kit.preco : 0;
-    var totalCosts = kitPrice;
+    var totalCosts = 0;
     var totalTaxes = 0;
-    var totalProfits =
-      getMarginValue(kitPrice, getProposedPrice(kitPrice, 0), 0) *
-      getProposedPrice(kitPrice, 0);
-    var finalProposePrice = getProposedPrice(kitPrice, 0);
+    var totalProfits = 0;
+    var finalProposePrice = 0;
     Object.keys(pricing).forEach((priceType) => {
       const cost = pricing[priceType as keyof PricesObj].custo;
       const finalSellingPrice =
         pricing[priceType as keyof PricesObj].vendaFinal;
-      const taxValue = getTaxValue(cost, finalSellingPrice) * finalSellingPrice;
+      const taxValue =
+        getTaxValue(
+          cost,
+          finalSellingPrice,
+          pricing[priceType as keyof PricesObj].margemLucro
+        ) * finalSellingPrice;
       const marginValue =
-        getMarginValue(cost, finalSellingPrice) * finalSellingPrice;
+        getMarginValue(
+          cost,
+          finalSellingPrice,
+          pricing[priceType as keyof PricesObj].imposto
+        ) * finalSellingPrice;
 
       totalCosts = totalCosts + cost;
       totalTaxes = totalTaxes + taxValue;
@@ -71,7 +84,7 @@ function PricingTable({ pricing, setPricing, proposeInfo }: PricingTableProps) {
           <h1 className="font-Raleway font-bold text-gray-500">VENDA</h1>
         </div>
       </div>
-      <div className="flex w-full items-center rounded">
+      {/* <div className="flex w-full items-center rounded">
         <div className="flex w-4/12 items-center justify-center p-1">
           <h1 className="text-gray-500">{proposeInfo.kit?.nome}</h1>
         </div>
@@ -115,9 +128,12 @@ function PricingTable({ pricing, setPricing, proposeInfo }: PricingTableProps) {
               : "-"}
           </h1>
         </div>
-      </div>
+      </div> */}
       {Object.keys(pricing).map((priceType, index) => {
-        const description = priceDescription[priceType];
+        const description =
+          priceType == "kit"
+            ? proposeInfo.kit?.nome
+            : priceDescription[priceType];
         const cost = pricing[priceType as keyof PricesObj].custo;
         const finalSellingPrice =
           pricing[priceType as keyof PricesObj].vendaFinal;
@@ -134,7 +150,17 @@ function PricingTable({ pricing, setPricing, proposeInfo }: PricingTableProps) {
             pricing[priceType as keyof PricesObj].imposto
           ) * finalSellingPrice;
         return (
-          <div className="flex w-full items-center rounded" key={index}>
+          <div
+            className={`flex w-full items-center rounded ${
+              Math.abs(
+                pricing[priceType as keyof PricesObj].vendaFinal -
+                  pricing[priceType as keyof PricesObj].vendaProposto
+              ) > 1
+                ? "bg-orange-200"
+                : ""
+            }`}
+            key={index}
+          >
             <div className="flex w-4/12 items-center justify-center p-1">
               <h1 className="text-gray-500">{description}</h1>
             </div>
@@ -166,7 +192,7 @@ function PricingTable({ pricing, setPricing, proposeInfo }: PricingTableProps) {
               </h1>
             </div>
             <div className="flex w-2/12 items-center justify-center gap-4 p-1">
-              <h1 className="text-gray-500">
+              <h1 className="w-full text-center text-gray-500 lg:w-1/2">
                 R${" "}
                 {finalSellingPrice.toLocaleString("pt-br", {
                   maximumFractionDigits: 2,

@@ -140,17 +140,19 @@ export function getProposeObject(project: IProject, propose: IProposeInfo) {
     fontSize: 10,
     textColor: "#333333",
     data: {
-      idProposta: project._id,
+      idProposta: `#${project._id}}`,
       nomeCliente: project.cliente?.nome,
-      cpfCnpjCliente: project.cliente?.cpfCnpj,
-      cidadeUfCliente: `${project.cliente?.cidade} - ${project.cliente?.uf}`,
+      cpfCnpj: project.cliente?.cpfCnpj,
+      cidade: `${project.cliente?.cidade} - ${project.cliente?.uf}`,
       enderecoCliente: `${project.cliente?.endereco}`,
-      nomeVendedor: project.responsavel.nome,
       potPico: propose.potenciaPico,
       consumoMedio: propose.premissas.consumoEnergiaMensal,
-      gastoMensalAtual:
-        propose.premissas.consumoEnergiaMensal *
-        propose.premissas.tarifaEnergia,
+      gastoMensalAtual: `R$ ${(
+        propose.premissas.consumoEnergiaMensal * propose.premissas.tarifaEnergia
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
       gastoAnualAtual: `R$ ${(
         propose.premissas.consumoEnergiaMensal *
         propose.premissas.tarifaEnergia *
@@ -168,7 +170,6 @@ export function getProposeObject(project: IProject, propose: IProposeInfo) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}`,
-      qtdeModulos: getModulesQty(propose.kit?.modulos),
       geracaoEstimada: getEstimatedGen(
         getPeakPotByModules(propose.kit?.modulos),
         project.cliente?.cidade,
@@ -177,18 +178,94 @@ export function getProposeObject(project: IProject, propose: IProposeInfo) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }),
-      precoFinal: `R$ ${propose.valorProposta?.toLocaleString("pt-br", {
+      economiaEstimada: `R$ ${(
+        getEstimatedGen(
+          getPeakPotByModules(propose.kit?.modulos),
+          project.cliente?.cidade,
+          project.cliente?.uf
+        ) * propose.premissas.tarifaEnergia
+      ).toLocaleString("pt-br", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}`,
-
+      economiaEstimada25anos: `R$ ${(
+        getEstimatedGen(
+          getPeakPotByModules(propose.kit?.modulos),
+          project.cliente?.cidade,
+          project.cliente?.uf
+        ) *
+        propose.premissas.tarifaEnergia *
+        25 *
+        12
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
       inversores: getInverterStr(
         propose.kit?.inversores ? propose.kit?.inversores : []
       ),
-      qtdeInversores: "Quantidade de Inversores",
+      garantiaInversores: "10 anos",
       modulos: getModulesStr(propose.kit?.modulos ? propose.kit?.modulos : []),
+      valorProposta: `R$ ${propose.valorProposta?.toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
     },
   };
+  // const obj = {
+  //   title: propose.projeto.nome,
+  //   fontSize: 10,
+  //   textColor: "#333333",
+  //   data: {
+  //     idProposta: project._id,
+  //     nomeCliente: project.cliente?.nome,
+  //     cpfCnpjCliente: project.cliente?.cpfCnpj,
+  //     cidadeUfCliente: `${project.cliente?.cidade} - ${project.cliente?.uf}`,
+  //     enderecoCliente: `${project.cliente?.endereco}`,
+  //     nomeVendedor: project.responsavel.nome,
+  //     potPico: propose.potenciaPico,
+  //     consumoMedio: propose.premissas.consumoEnergiaMensal,
+  //     gastoMensalAtual:
+  //       propose.premissas.consumoEnergiaMensal *
+  //       propose.premissas.tarifaEnergia,
+  //     gastoAnualAtual: `R$ ${(
+  //       propose.premissas.consumoEnergiaMensal *
+  //       propose.premissas.tarifaEnergia *
+  //       12
+  //     ).toLocaleString("pt-br", {
+  //       minimumFractionDigits: 2,
+  //       maximumFractionDigits: 2,
+  //     })}`,
+  //     gasto25AnosAtual: `R$ ${(
+  //       propose.premissas.consumoEnergiaMensal *
+  //       propose.premissas.tarifaEnergia *
+  //       12 *
+  //       25
+  //     ).toLocaleString("pt-br", {
+  //       minimumFractionDigits: 2,
+  //       maximumFractionDigits: 2,
+  //     })}`,
+  //     qtdeModulos: getModulesQty(propose.kit?.modulos),
+  //     geracaoEstimada: getEstimatedGen(
+  //       getPeakPotByModules(propose.kit?.modulos),
+  //       project.cliente?.cidade,
+  //       project.cliente?.uf
+  //     ).toLocaleString("pt-br", {
+  //       minimumFractionDigits: 2,
+  //       maximumFractionDigits: 2,
+  //     }),
+  //     precoFinal: `R$ ${propose.valorProposta?.toLocaleString("pt-br", {
+  //       minimumFractionDigits: 2,
+  //       maximumFractionDigits: 2,
+  //     })}`,
+
+  //     inversores: getInverterStr(
+  //       propose.kit?.inversores ? propose.kit?.inversores : []
+  //     ),
+  //     qtdeInversores: "Quantidade de Inversores",
+  //     modulos: getModulesStr(propose.kit?.modulos ? propose.kit?.modulos : []),
+  //   },
+  // };
   return obj;
 }
 export function useKitQueryPipelines(

@@ -268,22 +268,37 @@ export interface IProposeInfo {
     preco: number;
   };
   precificacao?: {
+    kit: {
+      margemLucro: number;
+      imposto: number;
+      custo: number;
+      vendaProposto: number;
+      vendaFinal: number;
+    };
     instalacao: {
+      margemLucro: number;
+      imposto: number;
       custo: number;
       vendaProposto: number;
       vendaFinal: number;
     };
     maoDeObra: {
+      margemLucro: number;
+      imposto: number;
       custo: number;
       vendaProposto: number;
       vendaFinal: number;
     };
     projeto: {
+      margemLucro: number;
+      imposto: number;
       custo: number;
       vendaProposto: number;
       vendaFinal: number;
     };
     venda: {
+      margemLucro: number;
+      imposto: number;
       custo: number;
       vendaProposto: number;
       vendaFinal: number;

@@ -1,5 +1,5 @@
 import { IKit, IProject, IProposeInfo } from "@/utils/models";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import genFactors from "../../utils/generationFactors.json";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -9,7 +9,11 @@ import { ImSad } from "react-icons/im";
 import { getPeakPotByModules, useKitQueryPipelines } from "@/utils/methods";
 import { toast } from "react-hot-toast";
 import ProposeKit from "../Cards/ProposeKit";
-
+import { VscFilter, VscFilterFilled } from "react-icons/vsc";
+import MultipleSelectInput from "../Inputs/MultipleSelectInput";
+import Suppliers from "../../utils/pvsuppliers.json";
+import TextInput from "../Inputs/TextInput";
+import { AiOutlineSearch } from "react-icons/ai";
 type SystemProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -17,7 +21,11 @@ type SystemProps = {
   moveToNextStage: React.Dispatch<React.SetStateAction<null>>;
   moveToPreviousStage: React.Dispatch<React.SetStateAction<null>>;
 };
-
+type Filters = {
+  suppliers: string[];
+  topology: string[];
+  search: string;
+};
 type QueryTypes = "KITS POR PREMISSA" | "TODOS OS KITS";
 function getIdealPowerInterval(
   consumption: number,
@@ -49,7 +57,12 @@ function System({
   //   )
   // );
   const [queryType, setQueryType] = useState<QueryTypes>("KITS POR PREMISSA");
-
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<Filters>({
+    suppliers: [],
+    topology: [],
+    search: "",
+  });
   const {
     data: kits,
     isSuccess: kitsSuccess,
@@ -85,7 +98,41 @@ function System({
     onError(err) {
       return err;
     },
+    refetchOnWindowFocus: false,
   });
+  const [filteredKits, setFilteredKits] = useState<IKit[] | undefined>(kits);
+  function handleFilters() {
+    var newArr;
+    if (filters.suppliers.length > 0) {
+      if (!newArr) newArr = kits;
+      newArr = newArr?.filter((x) => filters.suppliers.includes(x.fornecedor));
+    }
+    if (filters.topology.length > 0) {
+      if (!newArr) newArr = kits;
+      newArr = newArr?.filter((x) => filters.topology.includes(x.topologia));
+    }
+    if (!newArr) {
+      setFilteredKits(kits);
+      return kits;
+    } else {
+      setFilteredKits(newArr);
+      return newArr;
+    }
+  }
+  function handleSearchFilter(value: string) {
+    setFilters((prev) => ({ ...prev, search: value }));
+    if (value.trim().length > 0) {
+      if (filters.search.trim().length > 0) {
+        let filtered = handleFilters();
+        let newArr = filtered?.filter((x) =>
+          x.nome.toUpperCase().includes(value.toUpperCase())
+        );
+        setFilteredKits(newArr);
+      }
+    } else {
+      setFilteredKits(kits);
+    }
+  }
   function selectKit(kit: IKit) {
     const modules = kit.modulos;
     const inverters = kit.inversores;
@@ -105,6 +152,10 @@ function System({
     }));
     moveToNextStage(null);
   }
+  useEffect(() => {
+    setFilteredKits(kits);
+  }, [kits]);
+  console.log(filteredKits);
   return (
     <div className="flex min-h-[400px] w-full flex-col gap-2 py-4">
       <div className="flex w-full items-center justify-center">
@@ -113,30 +164,125 @@ function System({
           necessidades desse projeto.
         </h1>
       </div>
-      <div className="flex items-center justify-between">
-        <h1 className="font-bold">KITS FECHADOS</h1>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setQueryType("KITS POR PREMISSA")}
-            className={`${
-              queryType == "KITS POR PREMISSA"
-                ? "bg-[#fead61] text-white hover:bg-transparent hover:text-[#fead61]"
-                : "text-[#fead61] hover:bg-[#fead61] hover:text-white"
-            } rounded border border-[#fead61] px-2 py-1  font-medium`}
-          >
-            MOSTRAR KITS IDEAIS
-          </button>
-          <button
-            onClick={() => setQueryType("TODOS OS KITS")}
-            className={`${
-              queryType == "TODOS OS KITS"
-                ? "bg-[#15599a] text-white hover:bg-transparent hover:text-[#15599a]"
-                : "text-[#15599a] hover:bg-[#15599a] hover:text-white"
-            } rounded border border-[#15599a] px-2 py-1  font-medium`}
-          >
-            MOSTRAR TODOS OS KITS
-          </button>
+      <div className="flex w-full flex-col border-b border-gray-200 pb-2">
+        <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+          <h1 className="font-bold">
+            KITS FECHADOS ({filteredKits ? filteredKits.length : "..."})
+          </h1>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setQueryType("KITS POR PREMISSA")}
+              className={`${
+                queryType == "KITS POR PREMISSA"
+                  ? "bg-[#fead61] text-white hover:bg-transparent hover:text-[#fead61]"
+                  : "text-[#fead61] hover:bg-[#fead61] hover:text-white"
+              } rounded border border-[#fead61] px-2 py-1  font-medium`}
+            >
+              MOSTRAR KITS IDEAIS
+            </button>
+            <button
+              onClick={() => setQueryType("TODOS OS KITS")}
+              className={`${
+                queryType == "TODOS OS KITS"
+                  ? "bg-[#15599a] text-white hover:bg-transparent hover:text-[#15599a]"
+                  : "text-[#15599a] hover:bg-[#15599a] hover:text-white"
+              } rounded border border-[#15599a] px-2 py-1  font-medium`}
+            >
+              MOSTRAR TODOS OS KITS
+            </button>
+            <button
+              onClick={() => setShowFilters((prev) => !prev)}
+              className={`rounded border border-[#15599a] px-2 py-1 ${
+                showFilters
+                  ? "bg-[#15599a] text-white"
+                  : "bg-white text-[#15599a]"
+              } `}
+            >
+              {showFilters ? (
+                <VscFilterFilled style={{ fontSize: "22px" }} />
+              ) : (
+                <VscFilter style={{ fontSize: "22px" }} />
+              )}
+            </button>
+          </div>
         </div>
+        {showFilters ? (
+          <div className="mt-2 flex w-full flex-wrap items-center justify-between gap-1">
+            <TextInput
+              label="PESQUISA"
+              value={filters.search}
+              handleChange={(value) => {
+                handleSearchFilter(value);
+              }}
+              placeholder="Pesquisa aqui o nome do kit..."
+            />
+            <div className="flex items-end gap-1">
+              <MultipleSelectInput
+                label="FORNECEDORES"
+                selected={
+                  filters.suppliers.length > 0
+                    ? filters.suppliers.map((supplier) => supplier)
+                    : null
+                }
+                options={Suppliers.map((supplier) => {
+                  return {
+                    id: supplier.id,
+                    label: supplier.nome,
+                    value: supplier.nome,
+                  };
+                })}
+                selectedItemLabel="NÃO DEFINIDO"
+                handleChange={(value: string[] | []) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    suppliers: value,
+                  }));
+                }}
+                onReset={() => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    suppliers: [],
+                  }));
+                }}
+              />
+              <MultipleSelectInput
+                label="TOPOLOGIA"
+                selected={
+                  filters.topology.length > 0
+                    ? filters.topology.map((supplier) => supplier)
+                    : null
+                }
+                options={[
+                  { id: 1, label: "INVERSOR", value: "INVERSOR" },
+                  {
+                    id: 2,
+                    label: "MICRO-INVERSOR",
+                    value: "MICRO-INVERSOR",
+                  },
+                ]}
+                selectedItemLabel="NÃO DEFINIDO"
+                handleChange={(value: string[] | []) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    topology: value,
+                  }));
+                }}
+                onReset={() => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    topology: [],
+                  }));
+                }}
+              />
+              <button
+                onClick={() => handleFilters()}
+                className="flex h-[46px] items-center justify-center rounded border border-[#fead61] p-3 text-[#fead61] hover:bg-[#fead61] hover:text-black"
+              >
+                <AiOutlineSearch />
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <div className="flex w-full grow flex-wrap justify-around gap-2">
@@ -155,7 +301,7 @@ function System({
         ) : null}
         {kitsSuccess ? (
           kits.length > 0 ? (
-            kits.map((kit, index) => (
+            filteredKits?.map((kit, index) => (
               <ProposeKit
                 key={index}
                 kit={kit}

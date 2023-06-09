@@ -116,22 +116,37 @@ const proposeSchema = z.object({
     }),
   }),
   precificacao: z.object({
+    kit: z.object({
+      margemLucro: z.number(),
+      imposto: z.number(),
+      custo: z.number(),
+      vendaProposto: z.number(),
+      vendaFinal: z.number(),
+    }),
     instalacao: z.object({
+      margemLucro: z.number(),
+      imposto: z.number(),
       custo: z.number(),
       vendaProposto: z.number(),
       vendaFinal: z.number(),
     }),
     maoDeObra: z.object({
+      margemLucro: z.number(),
+      imposto: z.number(),
       custo: z.number(),
       vendaProposto: z.number(),
       vendaFinal: z.number(),
     }),
     projeto: z.object({
+      margemLucro: z.number(),
+      imposto: z.number(),
       custo: z.number(),
       vendaProposto: z.number(),
       vendaFinal: z.number(),
     }),
     venda: z.object({
+      margemLucro: z.number(),
+      imposto: z.number(),
       custo: z.number(),
       vendaProposto: z.number(),
       vendaFinal: z.number(),

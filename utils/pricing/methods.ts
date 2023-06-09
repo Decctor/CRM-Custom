@@ -15,6 +15,13 @@ type SaleCostArguments = {
   paPrice: number;
 };
 export interface PricesObj {
+  kit: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
   instalacao: {
     margemLucro: number;
     imposto: number;
@@ -48,6 +55,7 @@ interface IPriceDescription {
   [key: string]: string;
 }
 export const priceDescription: IPriceDescription = {
+  kit: "KIT FOTOVOLTAICO",
   instalacao: "INSTALAÇÃO",
   maoDeObra: "MÃO DE OBRA",
   projeto: "CUSTOS DE PROJETO",
@@ -186,6 +194,13 @@ export function getPrices(
   const delivery = 1; // to be defined
 
   var prices: PricesObj = {
+    kit: {
+      margemLucro: fixedMargin,
+      imposto: 0,
+      custo: kitPrice,
+      vendaProposto: getProposedPrice(kitPrice, 0),
+      vendaFinal: getProposedPrice(kitPrice, 0),
+    },
     instalacao: {
       margemLucro: fixedMargin,
       imposto: fixedTaxAliquot,
