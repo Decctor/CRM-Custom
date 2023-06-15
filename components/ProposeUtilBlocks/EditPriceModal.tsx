@@ -44,7 +44,11 @@ function EditPriceModal({
             <div className="w-full self-center lg:w-[50%]">
               <NumberInput
                 label="MARGEM DE LUCRO"
-                value={pricing[tag].margemLucro}
+                value={
+                  pricing[tag].margemLucro
+                    ? Number(pricing[tag].margemLucro.toFixed(2))
+                    : 0
+                }
                 placeholder="Valor da margem de lucro..."
                 handleChange={(value) => {
                   const newSellingPrice = getProposedPrice(
@@ -68,7 +72,11 @@ function EditPriceModal({
             <div className="w-full self-center lg:w-[50%]">
               <NumberInput
                 label="TAXA DE IMPOSTO"
-                value={pricing[tag].imposto}
+                value={
+                  pricing[tag].imposto
+                    ? Number(pricing[tag].imposto.toFixed(2))
+                    : 0
+                }
                 placeholder="Valor da taxa de imposto..."
                 handleChange={(value) => {
                   const newSellingPrice = getProposedPrice(
@@ -91,7 +99,11 @@ function EditPriceModal({
             <div className="w-full self-center lg:w-[50%]">
               <NumberInput
                 label="PREÇO DE VENDA"
-                value={pricing[tag].vendaFinal}
+                value={
+                  pricing[tag].vendaFinal
+                    ? Number(pricing[tag].vendaFinal.toFixed(2))
+                    : 0
+                }
                 placeholder="Valor de venda final..."
                 handleChange={(value) => {
                   const newMargin = getMarginValue(

@@ -4,13 +4,46 @@ import {
   validateAuthentication,
   validateAuthorization,
 } from "@/utils/api";
-import { creditors } from "@/utils/constants";
+import { creditors, funnels } from "@/utils/constants";
 import { formatUpdateSetObject } from "@/utils/methods";
-import { IProject } from "@/utils/models";
+import { IProject, ProjectActivity } from "@/utils/models";
+import dayjs from "dayjs";
 import createHttpError from "http-errors";
 import { ObjectId } from "mongodb";
 import { NextApiHandler } from "next";
 import { z } from "zod";
+
+function formatActivitiesWithStatus(activities: ProjectActivity[]) {
+  const formatted = activities.map((activity) => {
+    const diff = dayjs(activity.dataVencimento).diff(dayjs(), "days");
+    if (diff > 5) {
+      return {
+        ...activity,
+        status: "VERDE",
+      };
+    }
+    if (diff < 5 && diff >= 1) {
+      return {
+        ...activity,
+        status: "LARANJA",
+      };
+    }
+
+    if (diff < 1) {
+      return {
+        ...activity,
+        status: "VERMELHO",
+      };
+    } else {
+      return {
+        ...activity,
+        status: "VERDE",
+      };
+    }
+  });
+
+  return formatted;
+}
 
 type PostResponse = {
   data: IProject;
@@ -99,6 +132,7 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
   await validateAuthentication(req);
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projects");
+  const eventsCollection = db.collection("projectsEvents");
   const { id, responsible, funnel, after, before } = req.query;
   if (id && typeof id === "string") {
     const project = await collection
@@ -126,9 +160,16 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
   } else {
     var queryParam = {};
     if (typeof responsible != "string") throw "ID de responsável inválido.";
+    var mode = "responsavel.id";
+    // Checking for the funnels mode parameters
+    if (funnel != "null" && typeof funnel === "string") {
+      const correspondentFunnel = funnels.find((x) => x.id === Number(funnel));
+      if (correspondentFunnel && correspondentFunnel.modo == "REPRESENTANTE")
+        mode = "representante.id";
+    }
     if (funnel != "null" && responsible != "null") {
       queryParam = {
-        "responsavel.id": responsible,
+        [mode]: responsible,
         "funis.id": Number(funnel),
       };
     }
@@ -139,7 +180,7 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
     }
     if (funnel == "null" && responsible != "null") {
       queryParam = {
-        "responsavel.id": responsible,
+        [mode]: responsible,
       };
     }
     if (after != "undefined" && before != "undefined") {
@@ -155,6 +196,7 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         ],
       };
     }
+    console.log(queryParam);
     const projects = await collection
       .aggregate([
         {
@@ -175,7 +217,22 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         },
       ])
       .toArray();
-    res.status(200).json({ data: projects });
+    const openActivities = await eventsCollection
+      .find({
+        categoria: "ATIVIDADE",
+        dataConclusao: null,
+      })
+      .toArray();
+    const formatted = projects.map((project: IProject) => {
+      const correpondentActivities = openActivities.filter(
+        (act: ProjectActivity) => act.projetoId == project._id
+      );
+      return {
+        ...project,
+        atividades: formatActivitiesWithStatus(correpondentActivities),
+      };
+    });
+    res.status(200).json({ data: formatted });
   }
 };
 

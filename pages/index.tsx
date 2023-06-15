@@ -374,31 +374,13 @@ export default function Home() {
                             responsavel_avatar: responsibles?.filter(
                               (resp) => resp.id == item.responsavel.id
                             )[0].avatar_url,
+                            atividades: item.atividades,
                           };
                         }
                       )}
                     />
                   ))
               ) : null}
-              {/* <FunnelList
-                stageName="APRESENTAÇÃO DE PROPOSTA"
-                items={[
-                  { id: "11a2141kkoa", name: "LUCAS" },
-                  { id: "12adçaddadmja", name: "ADRIANO" },
-                  { id: "13sakaosa", name: "NATHAN" },
-                ]}
-              />
-              <FunnelList
-                stageName="PARA ATENDER"
-                items={[
-                  { id: "14asiwjqw", name: "ANA" },
-                  { id: "15aavab", name: "MATHEUS" },
-                  { id: "16a141adhau", name: "JOÃO" },
-                  { id: "17apdppoeqj", name: "MARIA" },
-                  { id: "adajdi131231", name: "ISA" },
-                  { id: "421kjaidjai", name: "BIA" },
-                ]}
-              /> */}
             </div>
           </DragDropContext>
         ) : null}

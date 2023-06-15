@@ -53,8 +53,8 @@ function ActivityBlock({ event, projectId }: ActivityBlockProps) {
       <div className="flex w-full items-center justify-between">
         <div className="w-fit">
           <CheckboxInput
-            labelFalse={"TESTE"}
-            labelTrue="TESTE"
+            labelFalse={event.titulo}
+            labelTrue={event.titulo}
             checked={!!event.dataConclusao}
             handleChange={() => updateActivity()}
             padding="0.25rem"

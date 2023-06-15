@@ -1,6 +1,7 @@
 import React from "react";
 import FunnelListItem from "./FunnelListItem";
 import { Droppable } from "react-beautiful-dnd";
+import { ProjectActivity } from "@/utils/models";
 
 interface IFunnelListProps {
   stageName: string;
@@ -10,6 +11,7 @@ interface IFunnelListProps {
     name: string;
     responsavel: string;
     [key: string]: string | unknown;
+    atividades?: ProjectActivity[];
   }[];
 }
 function FunnelList({ stageName, items, id }: IFunnelListProps) {

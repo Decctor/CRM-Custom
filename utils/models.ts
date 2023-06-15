@@ -14,6 +14,7 @@ type Etiqueta = {
 export type Funnel = {
   id: number;
   nome: string;
+  modo: "RESPONSÁVEL" | "REPRESENTANTE";
   etapas: { id: number; nome: string }[];
 };
 export interface IMessage {
@@ -206,6 +207,7 @@ export interface IProject {
   etiquetasIds?: number[];
   funis?: { id: number; etapaId: number }[];
   notas?: { id: number; data: Date; usuario: string; mensagem: string }[];
+  atividades?: ProjectActivity[];
   dataInsercao: string;
   dataConclusao?: string;
 }
@@ -321,6 +323,7 @@ export type ProjectActivity = {
   dataInsercao?: string;
   dataConclusao?: string;
   responsavelId?: string;
+  status?: "VERDE" | "LARANJA" | "VERMELHO";
 };
 export type ProjectNote = {
   _id?: string;

@@ -3,14 +3,14 @@ import {
   PricesObj,
   getMarginValue,
   getPrices,
-  getProposedPrice,
   getTaxValue,
-  priceDescription,
 } from "@/utils/pricing/methods";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
+import { AiFillEdit } from "react-icons/ai";
 import PricingTable from "../ProposeUtilBlocks/PricingTable";
 import PricingTableNonEditable from "../ProposeUtilBlocks/PricingTableNonEditable";
+import EditProposePrice from "../ProposeUtilBlocks/EditProposePrice";
 type SaleProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -26,6 +26,8 @@ function Sale({
   moveToPreviousStage,
 }: SaleProps) {
   const { data: session } = useSession({ required: true });
+  const [editFinalPriceModalIsOpen, setEditFinalPriceModalIsOpen] =
+    useState<boolean>(false);
   const [pricing, setPricing] = useState(getPrices(project, proposeInfo));
   function getTotals() {
     // const kitPrice = proposeInfo.kit ? proposeInfo.kit.preco : 0;
@@ -90,6 +92,7 @@ function Sale({
           proposeInfo={proposeInfo}
           pricing={pricing}
           setPricing={setPricing}
+          session={session}
         />
       ) : (
         <PricingTableNonEditable
@@ -98,7 +101,25 @@ function Sale({
           setPricing={setPricing}
         />
       )}
-
+      <div className="flex w-full items-center justify-center py-1">
+        <div className="flex gap-2 rounded border border-gray-600 px-2 py-1 font-medium text-gray-600">
+          <p>
+            R$
+            {getTotals().finalProposePrice.toLocaleString("pt-br", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </p>
+          {session?.user.permissoes.propostas.editarPrecos ? (
+            <button
+              onClick={() => setEditFinalPriceModalIsOpen((prev) => !prev)}
+              className="text-md text-gray-400 hover:text-[#fead61]"
+            >
+              <AiFillEdit />
+            </button>
+          ) : null}
+        </div>
+      </div>
       <div className="flex w-full items-center justify-between gap-2 px-1">
         <button
           onClick={() => moveToPreviousStage(null)}
@@ -113,6 +134,14 @@ function Sale({
           Prosseguir
         </button>
       </div>
+      {editFinalPriceModalIsOpen ? (
+        <EditProposePrice
+          pricing={pricing}
+          setPricing={setPricing}
+          closeModal={() => setEditFinalPriceModalIsOpen(false)}
+          finalProposePrice={getTotals().finalProposePrice}
+        />
+      ) : null}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { IProposeInfo } from "@/utils/models";
+import { IProposeInfo, ISession } from "@/utils/models";
 import {
   PricesObj,
   getMarginValue,
@@ -14,12 +14,18 @@ type PricingTableProps = {
   pricing: PricesObj;
   setPricing: React.Dispatch<React.SetStateAction<PricesObj>>;
   proposeInfo: IProposeInfo;
+  session: ISession;
 };
 type EditPriceModalState = {
   isOpen: boolean;
   priceTag: string | null;
 };
-function PricingTable({ pricing, setPricing, proposeInfo }: PricingTableProps) {
+function PricingTable({
+  pricing,
+  setPricing,
+  proposeInfo,
+  session,
+}: PricingTableProps) {
   const [editPriceModal, setEditPriceModal] = useState<EditPriceModalState>({
     isOpen: false,
     priceTag: null,
@@ -199,14 +205,16 @@ function PricingTable({ pricing, setPricing, proposeInfo }: PricingTableProps) {
                   minimumFractionDigits: 2,
                 })}
               </h1>
-              <button
-                onClick={() =>
-                  setEditPriceModal({ isOpen: true, priceTag: priceType })
-                }
-                className="text-md text-gray-400 hover:text-[#fead61]"
-              >
-                <AiFillEdit />
-              </button>
+              {session.user.permissoes.propostas.editarPrecos ? (
+                <button
+                  onClick={() =>
+                    setEditPriceModal({ isOpen: true, priceTag: priceType })
+                  }
+                  className="text-md text-gray-400 hover:text-[#fead61]"
+                >
+                  <AiFillEdit />
+                </button>
+              ) : null}
             </div>
           </div>
         );

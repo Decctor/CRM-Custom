@@ -45,6 +45,7 @@ export const funnels: Funnel[] = [
   {
     id: 1,
     nome: "VENDAS",
+    modo: "RESPONSÁVEL",
     etapas: [
       { id: 1, nome: "Para Atender" },
       { id: 2, nome: "Para Qualificar" },
@@ -58,7 +59,8 @@ export const funnels: Funnel[] = [
   },
   {
     id: 2,
-    nome: "TESTE",
+    nome: "INSIDE SALES (TESTE)",
+    modo: "REPRESENTANTE",
     etapas: [
       { id: 1, nome: "Para Atender" },
       { id: 2, nome: "Para Qualificar" },
