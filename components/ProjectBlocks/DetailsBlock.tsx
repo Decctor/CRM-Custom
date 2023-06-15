@@ -8,12 +8,16 @@ import {
   useProject,
   useResponsibles,
 } from "@/utils/methods";
-import { IProject, ISession } from "@/utils/models";
-import { AiOutlineCheck } from "react-icons/ai";
+import { Funnel, IProject, ISession } from "@/utils/models";
+import { AiOutlineCheck, AiOutlinePlus } from "react-icons/ai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { creditors, customersAcquisitionChannels } from "@/utils/constants";
+import {
+  creditors,
+  customersAcquisitionChannels,
+  funnels,
+} from "@/utils/constants";
 import NumberInput from "../Inputs/NumberInput";
 import SingleFileInput from "../Inputs/SingleFileInput";
 import {
@@ -31,10 +35,39 @@ type DetailsBlockType = {
   projectId: string;
 };
 
+function getCurrentActiveFunnelOptions(funnelId: number, funnels: Funnel[]) {
+  let funnel = funnels.filter((funnel) => funnel.id == funnelId)[0];
+  return funnel.etapas.map((stage) => {
+    return {
+      id: stage.id,
+      label: stage.nome,
+      value: stage.id,
+    };
+  });
+}
+
 function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
   const [infoHolder, setInfoHolder] = useState<IProject>(info);
+  const [newFunnelHolder, setNewFunnelHolder] = useState<{
+    id: number | null;
+    etapaId: number | null;
+  }>({
+    id: null,
+    etapaId: null,
+  });
   const { data: responsibles } = useResponsibles();
   const queryClient = useQueryClient();
+
+  function addFunnel() {
+    var funnelArrCopy = infoHolder.funis ? infoHolder.funis : [];
+
+    funnelArrCopy.push({
+      id: newFunnelHolder.id ? newFunnelHolder.id : 0,
+      etapaId: newFunnelHolder.etapaId ? newFunnelHolder.etapaId : 0,
+    });
+    updateData("PROJETO", "funis", funnelArrCopy);
+    setNewFunnelHolder({ id: null, etapaId: null });
+  }
 
   // Update/mutate functions
   const { mutate: updateClient } = useMutation({
@@ -172,7 +205,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
       updateProject(obj);
     }
   }
-
+  console.log(infoHolder);
   return (
     <div className="flex w-full flex-col gap-6 lg:flex-row">
       <div className="flex w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">
@@ -240,6 +273,176 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
               />
             </button>
           </div>
+          <div className="flex w-full flex-col gap-1">
+            <label className="font-sans font-bold  text-[#353432]">FUNIS</label>
+            {infoHolder.funis?.map((funnel, index) => (
+              <div key={index} className="flex w-full gap-2">
+                <div className="flex grow items-center gap-1">
+                  <div className="w-[50%]">
+                    <DropdownSelect
+                      categoryName="FUNIL"
+                      selectedItemLabel="FUNIL NÃO DEFINIDO"
+                      options={funnels.map((funnel) => {
+                        return {
+                          id: funnel.id,
+                          label: funnel.nome,
+                          value: funnel.id,
+                        };
+                      })}
+                      editable={false}
+                      value={
+                        infoHolder.funis ? infoHolder.funis[index].id : null
+                      }
+                      onChange={(selected) => {
+                        console.log();
+                      }}
+                      onReset={() =>
+                        // setNewProject((prev) => ({ ...prev, funis: [] }))
+                        console.log()
+                      }
+                      width="100%"
+                    />
+                  </div>
+                  <div className="w-[50%]">
+                    <DropdownSelect
+                      categoryName="ETAPA"
+                      selectedItemLabel="ETAPA NÃO DEFINIDA"
+                      options={
+                        infoHolder.funis
+                          ? getCurrentActiveFunnelOptions(
+                              infoHolder.funis[index].id,
+                              funnels
+                            )
+                          : null
+                      }
+                      value={
+                        infoHolder.funis
+                          ? infoHolder.funis[index].etapaId
+                          : null
+                      }
+                      onChange={(selected) => {
+                        var funnelArr = infoHolder.funis
+                          ? [...infoHolder.funis]
+                          : [];
+                        funnelArr[index].etapaId = selected.value;
+                        setInfoHolder((prev) => ({
+                          ...prev,
+                          funis: funnelArr,
+                        }));
+                      }}
+                      onReset={() => console.log()}
+                      width="100%"
+                    />
+                  </div>
+                </div>
+                <button
+                  disabled={
+                    infoHolder.funis &&
+                    info.funis &&
+                    infoHolder?.funis[index].etapaId ==
+                      info.funis[index].etapaId
+                  }
+                  onClick={() =>
+                    updateData("PROJETO", "funis", infoHolder?.funis)
+                  }
+                  className="flex items-end justify-center pb-4 text-green-200"
+                >
+                  <AiOutlineCheck
+                    style={{
+                      fontSize: "18px",
+                      color:
+                        infoHolder.funis &&
+                        info.funis &&
+                        infoHolder.funis[index].etapaId !=
+                          info.funis[index].etapaId
+                          ? "rgb(34,197,94)"
+                          : "rgb(156,163,175)",
+                    }}
+                  />
+                </button>
+              </div>
+            ))}
+            <div className="mt-2 flex w-full gap-2">
+              <div className="flex grow items-center gap-1">
+                <div className="w-[50%]">
+                  <DropdownSelect
+                    categoryName="NOVO FUNIL"
+                    selectedItemLabel="FUNIL NÃO DEFINIDO"
+                    options={funnels
+                      .filter(
+                        (funnel) =>
+                          !infoHolder.funis?.some((x) => x.id == funnel.id)
+                      )
+                      .map((funnel) => {
+                        return {
+                          id: funnel.id,
+                          label: funnel.nome,
+                          value: funnel.id,
+                        };
+                      })}
+                    value={newFunnelHolder.id ? newFunnelHolder.id : null}
+                    onChange={(selected) => {
+                      setNewFunnelHolder((prev) => ({
+                        ...prev,
+                        id: selected.value,
+                        etapaId: 1,
+                      }));
+                    }}
+                    onReset={() =>
+                      // setNewProject((prev) => ({ ...prev, funis: [] }))
+                      setNewFunnelHolder({ id: null, etapaId: null })
+                    }
+                    width="100%"
+                  />
+                </div>
+                <div className="w-[50%]">
+                  <DropdownSelect
+                    categoryName="ETAPA"
+                    selectedItemLabel="ETAPA NÃO DEFINIDA"
+                    options={
+                      newFunnelHolder.id
+                        ? getCurrentActiveFunnelOptions(
+                            newFunnelHolder.id,
+                            funnels
+                          )
+                        : null
+                    }
+                    value={
+                      newFunnelHolder.etapaId ? newFunnelHolder.etapaId : null
+                    }
+                    onChange={(selected) => {
+                      setNewFunnelHolder((prev) => ({
+                        ...prev,
+                        etapaId: selected.value,
+                      }));
+                    }}
+                    onReset={() =>
+                      setNewFunnelHolder((prev) => ({
+                        ...prev,
+                        etapaId: 1,
+                      }))
+                    }
+                    width="100%"
+                  />
+                </div>
+              </div>
+              <button
+                disabled={!newFunnelHolder.id}
+                onClick={() => addFunnel()}
+                className="flex items-end justify-center pb-4 text-green-200"
+              >
+                <AiOutlinePlus
+                  style={{
+                    fontSize: "18px",
+                    color: !!newFunnelHolder.id
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                  }}
+                />
+              </button>
+            </div>
+          </div>
+
           <h1 className="text-center text-sm font-medium text-[#fead61]">
             DADOS ADICIONAIS DO CLIENTE
           </h1>

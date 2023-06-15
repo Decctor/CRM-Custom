@@ -125,12 +125,14 @@ export interface ISession {
         editar: boolean;
       };
       comissoes: {
+        // avaliar necessidade desse objeto de permissões, possivelmente remodelar
         visualizarComissaoResponsavel: boolean;
         editarComissaoResponsavel: boolean;
         visualizarComissaoRepresentante: boolean;
         editarComissaoRepresentante: boolean;
       };
       dimensionamento: {
+        // avaliar necessidade desse objeto de permissões
         editarPremissas: boolean;
         editarFatorDeGeracao: boolean;
         editarInclinacao: boolean;
@@ -145,14 +147,14 @@ export interface ISession {
       propostas: {
         visualizarPrecos: boolean;
         editarPrecos: boolean;
-        visualizarMargem: boolean;
-        editarMargem: boolean;
+        visualizarMargem: boolean; // avaliar necessidade
+        editarMargem: boolean; // avaliar necessidade
       };
       projetos: {
         serResponsavel: boolean;
         editar: boolean;
-        visualizarDocumentos: boolean;
-        editarDocumentos: boolean;
+        visualizarDocumentos: boolean; // avaliar necessidade
+        editarDocumentos: boolean; // avaliar necessidade
       };
       clientes: {
         serRepresentante: boolean;
