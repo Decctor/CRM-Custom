@@ -20,7 +20,7 @@ function NoteCard({ event }: NoteCardProps) {
           <IoIosCalendar style={{ fontSize: "20px" }} />
           <p>
             {event.dataInsercao
-              ? dayjs(event.dataInsercao).format("DD/MM/YYYY hh:mm")
+              ? dayjs(event.dataInsercao).format("DD/MM/YYYY HH:mm")
               : null}
           </p>{" "}
         </div>

@@ -9,7 +9,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FaSolarPanel } from "react-icons/fa";
 import { ModuleType } from "@/utils/models";
 import Modules from "../../utils/pvmodules.json";
-import { ImPower, ImPriceTag } from "react-icons/im";
+
 import LoadingPage from "@/components/utils/LoadingPage";
 import NotAuthorizedPage from "@/components/utils/NotAuthorizedPage";
 import Kit from "@/components/Cards/Kit";

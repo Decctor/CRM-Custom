@@ -22,14 +22,14 @@ function formatActivitiesWithStatus(activities: ProjectActivity[]) {
         status: "VERDE",
       };
     }
-    if (diff < 5 && diff >= 1) {
+    if (diff < 5 && diff >= -1) {
       return {
         ...activity,
         status: "LARANJA",
       };
     }
 
-    if (diff < 1) {
+    if (diff < -1) {
       return {
         ...activity,
         status: "VERMELHO",

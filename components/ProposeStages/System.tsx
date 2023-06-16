@@ -14,6 +14,7 @@ import MultipleSelectInput from "../Inputs/MultipleSelectInput";
 import Suppliers from "../../utils/pvsuppliers.json";
 import TextInput from "../Inputs/TextInput";
 import { AiOutlineSearch } from "react-icons/ai";
+import { useSession } from "next-auth/react";
 type SystemProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -72,6 +73,16 @@ function System({
     queryKey: ["queryKits", queryType],
     queryFn: async (): Promise<IKit[]> => {
       try {
+        console.log(
+          useKitQueryPipelines(
+            queryType,
+            getIdealPowerInterval(
+              proposeInfo.premissas.consumoEnergiaMensal,
+              project.cliente?.cidade,
+              project.cliente?.uf
+            )
+          )
+        );
         const { data } = await axios.post("/api/kits/query", {
           pipeline: useKitQueryPipelines(
             queryType,

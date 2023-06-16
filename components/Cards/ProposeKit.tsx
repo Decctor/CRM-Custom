@@ -6,6 +6,7 @@ import { ImPower, ImPriceTag } from "react-icons/im";
 import { TbTopologyFullHierarchy } from "react-icons/tb";
 import Modules from "../../utils/pvmodules.json";
 import { HiOutlineChevronRight } from "react-icons/hi";
+import { useSession } from "next-auth/react";
 type KitCardProps = {
   kit: IKit;
   handleSelect: (kit: IKit) => void;
@@ -21,6 +22,7 @@ function getPeakPotByModules(modules: ModuleType[]) {
   return peakPotSum / 1000;
 }
 function ProposeKit({ kit, handleSelect }: KitCardProps) {
+  const { data: session } = useSession();
   return (
     <div className="flex min-h-[290px] w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg">
       <h1 className="text-center text-lg font-medium text-gray-800">
@@ -31,18 +33,25 @@ function ProposeKit({ kit, handleSelect }: KitCardProps) {
         <div className="flex w-1/2 items-center justify-start gap-2">
           <ImPower style={{ color: "rgb(239,68,68)", fontSize: "20px" }} />
           <p className="text-xs font-thin text-gray-600">
-            {getPeakPotByModules(kit.modulos)} kWp
+            {getPeakPotByModules(kit.modulos).toLocaleString("pt-br", {
+              minimumFractionDigits: 1,
+              maximumFractionDigits: 2,
+            })}{" "}
+            kWp
           </p>
         </div>
-        <div className="flex w-1/2 items-center justify-end gap-2">
-          <ImPriceTag style={{ color: "rgb(34,197,94)", fontSize: "20px" }} />
-          <p className="text-xs font-thin text-gray-600">
-            R${" "}
-            {kit.preco.toLocaleString("pt-br", {
-              minimumFractionDigits: 2,
-            })}
-          </p>
-        </div>
+        {session?.user.permissoes.propostas.visualizarPrecos ? (
+          <div className="flex w-1/2 items-center justify-end gap-2">
+            <ImPriceTag style={{ color: "rgb(34,197,94)", fontSize: "20px" }} />
+
+            <p className="text-xs font-thin text-gray-600">
+              R${" "}
+              {kit.preco.toLocaleString("pt-br", {
+                minimumFractionDigits: 2,
+              })}
+            </p>
+          </div>
+        ) : null}
       </div>
       <div className="flex w-full items-start">
         <div className="flex w-1/2 flex-col items-start">

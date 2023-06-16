@@ -271,7 +271,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
                   value={
                     dayjs(newEvent.dataVencimento).isValid()
                       ? dayjs(newEvent.dataVencimento).format(
-                          "YYYY-MM-DDThh:mm"
+                          "YYYY-MM-DDTHH:mm"
                         )
                       : undefined
                   }

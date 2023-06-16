@@ -26,7 +26,7 @@ function ProjectOpenActivities({
     mutationFn: async (event: ProjectActivity) => {
       try {
         const { data } = await axios.put(
-          `/api/projects/events?id=${event._id}`,
+          `/api/projects/events?id=${event._id}&responsible=${event.responsavelId}`,
           {
             dataConclusao: event.dataConclusao
               ? null

@@ -5,6 +5,7 @@ import {
   validateAuthorization,
 } from "@/utils/api";
 import { ProjectActivity, ProjectNote } from "@/utils/models";
+import createHttpError from "http-errors";
 import { ObjectId } from "mongodb";
 import { NextApiHandler } from "next";
 import { z } from "zod";
@@ -174,12 +175,27 @@ const eventEditSchema = z.union([
   }),
 ]);
 const updateEvent: NextApiHandler<PutResponse> = async (req, res) => {
-  await validateAuthentication(req);
-  const { id } = req.query;
+  const session = await validateAuthorization(
+    req,
+    "projetos",
+    "serResponsavel",
+    true
+  );
+
+  const { id, responsible } = req.query;
   const changes = eventEditSchema.parse(req.body);
-  console.log(changes);
+
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projectsEvents");
+  console.log(req.query);
+  if (
+    !session.user.permissoes.projetos.editar &&
+    responsible != session.user.id
+  ) {
+    throw new createHttpError.Unauthorized(
+      "Somente o responsável ou administradores podem alterar essa anotação/atividade."
+    );
+  }
   if (typeof id === "string") {
     const data = await collection.findOneAndUpdate(
       {
@@ -192,7 +208,7 @@ const updateEvent: NextApiHandler<PutResponse> = async (req, res) => {
         returnNewDocument: true,
       }
     );
-    res.status(201).json({ data: "Alteração realizar com sucesso!" });
+    res.status(201).json({ data: "Alteração realizada com sucesso!" });
   } else {
     throw "Tipo de ID inválido.";
   }

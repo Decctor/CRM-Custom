@@ -161,6 +161,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
         funis: [],
       });
       toast.success(data.message);
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     } catch (error) {
       if (error instanceof AxiosError) {
         let errorMsg = error.response?.data.error.message;

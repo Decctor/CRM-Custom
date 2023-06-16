@@ -21,7 +21,7 @@ function ActivityBlock({ event, projectId }: ActivityBlockProps) {
     mutationFn: async () => {
       try {
         const { data } = await axios.put(
-          `/api/projects/events?id=${event._id}`,
+          `/api/projects/events?id=${event._id}&responsible=${event.responsavelId}`,
           {
             dataConclusao: event.dataConclusao
               ? null
@@ -65,10 +65,15 @@ function ActivityBlock({ event, projectId }: ActivityBlockProps) {
             <BsFillCalendarCheckFill
               style={{ fontSize: "20px", color: "rgb(34,197,94)" }}
             />
-            <p>{dayjs(event.dataConclusao).format("DD/MM/YYYY hh:mm")}</p>{" "}
+            <p>{dayjs(event.dataConclusao).format("DD/MM/YYYY HH:mm")}</p>{" "}
           </div>
         ) : (
-          <div></div>
+          <div className="flex items-center gap-2">
+            <BsFillCalendarCheckFill
+              style={{ fontSize: "20px", color: "rgb(249,115,22)" }}
+            />
+            <p>{dayjs(event.dataVencimento).format("DD/MM/YYYY HH:mm")}</p>{" "}
+          </div>
         )}
       </div>
       <div className="flex w-full items-center justify-between">
@@ -80,7 +85,7 @@ function ActivityBlock({ event, projectId }: ActivityBlockProps) {
           <IoIosCalendar style={{ fontSize: "20px" }} />
           <p>
             {event.dataInsercao
-              ? dayjs(event.dataInsercao).format("DD/MM/YYYY hh:mm")
+              ? dayjs(event.dataInsercao).format("DD/MM/YYYY HH:mm")
               : null}
           </p>{" "}
         </div>
