@@ -37,6 +37,7 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
         >
           {openActivitiesModal && item.atividades ? (
             <ProjectOpenActivities
+              projectName={item.name}
               activities={item.atividades}
               setOpenActivitiesModal={setOpenActivitiesModal}
             />

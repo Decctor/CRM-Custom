@@ -1,5 +1,5 @@
 import { ProjectActivity } from "@/utils/models";
-import React from "react";
+import React, { useState } from "react";
 import { VscChromeClose } from "react-icons/vsc";
 import CheckboxInput from "../Inputs/CheckboxInput";
 import { BsFillCalendarCheckFill } from "react-icons/bs";
@@ -7,14 +7,18 @@ import dayjs from "dayjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 type ProjectOpenActivitiesProps = {
+  projectName: string;
   activities: ProjectActivity[];
   setOpenActivitiesModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 function ProjectOpenActivities({
+  projectName,
   activities,
   setOpenActivitiesModal,
 }: ProjectOpenActivitiesProps) {
+  const { data: session } = useSession();
   const queryClient = useQueryClient();
   function getTextColor(status: string | undefined) {
     if (status == "VERMELHO") return "text-red-500";
@@ -37,6 +41,19 @@ function ProjectOpenActivities({
           toast.success(data.data);
           queryClient.invalidateQueries({ queryKey: ["projects"] });
         }
+        if (session?.user.id != event.responsavelId) {
+          const notificationObj = {
+            remetenteId: "SISTEMA",
+            remetenteNome: "SISTEMA",
+            destinatarioId: event.responsavelId,
+            mensagem: `O USUÁRIO ${session?.user.name} finalizou sua atividade ${event.titulo} do projeto ${projectName}.`,
+          };
+          const { data } = await axios.post(
+            "/api/notifications",
+            notificationObj
+          );
+          console.log("NOTIFICAÇÃO ENVIADA.");
+        }
       } catch (error) {
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
@@ -51,6 +68,7 @@ function ProjectOpenActivities({
       }
     },
   });
+
   return (
     <div
       id="dropdown"

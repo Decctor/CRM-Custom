@@ -336,3 +336,12 @@ export type ProjectNote = {
   dataInsercao?: string;
   responsavelId?: string;
 };
+export interface INotification {
+  remetenteId: string;
+  remetenteNome: string;
+  destinatarioId: string;
+  projetoReferencia?: string;
+  mensagem: string;
+  dataLeitura?: string;
+  dataInsercao?: string;
+}
