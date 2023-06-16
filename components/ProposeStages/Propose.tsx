@@ -74,7 +74,14 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
     }
   }
   async function handleDownload() {
-    const obj = getProposeObject(project, proposeInfo);
+    const { data } = await axios.get(
+      `/api/responsibles?id=${project.responsavel.id}`
+    );
+    const seller = data.data
+      ? `${data.data.nome?.toUpperCase()} ${data.data.telefone}`
+      : null;
+    console.log("VENDEDOR", seller);
+    const obj = getProposeObject(project, proposeInfo, seller);
     const response = await axios.post("/api/utils/proposePdf", obj, {
       responseType: "blob",
     });

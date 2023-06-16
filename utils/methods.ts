@@ -134,13 +134,18 @@ export function getModulesStr(modules: ModuleType[]) {
   }
   return str;
 }
-export function getProposeObject(project: IProject, propose: IProposeInfo) {
+export function getProposeObject(
+  project: IProject,
+  propose: IProposeInfo,
+  seller: string | null
+) {
   const obj = {
     title: propose.projeto.nome,
     fontSize: 10,
     textColor: "#333333",
     data: {
       idProposta: `#${project._id}}`,
+      vendedor: seller,
       nomeCliente: project.cliente?.nome,
       cpfCnpj: project.cliente?.cpfCnpj,
       cidade: `${project.cliente?.cidade} - ${project.cliente?.uf}`,

@@ -172,6 +172,7 @@ export interface IResponsible {
   nome: string;
   id: string;
   avatar_url?: string;
+  telefone?: string;
   _id?: string;
 }
 export interface IProject {

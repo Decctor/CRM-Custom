@@ -27,6 +27,8 @@ const getResponsibles: NextApiHandler<GetResponse> = async (req, res) => {
           $project: {
             _id: 1,
             nome: 1,
+            avatar_url: 1,
+            telefone: 1,
           },
         },
       ])
@@ -38,6 +40,8 @@ const getResponsibles: NextApiHandler<GetResponse> = async (req, res) => {
     const responsible = {
       id: dbResponse[0]._id,
       nome: dbResponse[0].nome,
+      avatar_url: dbResponse[0].avatar_url,
+      telefone: dbResponse[0].telefone,
     };
 
     res.status(200).json({ data: responsible });
@@ -50,7 +54,7 @@ const getResponsibles: NextApiHandler<GetResponse> = async (req, res) => {
           },
         },
         {
-          $project: { _id: 1, nome: 1, avatar_url: 1 },
+          $project: { _id: 1, nome: 1, avatar_url: 1, telefone: 1 },
         },
       ])
       .toArray();
@@ -59,6 +63,7 @@ const getResponsibles: NextApiHandler<GetResponse> = async (req, res) => {
         id: resp._id,
         nome: resp.nome,
         avatar_url: resp.avatar_url,
+        telefone: resp.telefone,
       };
     });
     res.status(200).json({ data: responsibles });
