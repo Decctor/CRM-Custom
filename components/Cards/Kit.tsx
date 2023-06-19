@@ -22,7 +22,7 @@ function getPeakPotByModules(modules: ModuleType[]) {
 function Kit({ kit }: KitCardProps) {
   const { data: session } = useSession();
   return (
-    <div className="flex h-[400px] w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg">
+    <div className="flex h-[400px] w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50">
       <h1 className="text-center text-lg font-medium text-gray-800">
         {kit.nome}
       </h1>

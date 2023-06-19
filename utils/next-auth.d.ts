@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import { Comissao } from "./models";
 declare module "next-auth" {
   /**
    * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
@@ -12,6 +13,7 @@ declare module "next-auth" {
       image: string;
       visibilidade: "GERAL" | "PRÓPRIA" | string[];
       funisVisiveis: number[] | "TODOS";
+      comissao: Comissao | null;
       permissoes: {
         usuarios: {
           visualizar: boolean; // visualizar área de usuário em auth/users

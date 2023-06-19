@@ -3,62 +3,179 @@ import { Sidebar } from "@/components/Sidebar";
 import LoadingComponent from "@/components/utils/LoadingComponent";
 import { useKits } from "@/utils/methods";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
-import { TbTopologyFullHierarchy } from "react-icons/tb";
-import { AiOutlineShoppingCart } from "react-icons/ai";
-import { FaSolarPanel } from "react-icons/fa";
-import { ModuleType } from "@/utils/models";
+import React, { useEffect, useState } from "react";
+
+import { IKit, ModuleType } from "@/utils/models";
 import Modules from "../../utils/pvmodules.json";
 
 import LoadingPage from "@/components/utils/LoadingPage";
 import NotAuthorizedPage from "@/components/utils/NotAuthorizedPage";
 import Kit from "@/components/Cards/Kit";
+import { AiOutlineSearch } from "react-icons/ai";
+import TextInput from "@/components/Inputs/TextInput";
+import MultipleSelectInput from "@/components/Inputs/MultipleSelectInput";
+import Suppliers from "../../utils/pvsuppliers.json";
+
+type Filters = {
+  suppliers: string[];
+  topology: string[];
+  search: string;
+};
 function Kits() {
   const { data: session, status } = useSession({ required: true });
 
   const { data: kits = [], status: kitsStatus } = useKits();
+  const [filteredKits, setFilteredKits] = useState<IKit[] | undefined>(kits);
+  const [filters, setFilters] = useState<Filters>({
+    suppliers: [],
+    topology: [],
+    search: "",
+  });
   const [newKitModalIsOpen, setNewKitModalIsOpen] = useState(false);
-  console.log(kits);
 
-  function getPeakPotByModules(modules: ModuleType[]) {
-    var peakPotSum = 0;
-    for (let i = 0; i < modules.length; i++) {
-      const moduleInfo = Modules.find((mod) => mod.id == modules[i].id);
-      if (moduleInfo) {
-        peakPotSum = peakPotSum + modules[i].qtde * moduleInfo.potencia;
+  function handleSearchFilter(value: string) {
+    setFilters((prev) => ({ ...prev, search: value }));
+    if (value.trim().length > 0) {
+      if (filters.search.trim().length > 0) {
+        let filtered = handleFilters();
+        let newArr = filtered?.filter((x) =>
+          x.nome.toUpperCase().includes(value.toUpperCase())
+        );
+        setFilteredKits(newArr);
       }
+    } else {
+      setFilteredKits(kits);
     }
-    return peakPotSum / 1000;
   }
+  function handleFilters() {
+    var newArr;
+    if (filters.suppliers.length > 0) {
+      if (!newArr) newArr = kits;
+      newArr = newArr?.filter((x) => filters.suppliers.includes(x.fornecedor));
+    }
+    if (filters.topology.length > 0) {
+      if (!newArr) newArr = kits;
+      newArr = newArr?.filter((x) => filters.topology.includes(x.topologia));
+    }
+    if (!newArr) {
+      setFilteredKits(kits);
+      return kits;
+    } else {
+      setFilteredKits(newArr);
+      return newArr;
+    }
+  }
+
+  useEffect(() => {
+    setFilteredKits(kits);
+  }, [kits]);
+
   if (status == "loading") return <LoadingPage />;
   if (session.user.permissoes.kits.visualizar)
     return (
       <div className="flex h-full">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
-          <div className="flex flex-col items-center justify-between border-b border-[#fead61] pb-2 xl:flex-row">
-            <div className="flex items-center gap-2">
-              <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
-                KITS
-              </h1>
-              <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
-                ({kits.length})
-              </h1>
-            </div>
+          <div className="flex flex-col items-center border-b border-[#fead61] pb-2 ">
+            <div className="flex w-full items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
+                  KITS
+                </h1>
+                <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
+                  ({filteredKits ? filteredKits.length : 0})
+                </h1>
+              </div>
 
-            {session?.user.permissoes.kits.editar ? (
-              <button
-                onClick={() => setNewKitModalIsOpen(true)}
-                className="rounded bg-[#15599a] p-2 text-sm font-bold text-white"
-              >
-                NOVO KIT
-              </button>
-            ) : null}
+              {session?.user.permissoes.kits.editar ? (
+                <button
+                  onClick={() => setNewKitModalIsOpen(true)}
+                  className="rounded bg-[#15599a] p-2 text-sm font-bold text-white"
+                >
+                  NOVO KIT
+                </button>
+              ) : null}
+            </div>
+            <div className="mt-2 flex w-full flex-wrap items-center justify-between gap-1">
+              <TextInput
+                label="PESQUISA"
+                value={filters.search}
+                handleChange={(value) => {
+                  handleSearchFilter(value);
+                }}
+                placeholder="Pesquisa aqui o nome do kit..."
+              />
+              <div className="flex items-end gap-1">
+                <MultipleSelectInput
+                  label="FORNECEDORES"
+                  selected={
+                    filters.suppliers.length > 0
+                      ? filters.suppliers.map((supplier) => supplier)
+                      : null
+                  }
+                  options={Suppliers.map((supplier) => {
+                    return {
+                      id: supplier.id,
+                      label: supplier.nome,
+                      value: supplier.nome,
+                    };
+                  })}
+                  selectedItemLabel="NÃO DEFINIDO"
+                  handleChange={(value: string[] | []) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      suppliers: value,
+                    }));
+                  }}
+                  onReset={() => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      suppliers: [],
+                    }));
+                  }}
+                />
+                <MultipleSelectInput
+                  label="TOPOLOGIA"
+                  selected={
+                    filters.topology.length > 0
+                      ? filters.topology.map((supplier) => supplier)
+                      : null
+                  }
+                  options={[
+                    { id: 1, label: "INVERSOR", value: "INVERSOR" },
+                    {
+                      id: 2,
+                      label: "MICRO-INVERSOR",
+                      value: "MICRO-INVERSOR",
+                    },
+                  ]}
+                  selectedItemLabel="NÃO DEFINIDO"
+                  handleChange={(value: string[] | []) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      topology: value,
+                    }));
+                  }}
+                  onReset={() => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      topology: [],
+                    }));
+                  }}
+                />
+                <button
+                  onClick={() => handleFilters()}
+                  className="flex h-[46px] items-center justify-center rounded border border-[#fead61] p-3 text-[#fead61] hover:bg-[#fead61] hover:text-black"
+                >
+                  <AiOutlineSearch />
+                </button>
+              </div>
+            </div>
           </div>
           <div className="flex grow flex-wrap justify-around gap-3 p-3">
             {kitsStatus == "loading" ? <LoadingComponent /> : null}
             {kitsStatus == "success"
-              ? kits.map((kit, index) => <Kit key={index} kit={kit} />)
+              ? filteredKits?.map((kit, index) => <Kit key={index} kit={kit} />)
               : null}
             {kitsStatus == "error" ? (
               <div className="flex w-full grow items-center justify-center">

@@ -241,10 +241,9 @@ export const comissionTable = [
   {
     id: 1,
     nome: "VENDEDOR INTERNO",
-    margemPadrao: 12,
     comissaoPadraoRepresentante: 4,
-    comissaoSemResponsavel: 4,
-    comissaoComResponsavel: 2,
+    semRepresentante: 4,
+    comRepresentante: 2,
   },
 ];
 export const customersNich = [

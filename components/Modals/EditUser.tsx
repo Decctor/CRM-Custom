@@ -16,6 +16,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { BsCheckLg } from "react-icons/bs";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../services/firebase";
+import NumberInput from "../Inputs/NumberInput";
 interface IUserInfo {
   _id?: ObjectId | string;
   nome: string;
@@ -24,48 +25,38 @@ interface IUserInfo {
   telefone?: string;
   visibilidade: "GERAL" | "PRÓPRIA" | string[];
   funisVisiveis: number[] | "TODOS";
-  grupoPermissaoId: string | number;
+  grupoPermissaoId: string | number | null;
   comissao: Comissao | null;
   avatar_url?: string;
   permissoes:
     | {
         usuarios: {
-          visualizar: boolean;
-          editar: boolean;
+          visualizar: boolean; // visualizar área de usuário em auth/users
+          editar: boolean; // criar usuários e editar informações de usuários em auth/users
         };
         comissoes: {
-          visualizarComissaoResponsavel: boolean;
-          editarComissaoResponsavel: boolean;
-          visualizarComissaoRepresentante: boolean;
-          editarComissaoRepresentante: boolean;
-        };
-        dimensionamento: {
-          editarPremissas: boolean;
-          editarFatorDeGeracao: boolean;
-          editarInclinacao: boolean;
-          editarDesvio: boolean;
-          editarDesempenho: boolean;
-          editarSombreamento: boolean;
+          visualizar: boolean; // visualizar comissões de todos os usuários
+          editar: boolean; // editar comissões de todos os usuários
         };
         kits: {
-          visualizar: boolean;
-          editar: boolean;
+          visualizar: boolean; // visualizar área de kits e kits possíveis
+          editar: boolean; // editar e criar kits
         };
         propostas: {
-          visualizarPrecos: boolean;
-          editarPrecos: boolean;
-          visualizarMargem: boolean;
-          editarMargem: boolean;
+          visualizar: boolean; // visualizar área de controle de propostas
+          editar: boolean; // criar propostas em qualquer projeto e editar propostas de outros usuários
         };
         projetos: {
-          serResponsavel: boolean;
-          editar: boolean;
-          visualizarDocumentos: boolean;
-          editarDocumentos: boolean;
+          serResponsavel: boolean; // habilitado a ser responsável de projetos
+          editar: boolean; // editar informações de todos os projetos
         };
         clientes: {
-          serRepresentante: boolean;
-          editar: boolean;
+          serRepresentante: boolean; // habilitado a ser representante de clientes
+          editar: boolean; // editar informações de todos os clientes
+        };
+        precos: {
+          visualizar: boolean; // visualizar precificacao geral, com custos, impostos, lucro e afins de propostas e kits
+          editar: boolean; // editar precificacao de propostas
         };
       }
     | any;
@@ -83,9 +74,11 @@ function EditUser({ user, closeModal }: EditUserProps) {
     var splitNome = user.nome.toLowerCase().split(" ");
     var fixedNome = splitNome.join("_");
     var imageRef = ref(storage, `usuarios/crm/avatar-${fixedNome}`);
-    let res = await uploadBytes(imageRef, image);
-    let url = await getDownloadURL(ref(storage, res.metadata.fullPath));
-    return url;
+    if (image) {
+      let res = await uploadBytes(imageRef, image);
+      let url = await getDownloadURL(ref(storage, res.metadata.fullPath));
+      return url;
+    }
   }
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -156,7 +149,9 @@ function EditUser({ user, closeModal }: EditUserProps) {
                     }}
                   />
                   <input
-                    onChange={(e) => setImage(e.target.files[0])}
+                    onChange={(e) => {
+                      if (e.target.files) setImage(e.target.files[0]);
+                    }}
                     className="h-full w-full opacity-0"
                     type="file"
                   />
@@ -179,7 +174,9 @@ function EditUser({ user, closeModal }: EditUserProps) {
                     <BsCheckLg style={{ color: "green", fontSize: "25px" }} />
                   </div>
                   <input
-                    onChange={(e) => setImage(e.target.files[0])}
+                    onChange={(e) => {
+                      if (e.target.files) setImage(e.target.files[0]);
+                    }}
                     className="h-full w-full opacity-0"
                     type="file"
                     accept="image/png, image/jpeg"
@@ -187,7 +184,7 @@ function EditUser({ user, closeModal }: EditUserProps) {
                 </div>
               ) : (
                 <div className="relative flex h-[120px] w-[120px] items-center justify-center rounded-full border border-gray-300 bg-gray-200">
-                  {image?.name ? (
+                  {image ? (
                     <div className="absolute flex items-center justify-center">
                       <BsCheckLg style={{ color: "green", fontSize: "25px" }} />
                     </div>
@@ -198,7 +195,9 @@ function EditUser({ user, closeModal }: EditUserProps) {
                   )}
 
                   <input
-                    onChange={(e) => setImage(e.target.files[0])}
+                    onChange={(e) => {
+                      if (e.target.files) setImage(e.target.files[0]);
+                    }}
                     className="h-full w-full opacity-0"
                     type="file"
                     accept=".png, .jpeg"
@@ -274,7 +273,56 @@ function EditUser({ user, closeModal }: EditUserProps) {
                 )}
               </div>
             </div>
-            <div className="grid w-full grid-cols-1 grid-rows-2 items-center gap-2 lg:grid-cols-2 lg:grid-rows-1 lg:items-start">
+            <div className="flex w-full flex-col gap-1">
+              <div className="flex w-full items-center gap-2">
+                <div className="w-[50%]">
+                  <NumberInput
+                    label="COMISSÃO SEM REPRESENTANTE (%)"
+                    placeholder="% SEM REPRESENTANTE"
+                    value={
+                      userInfo.comissao
+                        ? userInfo.comissao.semRepresentante
+                        : null
+                    }
+                    handleChange={(value) =>
+                      setUserInfo((prev) => ({
+                        ...prev,
+                        comissao: {
+                          ...prev.comissao,
+                          semRepresentante: value,
+                          comRepresentante: prev.comissao
+                            ? prev.comissao.comRepresentante
+                            : 0,
+                        },
+                      }))
+                    }
+                    width="100%"
+                  />
+                </div>
+                <div className="w-[50%]">
+                  <NumberInput
+                    label="COMISSÃO COM REPRESENTANTE (%)"
+                    placeholder="% COM REPRESENTANTE"
+                    value={
+                      userInfo.comissao
+                        ? userInfo.comissao.comRepresentante
+                        : null
+                    }
+                    handleChange={(value) =>
+                      setUserInfo((prev) => ({
+                        ...prev,
+                        comissao: {
+                          semRepresentante: prev.comissao
+                            ? prev.comissao.comRepresentante
+                            : 0,
+                          comRepresentante: value,
+                        },
+                      }))
+                    }
+                    width="100%"
+                  />
+                </div>
+              </div>
               <div className="flex w-full flex-col gap-1">
                 <label className="font-sans font-bold  text-[#353432]">
                   GRUPO DE PERMISSÃO
@@ -287,57 +335,22 @@ function EditUser({ user, closeModal }: EditUserProps) {
                     return {
                       id: role.id,
                       label: role.role,
-                      value: role.role,
-                      permissoes: role.permissoes,
+                      value: role.permissoes,
                     };
                   })}
                   width="100%"
                   onChange={(value: any) =>
                     setUserInfo((prev) => ({
                       ...prev,
-                      permissoes: value.permissoes,
+                      grupoPermissaoId: value.id,
+                      permissoes: value.value,
                     }))
                   }
                   onReset={() =>
                     setUserInfo((prev) => ({
                       ...prev,
-                      permissoes: userInfo.permissoes,
-                    }))
-                  }
-                />
-              </div>
-              <div className="flex w-full flex-col gap-1">
-                <label
-                  htmlFor="responsavel"
-                  className="font-sans font-bold  text-[#353432]"
-                >
-                  COMISSÃO
-                </label>
-                <DropdownSelect
-                  selectedItemLabel="A SELECIONAR"
-                  categoryName="COMISSÃO"
-                  value={userInfo.comissao ? userInfo.comissao.id : null}
-                  options={comissionTable.map((value) => {
-                    return {
-                      id: value.id,
-                      label: value.nome,
-                      value: value.nome,
-                    };
-                  })}
-                  width="100%"
-                  onChange={(value: any) =>
-                    setUserInfo((prev) => ({
-                      ...prev,
-                      comissao: {
-                        id: value.id,
-                        nome: value.value,
-                      },
-                    }))
-                  }
-                  onReset={() =>
-                    setUserInfo((prev) => ({
-                      ...prev,
-                      comissao: null,
+                      grupoPermissaoId: null,
+                      permissoes: undefined,
                     }))
                   }
                 />
@@ -420,6 +433,7 @@ function EditUser({ user, closeModal }: EditUserProps) {
                 funnels.map((funnel) => (
                   <div
                     className={`flex w-full items-center justify-between gap-4 ${
+                      typeof userInfo.funisVisiveis == "object" &&
                       userInfo.funisVisiveis.includes(funnel.id)
                         ? "bg-green-300"
                         : "bg-red-300"
@@ -428,12 +442,14 @@ function EditUser({ user, closeModal }: EditUserProps) {
                     <p className="text-sm font-medium text-white">
                       {funnel.nome}
                     </p>
-                    {userInfo.funisVisiveis.includes(funnel.id) ? (
+                    {typeof userInfo.funisVisiveis == "object" &&
+                    userInfo.funisVisiveis.includes(funnel.id) ? (
                       <div
                         onClick={() => {
-                          let arr = userInfo.funisVisiveis
-                            ? userInfo.funisVisiveis
-                            : [];
+                          let arr =
+                            typeof userInfo.funisVisiveis == "object"
+                              ? userInfo.funisVisiveis
+                              : [];
                           let index = arr.indexOf(funnel.id);
 
                           arr.splice(index, 1);
@@ -450,9 +466,10 @@ function EditUser({ user, closeModal }: EditUserProps) {
                     ) : (
                       <div
                         onClick={() => {
-                          let arr = userInfo.funisVisiveis
-                            ? userInfo.funisVisiveis
-                            : [];
+                          let arr =
+                            typeof userInfo.funisVisiveis == "object"
+                              ? userInfo.funisVisiveis
+                              : [];
                           arr.push(funnel.id);
                           setUserInfo((prev) => ({
                             ...prev,

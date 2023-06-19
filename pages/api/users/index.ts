@@ -43,8 +43,8 @@ const userSchema = z.object({
     .or(z.string({ required_error: "Grupo de permissão necessário." })),
   comissao: z
     .object({
-      id: z.number(),
-      nome: z.string(),
+      comRepresentante: z.number(),
+      semRepresentante: z.number(),
     })
     .nullable(),
   permissoes: z.object({
@@ -151,8 +151,8 @@ const editUserSchema = z.object({
     .optional(),
   comissao: z
     .object({
-      id: z.number(),
-      nome: z.string(),
+      comRepresentante: z.number(),
+      semRepresentante: z.number(),
     })
     .nullable()
     .optional(),

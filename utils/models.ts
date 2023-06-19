@@ -22,8 +22,8 @@ export interface IMessage {
   color: string;
 }
 export interface Comissao {
-  id: number;
-  nome: string;
+  semRepresentante: number;
+  comRepresentante: number;
 }
 export type InverterType = {
   id: string | number;
@@ -106,9 +106,10 @@ export interface ISession {
     id: string;
     name: string;
     email: string;
+    image?: string;
     visibilidade: "GERAL" | "PRÓPRIA" | string[];
     funisVisiveis: number[] | "TODOS";
-    image?: string;
+    comissao: Comissao | null;
     permissoes: {
       usuarios: {
         visualizar: boolean; // visualizar área de usuário em auth/users
