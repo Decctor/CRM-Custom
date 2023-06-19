@@ -177,37 +177,27 @@ export const roles = [
         editar: true,
       },
       comissoes: {
-        visualizarComissaoResponsavel: true,
-        editarComissaoResponsavel: true,
-        visualizarComissaoRepresentante: true,
-        editarComissaoRepresentante: true,
-      },
-      dimensionamento: {
-        editarPremissas: true,
-        editarFatorDeGeracao: true,
-        editarInclinacao: true,
-        editarDesvio: true,
-        editarDesempenho: true,
-        editarSombreamento: true,
+        visualizar: true,
+        editar: true,
       },
       kits: {
         visualizar: true,
         editar: true,
       },
       propostas: {
-        visualizarPrecos: true,
-        editarPrecos: true,
-        visualizarMargem: true,
-        editarMargem: true,
+        visualizar: true,
+        editar: true,
       },
       projetos: {
         serResponsavel: true,
         editar: true,
-        visualizarDocumentos: true,
-        editarDocumentos: true,
       },
       clientes: {
         serRepresentante: true,
+        editar: true,
+      },
+      precos: {
+        visualizar: true,
         editar: true,
       },
     },
@@ -217,42 +207,32 @@ export const roles = [
     role: "Promotor de Vendas",
     permissoes: {
       usuarios: {
-        visualizar: false,
-        editar: false,
+        visualizar: false, // visualizar área de usuário em auth/users
+        editar: false, // criar usuários e editar informações de usuários em auth/users
       },
       comissoes: {
-        visualizarComissaoResponsavel: false,
-        editarComissaoResponsavel: false,
-        visualizarComissaoRepresentante: false,
-        editarComissaoRepresentante: false,
-      },
-      dimensionamento: {
-        editarPremissas: false,
-        editarFatorDeGeracao: false,
-        editarInclinacao: false,
-        editarDesvio: false,
-        editarDesempenho: false,
-        editarSombreamento: false,
+        visualizar: false, // visualizar comissões de todos os usuários
+        editar: false, // editar comissões de todos os usuários
       },
       kits: {
-        visualizar: true,
-        editar: false,
+        visualizar: true, // visualizar área de kits e kits possíveis
+        editar: false, // editar e criar kits
       },
       propostas: {
-        visualizarPrecos: false,
-        editarPrecos: false,
-        visualizarMargem: false,
-        editarMargem: false,
+        visualizar: false, // visualizar área de controle de propostas
+        editar: false, // criar propostas em qualquer projeto e editar propostas de outros usuários
       },
       projetos: {
-        serResponsavel: true,
-        editar: false,
-        visualizarDocumentos: true,
-        editarDocumentos: false,
+        serResponsavel: true, // habilitado a ser responsável de projetos
+        editar: false, // editar informações de todos os projetos
       },
       clientes: {
-        serRepresentante: true,
-        editar: false,
+        serRepresentante: true, // habilitado a ser representante de clientes
+        editar: false, // editar informações de todos os clientes
+      },
+      precos: {
+        visualizar: false, // visualizar precificacao geral, com custos, impostos, lucro e afins de propostas e kits
+        editar: false, // editar precificacao de propostas
       },
     },
   },

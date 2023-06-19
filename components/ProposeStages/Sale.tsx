@@ -87,7 +87,7 @@ function Sale({
           DESCRITIVO DA VENDA
         </h1>
       </div>
-      {session?.user.permissoes.propostas.visualizarPrecos ? (
+      {session?.user.permissoes.precos.visualizar ? (
         <PricingTable
           proposeInfo={proposeInfo}
           pricing={pricing}
@@ -110,7 +110,7 @@ function Sale({
               maximumFractionDigits: 2,
             })}
           </p>
-          {session?.user.permissoes.propostas.editarPrecos ? (
+          {session?.user.permissoes.precos.editar ? (
             <button
               onClick={() => setEditFinalPriceModalIsOpen((prev) => !prev)}
               className="text-md text-gray-400 hover:text-[#fead61]"

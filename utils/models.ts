@@ -72,42 +72,31 @@ export interface IUsuario {
   permissoes: {
     usuarios: {
       visualizar: boolean; // visualizar área de usuário em auth/users
-      editar: boolean; // editar informações de usuários em auth/users
+      editar: boolean; // criar usuários e editar informações de usuários em auth/users
     };
     comissoes: {
-      visualizarComissaoResponsavel: boolean; // visualizar comissões dos responsáveis de todos os projetos
-      editarComissaoResponsavel: boolean; // editar comissões dos responsáveis de todos os projetos
-      visualizarComissaoRepresentante: boolean; // visualizar comissões dos representante de todos os projetos
-      editarComissaoRepresentante: boolean; // editar comissões dos representante de todos os projetos
-    };
-    dimensionamento: {
-      // a definir necessidade desse campo de autorizações
-      editarPremissas: boolean;
-      editarFatorDeGeracao: boolean;
-      editarInclinacao: boolean;
-      editarDesvio: boolean;
-      editarDesempenho: boolean;
-      editarSombreamento: boolean;
+      visualizar: boolean; // visualizar comissões de todos os usuários
+      editar: boolean; // editar comissões de todos os usuários
     };
     kits: {
       visualizar: boolean; // visualizar área de kits e kits possíveis
       editar: boolean; // editar e criar kits
     };
     propostas: {
-      visualizarPrecos: boolean; // visualizar o detalhamento de custos
-      editarPrecos: boolean; // editar custo dos itens que compoe o preço de uma proposta
-      visualizarMargem: boolean; // visualizar margem de lucro de propostas
-      editarMargem: boolean; // editar margem de lucro de propostas
+      visualizar: boolean; // visualizar área de controle de propostas
+      editar: boolean; // criar propostas em qualquer projeto e editar propostas de outros usuários
     };
     projetos: {
       serResponsavel: boolean; // habilitado a ser responsável de projetos
       editar: boolean; // editar informações de todos os projetos
-      visualizarDocumentos: boolean; // visualizar documentos anexados de todos os projetos
-      editarDocumentos: boolean; // editar documentos anexados de todos os projetos
     };
     clientes: {
       serRepresentante: boolean; // habilitado a ser representante de clientes
       editar: boolean; // editar informações de todos os clientes
+    };
+    precos: {
+      visualizar: boolean; // visualizar precificacao geral, com custos, impostos, lucro e afins de propostas e kits
+      editar: boolean; // editar precificacao de propostas
     };
   };
 }
@@ -119,46 +108,35 @@ export interface ISession {
     email: string;
     visibilidade: "GERAL" | "PRÓPRIA" | string[];
     funisVisiveis: number[] | "TODOS";
+    image?: string;
     permissoes: {
       usuarios: {
-        visualizar: boolean;
-        editar: boolean;
+        visualizar: boolean; // visualizar área de usuário em auth/users
+        editar: boolean; // criar usuários e editar informações de usuários em auth/users
       };
       comissoes: {
-        // avaliar necessidade desse objeto de permissões, possivelmente remodelar
-        visualizarComissaoResponsavel: boolean;
-        editarComissaoResponsavel: boolean;
-        visualizarComissaoRepresentante: boolean;
-        editarComissaoRepresentante: boolean;
-      };
-      dimensionamento: {
-        // avaliar necessidade desse objeto de permissões
-        editarPremissas: boolean;
-        editarFatorDeGeracao: boolean;
-        editarInclinacao: boolean;
-        editarDesvio: boolean;
-        editarDesempenho: boolean;
-        editarSombreamento: boolean;
+        visualizar: boolean; // visualizar comissões de todos os usuários
+        editar: boolean; // editar comissões de todos os usuários
       };
       kits: {
-        visualizar: boolean;
-        editar: boolean;
+        visualizar: boolean; // visualizar área de kits e kits possíveis
+        editar: boolean; // editar e criar kits
       };
       propostas: {
-        visualizarPrecos: boolean;
-        editarPrecos: boolean;
-        visualizarMargem: boolean; // avaliar necessidade
-        editarMargem: boolean; // avaliar necessidade
+        visualizar: boolean; // visualizar área de controle de propostas
+        editar: boolean; // criar propostas em qualquer projeto e editar propostas de outros usuários
       };
       projetos: {
-        serResponsavel: boolean;
-        editar: boolean;
-        visualizarDocumentos: boolean; // avaliar necessidade
-        editarDocumentos: boolean; // avaliar necessidade
+        serResponsavel: boolean; // habilitado a ser responsável de projetos
+        editar: boolean; // editar informações de todos os projetos
       };
       clientes: {
-        serRepresentante: boolean;
-        editar: boolean;
+        serRepresentante: boolean; // habilitado a ser representante de clientes
+        editar: boolean; // editar informações de todos os clientes
+      };
+      precos: {
+        visualizar: boolean; // visualizar precificacao geral, com custos, impostos, lucro e afins de propostas e kits
+        editar: boolean; // editar precificacao de propostas
       };
     };
   };

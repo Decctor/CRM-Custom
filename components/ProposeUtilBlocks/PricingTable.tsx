@@ -205,7 +205,7 @@ function PricingTable({
                   minimumFractionDigits: 2,
                 })}
               </h1>
-              {session.user.permissoes.propostas.editarPrecos ? (
+              {session.user.permissoes.precos.editar ? (
                 <button
                   onClick={() =>
                     setEditPriceModal({ isOpen: true, priceTag: priceType })

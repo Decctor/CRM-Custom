@@ -53,37 +53,27 @@ const userSchema = z.object({
       editar: z.boolean(),
     }),
     comissoes: z.object({
-      visualizarComissaoResponsavel: z.boolean(),
-      editarComissaoResponsavel: z.boolean(),
-      visualizarComissaoRepresentante: z.boolean(),
-      editarComissaoRepresentante: z.boolean(),
-    }),
-    dimensionamento: z.object({
-      editarPremissas: z.boolean(),
-      editarFatorDeGeracao: z.boolean(),
-      editarInclinacao: z.boolean(),
-      editarDesvio: z.boolean(),
-      editarDesempenho: z.boolean(),
-      editarSombreamento: z.boolean(),
+      visualizar: z.boolean(),
+      editar: z.boolean(),
     }),
     kits: z.object({
       visualizar: z.boolean(),
       editar: z.boolean(),
     }),
     propostas: z.object({
-      visualizarPrecos: z.boolean(),
-      editarPrecos: z.boolean(),
-      visualizarMargem: z.boolean(),
-      editarMargem: z.boolean(),
+      visualizar: z.boolean(),
+      editar: z.boolean(),
     }),
     projetos: z.object({
       serResponsavel: z.boolean(),
       editar: z.boolean(),
-      visualizarDocumentos: z.boolean(),
-      editarDocumentos: z.boolean(),
     }),
     clientes: z.object({
       serRepresentante: z.boolean(),
+      editar: z.boolean(),
+    }),
+    precos: z.object({
+      visualizar: z.boolean(),
       editar: z.boolean(),
     }),
   }),
@@ -175,20 +165,8 @@ const editUserSchema = z.object({
       .optional(),
     comissoes: z
       .object({
-        visualizarComissaoResponsavel: z.boolean(),
-        editarComissaoResponsavel: z.boolean(),
-        visualizarComissaoRepresentante: z.boolean(),
-        editarComissaoRepresentante: z.boolean(),
-      })
-      .optional(),
-    dimensionamento: z
-      .object({
-        editarPremissas: z.boolean(),
-        editarFatorDeGeracao: z.boolean(),
-        editarInclinacao: z.boolean(),
-        editarDesvio: z.boolean(),
-        editarDesempenho: z.boolean(),
-        editarSombreamento: z.boolean(),
+        visualizar: z.boolean(),
+        editar: z.boolean(),
       })
       .optional(),
     kits: z
@@ -199,23 +177,25 @@ const editUserSchema = z.object({
       .optional(),
     propostas: z
       .object({
-        visualizarPrecos: z.boolean(),
-        editarPrecos: z.boolean(),
-        visualizarMargem: z.boolean(),
-        editarMargem: z.boolean(),
+        visualizar: z.boolean(),
+        editar: z.boolean(),
       })
       .optional(),
     projetos: z
       .object({
         serResponsavel: z.boolean(),
         editar: z.boolean(),
-        visualizarDocumentos: z.boolean(),
-        editarDocumentos: z.boolean(),
       })
       .optional(),
     clientes: z
       .object({
         serRepresentante: z.boolean(),
+        editar: z.boolean(),
+      })
+      .optional(),
+    precos: z
+      .object({
+        visualizar: z.boolean(),
         editar: z.boolean(),
       })
       .optional(),

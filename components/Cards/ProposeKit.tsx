@@ -40,7 +40,7 @@ function ProposeKit({ kit, handleSelect }: KitCardProps) {
             kWp
           </p>
         </div>
-        {session?.user.permissoes.propostas.visualizarPrecos ? (
+        {session?.user.permissoes.precos.visualizar ? (
           <div className="flex w-1/2 items-center justify-end gap-2">
             <ImPriceTag style={{ color: "rgb(34,197,94)", fontSize: "20px" }} />
 

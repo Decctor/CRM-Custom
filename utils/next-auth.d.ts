@@ -14,42 +14,32 @@ declare module "next-auth" {
       funisVisiveis: number[] | "TODOS";
       permissoes: {
         usuarios: {
-          visualizar: boolean;
-          editar: boolean;
+          visualizar: boolean; // visualizar área de usuário em auth/users
+          editar: boolean; // criar usuários e editar informações de usuários em auth/users
         };
         comissoes: {
-          visualizarComissaoResponsavel: boolean;
-          editarComissaoResponsavel: boolean;
-          visualizarComissaoRepresentante: boolean;
-          editarComissaoRepresentante: boolean;
-        };
-        dimensionamento: {
-          editarPremissas: boolean;
-          editarFatorDeGeracao: boolean;
-          editarInclinacao: boolean;
-          editarDesvio: boolean;
-          editarDesempenho: boolean;
-          editarSombreamento: boolean;
+          visualizar: boolean; // visualizar comissões de todos os usuários
+          editar: boolean; // editar comissões de todos os usuários
         };
         kits: {
-          visualizar: boolean;
-          editar: boolean;
+          visualizar: boolean; // visualizar área de kits e kits possíveis
+          editar: boolean; // editar e criar kits
         };
         propostas: {
-          visualizarPrecos: boolean;
-          editarPrecos: boolean;
-          visualizarMargem: boolean;
-          editarMargem: boolean;
+          visualizar: boolean; // visualizar área de controle de propostas
+          editar: boolean; // criar propostas em qualquer projeto e editar propostas de outros usuários
         };
         projetos: {
-          serResponsavel: boolean;
-          editar: boolean;
-          visualizarDocumentos: boolean;
-          editarDocumentos: boolean;
+          serResponsavel: boolean; // habilitado a ser responsável de projetos
+          editar: boolean; // editar informações de todos os projetos
         };
         clientes: {
-          serRepresentante: boolean;
-          editar: boolean;
+          serRepresentante: boolean; // habilitado a ser representante de clientes
+          editar: boolean; // editar informações de todos os clientes
+        };
+        precos: {
+          visualizar: boolean; // visualizar precificacao geral, com custos, impostos, lucro e afins de propostas e kits
+          editar: boolean; // editar precificacao de propostas
         };
       };
     };
