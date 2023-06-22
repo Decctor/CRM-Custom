@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { Sidebar } from "../../components/Sidebar";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { RxDashboard } from "react-icons/rx";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
@@ -79,6 +79,8 @@ function SpecificProposePage() {
     required: true,
   });
   const { id } = router.query;
+
+  const queryClient = useQueryClient();
   const {
     data: propose,
     isLoading: proposeLoading,
@@ -106,6 +108,50 @@ function SpecificProposePage() {
       }
     },
     enabled: checkQueryEnableStatus(session, id),
+  });
+  const { mutate: closePropose } = useMutation({
+    mutationKey: ["editPropose"],
+    mutationFn: async () => {
+      try {
+        const { data } = await axios.put(
+          `/api/proposes?id=${id}&responsible=${propose?.autor?.id}`,
+          {
+            changes: {
+              aceite: true,
+              dataEfetivacao: new Date().toISOString(),
+            },
+          }
+        );
+        if (propose?.infoProjeto?.idOportunidade) {
+          await axios.post("/api/utils/updateOportunityRD", {
+            oportunityId: propose?.infoProjeto?.idOportunidade,
+            operation: "GANHAR",
+          });
+          toast.success("Alteração de oportunidade bem sucedida.");
+        }
+        // queryClient.invalidateQueries({ queryKey: ["project"] });
+        // if (data.message) toast.success(data.message);
+        return data;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+          return;
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+          return;
+        }
+      }
+    },
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["propose", id],
+      });
+      // await queryClient.refetchQueries({ queryKey: ["project"] });
+      if (data.message) toast.success(data.message);
+    },
   });
   function getTotals() {
     if (propose?.infoProjeto) {
@@ -157,9 +203,17 @@ function SpecificProposePage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white">
-                EFETIVAR CONTRATO
-              </button>
+              {propose?.infoProjeto?.dataPerda ||
+              propose?.infoProjeto?.dataEfetivacao ||
+              propose.dataEfetivacao ? null : (
+                <button
+                  onClick={() => closePropose()}
+                  className="rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
+                >
+                  EFETIVAR CONTRATO
+                </button>
+              )}
+
               {/* <button className="rounded border border-red-500 p-1 font-medium text-red-500 duration-300 ease-in-out hover:scale-105 hover:bg-red-500 hover:text-white">
               Perder
             </button> */}
@@ -315,7 +369,7 @@ function SpecificProposePage() {
                 </div>
               </div>
             </div>
-            {session?.user.permissoes.propostas.visualizarPrecos ? (
+            {session?.user.permissoes.precos.visualizar ? (
               <div className="mt-4 flex w-full flex-col gap-1 border border-gray-200 bg-[#fff] shadow-md">
                 <div className="flex w-full items-center rounded bg-gray-200">
                   <div className="flex w-4/12 items-center justify-center p-1">

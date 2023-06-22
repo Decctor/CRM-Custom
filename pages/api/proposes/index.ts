@@ -1,5 +1,9 @@
 import connectToDatabase from "@/services/mongoclient";
-import { apiHandler, validateAuthentication } from "@/utils/api";
+import {
+  apiHandler,
+  validateAuthentication,
+  validateAuthorization,
+} from "@/utils/api";
 import { IProposeInfo } from "@/utils/models";
 import createHttpError from "http-errors";
 import { ObjectId } from "mongodb";
@@ -249,7 +253,43 @@ const getProposes: NextApiHandler<GetResponse> = async (req, res) => {
   //   throw new createHttpError.BadRequest("ID de proposta inválido.");
   // }
 };
+type PutResponse = {
+  message: string;
+};
+const updatePropose: NextApiHandler<PutResponse> = async (req, res) => {
+  const session = await validateAuthorization(req, "propostas", "editar", true);
+  const { responsible, id } = req.query;
+  const { changes } = req.body;
+  console.log("CHANGES", changes);
+  if (
+    !session.user.permissoes.clientes.editar &&
+    responsible != session.user.id
+  ) {
+    throw new createHttpError.Unauthorized(
+      "Somente o responsável ou administradores podem alterar essa proposta."
+    );
+  }
+
+  const db = await connectToDatabase(process.env.MONGODB_URI, "main");
+  const collection = db.collection("proposes");
+  if (typeof id != "string") throw createHttpError.BadRequest("ID inválido.");
+  if (typeof id === "string") {
+    const data = await collection.findOneAndUpdate(
+      {
+        _id: new ObjectId(id),
+      },
+      {
+        $set: { ...changes },
+      },
+      {
+        returnNewDocument: true,
+      }
+    );
+    res.status(201).json({ message: "Proposta alterada com sucesso." });
+  }
+};
 export default apiHandler({
   GET: getProposes,
   POST: createPropose,
+  PUT: updatePropose,
 });

@@ -27,6 +27,7 @@ import { IoIosCalendar } from "react-icons/io";
 import PeriodDropdownFilter from "@/components/Inputs/PeriodDropdownFilter";
 import { AiOutlinePlus } from "react-icons/ai";
 import NewProject from "@/components/Modals/NewProject";
+import dayjs from "dayjs";
 {
   // Exemplo de mutation com tratamento de erros
   /**
@@ -284,7 +285,21 @@ export default function Home() {
     let add;
     let active;
   }
-
+  async function loseLead() {
+    await axios.put(
+      "https://crm.rdstation.com/api/v1/deals/63d1322d3c83790001e1bc20?token=63ce9e3edb1b67000b6cc794",
+      {
+        win: false,
+        deal_lost_reason: {
+          id: "63ce9e5fce5a15002506d8fb",
+          _id: "63ce9e5fce5a15002506d8fb",
+          name: "Fechou com outra empresa",
+          created_at: dayjs().format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+          updated_at: dayjs().format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        },
+      }
+    );
+  }
   useEffect(() => {
     if (!funnel) {
       setFunnel(getOptions(session, responsibles).activeFunnel);

@@ -299,6 +299,9 @@ const editProjectSchema = z.object({
       required_error: "Por favor, vincule um funil a esse projeto.",
     })
     .optional(),
+  dataPerda: z.string().optional(),
+  motivoPerda: z.string().optional(),
+  dataEfetivacao: z.string().optional(),
 });
 const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
   const session = await validateAuthorization(

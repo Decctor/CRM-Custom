@@ -1,4 +1,18 @@
 import { Funnel } from "./models";
+export const opportunityReceivers = [
+  {
+    id: "648b58b87eda10953a3df921",
+    nome: "Leandro Viali",
+  },
+  {
+    id: "649447fa518686bf3b32aeaf",
+    nome: "Gabriel Emanuel",
+  },
+  {
+    id: "6494484b518686bf3b32aeb0",
+    nome: "Yasmim Araujo",
+  },
+];
 export const fileTypes = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
     title: "WORD",
@@ -291,6 +305,44 @@ export const proposeVoltageOptions = [
 export const proposeTemplates = [
   { label: "TEMPLATE SIMPLES", value: "TEMPLATE SIMPLES" },
 ] as const;
+export const leadLoseJustification = {
+  "Demora no follow": {
+    deal_lost_reason: {
+      id: "63ce9e5fce5a15002506d8f9",
+      _id: "63ce9e5fce5a15002506d8f9",
+      name: "Demora no follow",
+      // created_at: "2023-01-23T11:49:03.807-03:00",
+      // updated_at: "2023-01-23T11:49:03.807-03:00",
+    },
+  },
+  "Não gosto do produto/serviço": {
+    deal_lost_reason: {
+      id: "63ce9e5fce5a15002506d8fc",
+      _id: "63ce9e5fce5a15002506d8fc",
+      name: "Cliente optou por não realizar o projeto",
+      // created_at: "2023-01-23T11:49:03.889-03:00",
+      // updated_at: "2023-01-23T11:49:03.889-03:00",
+    },
+  },
+  "Cliente optou por não realizar o projeto": {
+    deal_lost_reason: {
+      id: "63ce9e5fce5a15002506d8fc",
+      _id: "63ce9e5fce5a15002506d8fc",
+      name: "Cliente optou por não realizar o projeto",
+      // created_at: "2023-01-23T11:49:03.889-03:00",
+      // updated_at: "2023-01-23T11:49:03.889-03:00",
+    },
+  },
+  "Fechou com outra empresa": {
+    deal_lost_reason: {
+      id: "63ce9e5fce5a15002506d8fb",
+      _id: "63ce9e5fce5a15002506d8fb",
+      name: "Fechou com outra empresa",
+      // created_at: "2023-01-23T11:49:03.879-03:00",
+      // updated_at: "2023-01-23T11:49:03.879-03:00",
+    },
+  },
+} as const;
 export const firebaseServiceAccount = {
   type: "service_account",
   project_id: "sistemaampere",

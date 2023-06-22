@@ -158,6 +158,7 @@ export interface IProject {
   _id?: string;
   nome: string;
   identificador: number;
+  idOportunidade?: string;
   responsavel: {
     nome: string;
     id: string;
@@ -190,8 +191,10 @@ export interface IProject {
   funis?: { id: number; etapaId: number }[];
   notas?: { id: number; data: Date; usuario: string; mensagem: string }[];
   atividades?: ProjectActivity[];
-  dataInsercao: string;
-  dataConclusao?: string;
+  dataInsercao?: string;
+  dataPerda?: string;
+  motivoPerda?: string;
+  dataEfetivacao?: string;
 }
 export interface IClient {
   _id?: string;
@@ -293,6 +296,8 @@ export interface IProposeInfo {
   potenciaPico?: number;
   valorProposta?: number;
   dataInsercao?: string;
+  aceite?: boolean;
+  dataEfetivacao?: string;
 }
 export type ProjectActivity = {
   _id?: string;

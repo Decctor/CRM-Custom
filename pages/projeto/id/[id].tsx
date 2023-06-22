@@ -20,6 +20,7 @@ import TextInput from "@/components/Inputs/TextInput";
 import DateInput from "@/components/Inputs/DateInput";
 import dayjs from "dayjs";
 import SelectInput from "@/components/Inputs/SelectInput";
+import { VscChromeClose } from "react-icons/vsc";
 import {
   checkQueryEnableStatus,
   formatDate,
@@ -31,6 +32,7 @@ import { TbNotes } from "react-icons/tb";
 import ProjectHistoryBlock from "@/components/ProjectBlocks/ProjectHistoryBlock";
 import Link from "next/link";
 import DropdownSelect from "@/components/Inputs/DropdownSelect";
+import LoseProject from "@/components/ProjectBlocks/LoseProject";
 
 function Projeto() {
   const { data: session } = useSession({
@@ -126,6 +128,15 @@ function Projeto() {
               <p className="w-full text-start text-xs italic text-gray-500">
                 {project.descricao}
               </p>
+            </div>
+            <div className="flex items-center justify-center">
+              {project.dataPerda || project.dataEfetivacao ? null : (
+                <LoseProject
+                  oportunityId={project.idOportunidade}
+                  responsibleId={project.responsavel.id}
+                  projectId={project._id ? project._id : ""}
+                />
+              )}
             </div>
           </div>
 
