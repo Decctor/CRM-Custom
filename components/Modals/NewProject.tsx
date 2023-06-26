@@ -10,7 +10,8 @@ import responsibles from "@/pages/api/responsibles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { funnels } from "@/utils/constants";
+import { funnels, projectTypes } from "@/utils/constants";
+import SelectInput from "../Inputs/SelectInput";
 type Funil = {
   id: number;
   etapaId: number;
@@ -18,6 +19,7 @@ type Funil = {
 
 type NewProjectInfo = {
   nome: string;
+  tipoProjeto: (typeof projectTypes)[number]["value"];
   descricao?: string;
   funis: [] | Funil[];
 };
@@ -75,6 +77,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
   });
   const [newProject, setNewProject] = useState<NewProjectInfo>({
     nome: "",
+    tipoProjeto: "SISTEMA FOTOVOLTAICO",
     descricao: undefined,
     funis: [],
   });
@@ -133,6 +136,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
       });
       let insertObj = {
         nome: newProject.nome,
+        tipoProjeto: newProject.tipoProjeto,
         responsavel: clientInfo.representante,
         representante: clientInfo.representante,
         clienteId: clientResponse.data._id,
@@ -157,6 +161,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
       });
       setNewProject({
         nome: "",
+        tipoProjeto: "SISTEMA FOTOVOLTAICO",
         descricao: undefined,
         funis: [],
       });
@@ -425,7 +430,9 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
                 />
               </div>
               <div className="flex w-full flex-col gap-1">
-                <p className="font-Raleway font-bold text-gray-800">NOME</p>
+                <p className="font-Raleway font-bold text-gray-800">
+                  NOME DO PROJETO
+                </p>
                 <input
                   type={"text"}
                   value={newProject.nome}
@@ -437,6 +444,26 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
                   }
                   placeholder="Digite o nome para identificação do projeto."
                   className="w-full rounded-sm border border-gray-300 p-2 text-center text-sm text-gray-600 outline-none focus:border-blue-300 focus:ring focus:ring-[1]"
+                />
+              </div>
+              <div className="flex w-full flex-col gap-1">
+                <SelectInput
+                  label="TIPO DO PROJETO"
+                  value={newProject.tipoProjeto}
+                  options={projectTypes.map((projectType, index) => {
+                    return { id: index + 1, ...projectType };
+                  })}
+                  handleChange={(value) => {
+                    setNewProject((prev) => ({ ...prev, tipoProjeto: value }));
+                  }}
+                  selectedItemLabel="NÃO DEFINIDO"
+                  onReset={() =>
+                    setNewProject((prev) => ({
+                      ...prev,
+                      tipoProjeto: "SISTEMA FOTOVOLTAICO",
+                    }))
+                  }
+                  width="100%"
                 />
               </div>
               <div className="flex w-full flex-col gap-1">

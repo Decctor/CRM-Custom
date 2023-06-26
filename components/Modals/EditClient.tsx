@@ -14,8 +14,9 @@ import {
 } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { funnels } from "@/utils/constants";
+import { funnels, projectTypes } from "@/utils/constants";
 import { useSession } from "next-auth/react";
+import SelectInput from "../Inputs/SelectInput";
 
 type EditClientModalProps = {
   user: {
@@ -36,6 +37,7 @@ type Funil = {
 type NewProjectInfo = {
   isOpen: boolean;
   nome?: string;
+  tipoProjeto?: (typeof projectTypes)[number]["value"];
   descricao?: string;
   funis: [] | Funil[];
 };
@@ -63,6 +65,7 @@ function EditClient({
   const [newProject, setNewProject] = useState<NewProjectInfo>({
     isOpen: false,
     nome: undefined,
+    tipoProjeto: undefined,
     descricao: undefined,
     funis: [],
   });
@@ -185,6 +188,29 @@ function EditClient({
                       }
                       placeholder="Digite o nome para identificação do projeto."
                       className="w-full rounded-sm border border-gray-300 p-2 text-center text-sm text-gray-600 outline-none focus:border-blue-300 focus:ring focus:ring-[1]"
+                    />
+                  </div>
+                  <div className="flex w-full flex-col gap-1">
+                    <SelectInput
+                      label="TIPO DO PROJETO"
+                      value={newProject.tipoProjeto}
+                      options={projectTypes.map((projectType, index) => {
+                        return { id: index + 1, ...projectType };
+                      })}
+                      handleChange={(value) => {
+                        setNewProject((prev) => ({
+                          ...prev,
+                          tipoProjeto: value,
+                        }));
+                      }}
+                      selectedItemLabel="NÃO DEFINIDO"
+                      onReset={() =>
+                        setNewProject((prev) => ({
+                          ...prev,
+                          tipoProjeto: "SISTEMA FOTOVOLTAICO",
+                        }))
+                      }
+                      width="100%"
                     />
                   </div>
                   <div className="flex w-full flex-col gap-1">

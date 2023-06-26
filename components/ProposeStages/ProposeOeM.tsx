@@ -1,11 +1,16 @@
-import { IProject, IProposeInfo, ModuleType } from "@/utils/models";
+import {
+  IProject,
+  IProposeInfo,
+  IProposeOeMInfo,
+  ModuleType,
+} from "@/utils/models";
 import Modules from "../../utils/pvmodules.json";
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
-import { getProposeObject } from "@/utils/methods";
+import { getProposeObject, getProposeOeMObject } from "@/utils/methods";
 import TextInput from "../Inputs/TextInput";
 import SelectInput from "../Inputs/SelectInput";
-import { proposeTemplates } from "@/utils/constants";
+import { projectTypes, proposeTemplates } from "@/utils/constants";
 import { ImPower, ImPriceTag } from "react-icons/im";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -21,13 +26,20 @@ import {
 import { storage } from "@/services/firebase";
 import { FirebaseError } from "firebase/app";
 type ProposeProps = {
-  setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
-  proposeInfo: IProposeInfo;
+  setProposeInfo: React.Dispatch<React.SetStateAction<IProposeOeMInfo>>;
+  proposeInfo: IProposeOeMInfo;
   project: IProject;
+  moveToPreviousStage: React.Dispatch<React.SetStateAction<null>>;
 };
 
-function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
+function ProposeOeM({
+  proposeInfo,
+  project,
+  setProposeInfo,
+  moveToPreviousStage,
+}: ProposeProps) {
   const [saveAsActive, setSaveAsActive] = useState<boolean>(false);
+
   async function handleProposeUpload(file: any) {
     const tag = `${proposeInfo.nome}${(Math.random() * 1000).toFixed(0)}`;
     try {
@@ -76,14 +88,29 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
     const { data } = await axios.get(
       `/api/responsibles?id=${project.responsavel.id}`
     );
-    const seller = data.data
-      ? `${data.data.nome?.toUpperCase()} ${data.data.telefone}`
-      : null;
-    console.log("VENDEDOR", seller);
-    const obj = getProposeObject(project, proposeInfo, seller);
-    const response = await axios.post("/api/utils/proposePdf", obj, {
-      responseType: "blob",
-    });
+    const seller = data.data ? `${data.data.telefone}` : null;
+    console.log("TEMPLATE", proposeInfo);
+    console.log(
+      "TEMPLATE ID",
+      proposeTemplates.find(
+        (proposeTemplate) => proposeTemplate.value == proposeInfo.template
+      )
+    );
+    const templateId = proposeTemplates.find(
+      (proposeTemplate) => proposeTemplate.value == proposeInfo.template
+    )
+      ? proposeTemplates.find(
+          (proposeTemplate) => proposeTemplate.value == proposeInfo.template
+        )?.templateId
+      : "LPHl6ETXfSmY3QsHJqAW";
+    const obj = getProposeOeMObject(project, proposeInfo, seller);
+    const response = await axios.post(
+      `/api/utils/proposePdf?templateId=${templateId}`,
+      obj,
+      {
+        responseType: "blob",
+      }
+    );
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
@@ -159,9 +186,6 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
 
   return (
     <div className="flex min-h-[400px] w-full flex-col gap-2 py-4">
-      {/* <div className="flex w-full items-center justify-center">
-        <h1 className="text-center font-bold">PROPOSTA</h1>
-      </div> */}
       <div className="flex grow items-center justify-center">
         {proposeCreationLoading ? (
           <div className="flex min-h-[350px] w-[400px] items-center justify-center">
@@ -193,27 +217,13 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
             <h1 className="border-b border-gray-200 pb-2 text-center font-bold text-gray-700">
               PROPOSTA
             </h1>
-            <div className="flex w-full items-center gap-2 p-3">
+            <div className="flex w-full items-center justify-center gap-2 p-3">
               <div className="flex w-1/2 items-center justify-center gap-2 rounded border border-gray-300 p-1">
                 <ImPower
                   style={{ color: "rgb(239,68,68)", fontSize: "20px" }}
                 />
                 <p className="text-xs font-thin text-gray-600">
                   {proposeInfo.potenciaPico} kWp
-                </p>
-              </div>
-              <div className="flex w-1/2 items-center justify-center gap-2 rounded border border-gray-300 p-1">
-                <ImPriceTag
-                  style={{ color: "rgb(34,197,94)", fontSize: "20px" }}
-                />
-                <p className="text-xs font-thin text-gray-600">
-                  R${" "}
-                  {proposeInfo.valorProposta
-                    ? proposeInfo.valorProposta.toLocaleString("pt-br", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })
-                    : null}
                 </p>
               </div>
             </div>
@@ -230,10 +240,20 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
               <SelectInput
                 label="TEMPLATE"
                 value={proposeInfo.template}
-                options={proposeTemplates.map((proposeTemplate, index) => ({
-                  ...proposeTemplate,
-                  id: index + 1,
-                }))}
+                options={proposeTemplates
+                  .filter((template) =>
+                    template.applicableProjectTypes.includes(
+                      // @ts-ignore
+                      project.tipoProjeto
+                    )
+                  )
+                  .map((temp, index) => {
+                    return {
+                      id: index + 1,
+                      label: temp.label,
+                      value: temp.value,
+                    };
+                  })}
                 handleChange={(value) =>
                   setProposeInfo((prev) => ({ ...prev, template: value }))
                 }
@@ -266,8 +286,18 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
           DOWNLOAD
         </button> */}
       </div>
+      {!proposeCreationSuccess ? (
+        <div className="flex w-full items-center justify-start gap-2 px-1">
+          <button
+            onClick={() => moveToPreviousStage(null)}
+            className="rounded p-2 font-bold text-gray-500 duration-300 hover:scale-105"
+          >
+            Voltar
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
 
-export default Propose;
+export default ProposeOeM;

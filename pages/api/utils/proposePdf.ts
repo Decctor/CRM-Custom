@@ -10,10 +10,14 @@ type PostResponse = {
 const getPropose: NextApiHandler<PostResponse> = async (req, res) => {
   await validateAuthentication(req);
   const propose = req.body;
+  const { templateId } = req.query;
+  console.log(templateId);
   try {
     // Make the external request
     const response = await axios.post(
-      "https://app.useanvil.com/api/v1/fill/LPHl6ETXfSmY3QsHJqAW.pdf",
+      `https://app.useanvil.com/api/v1/fill/${
+        templateId ? templateId : "LPHl6ETXfSmY3QsHJqAW"
+      }.pdf`,
       propose,
       {
         auth: {

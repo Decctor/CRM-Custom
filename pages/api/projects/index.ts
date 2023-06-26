@@ -57,6 +57,13 @@ const projectSchema = z.object({
         "Por favor, preencha o nome para identificação do projeto.",
     })
     .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." }),
+  tipoProjeto: z.union(
+    [z.literal("SISTEMA FOTOVOLTAICO"), z.literal("OPERAÇÃO E MANUTENÇÃO")],
+    {
+      required_error: "Por favor, preencha o tipo do projeto.",
+      invalid_type_error: "Por favor, preencha um tipo válido de projeto.",
+    }
+  ),
   responsavel: z.object(
     {
       nome: z.string(),

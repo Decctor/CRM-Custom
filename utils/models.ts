@@ -303,6 +303,49 @@ export interface IProposeInfo {
   aceite?: boolean;
   dataEfetivacao?: string;
 }
+export interface IProposeOeMInfo {
+  _id?: string;
+  nome?: string;
+  template?: (typeof proposeTemplates)[number]["value"];
+  projeto: {
+    nome?: string;
+    id?: string;
+  };
+  autor?: {
+    nome?: string;
+    id?: string;
+  };
+  premissas: {
+    consumoEnergiaMensal: number;
+    tarifaEnergia: number;
+    distancia: number;
+    qtdeModulos: number;
+    potModulos: number;
+    eficienciaAtual: number;
+  };
+  precificacao?: {
+    manutencaoSimples: {
+      vendaProposto: number;
+      vendaFinal: number;
+    };
+    planoSol: {
+      vendaProposto: number;
+      vendaFinal: number;
+    };
+    planoSolPlus: {
+      vendaProposto: number;
+      vendaFinal: number;
+    };
+  };
+  infoProjeto?: IProject;
+  linkArquivo?: string;
+  potenciaPico?: number;
+  idPlanoEscolhido?: number;
+  valorProposta?: number;
+  dataInsercao?: string;
+  aceite?: boolean;
+  dataEfetivacao?: string;
+}
 export type ProjectActivity = {
   _id?: string;
   projetoId?: string;

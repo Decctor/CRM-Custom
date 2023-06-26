@@ -4,6 +4,7 @@ import {
   IKit,
   IProject,
   IProposeInfo,
+  IProposeOeMInfo,
   IRepresentative,
   IResponsible,
   ISession,
@@ -271,6 +272,72 @@ export function getProposeObject(
   //     modulos: getModulesStr(propose.kit?.modulos ? propose.kit?.modulos : []),
   //   },
   // };
+  return obj;
+}
+function getIdealPowerGeneration(
+  peakPower: number,
+  city: string | undefined | null,
+  uf: string | undefined | null
+): number {
+  if (!city || !uf) return peakPower * 127;
+  const cityFactors = genFactors[city as keyof typeof genFactors];
+  if (!cityFactors) return peakPower * 127;
+  return cityFactors.fatorGen * peakPower;
+}
+export function getProposeOeMObject(
+  project: IProject,
+  propose: IProposeOeMInfo,
+  sellerPhone: string | null
+) {
+  const obj = {
+    title: propose.projeto.nome,
+    fontSize: 10,
+    textColor: "#333333",
+    data: {
+      nomeCidade: propose.projeto.nome,
+      cidade: project.cliente?.cidade,
+      dataProposta: new Date().toLocaleDateString("pt-br"),
+      vendedor: project.responsavel.nome,
+      telefoneVendedor: sellerPhone,
+      qtdepotModulos: `${propose.premissas.qtdeModulos} - ${propose.premissas.potModulos}W`,
+      potPico: propose.potenciaPico,
+      eficienciaAtual: propose.premissas.eficienciaAtual,
+      perdaFinanceira: `R$ ${(
+        12 *
+        (1 - propose.premissas.eficienciaAtual / 100) *
+        getIdealPowerGeneration(
+          propose.potenciaPico ? propose.potenciaPico : 0,
+          project.cliente?.cidade,
+          project.cliente?.uf
+        ) *
+        propose.premissas.tarifaEnergia
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      precoManutencaoSimples: `R$ ${propose.precificacao?.manutencaoSimples.vendaFinal.toLocaleString(
+        "pt-br",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      )}`,
+      precoPlanoSol: `R$ ${propose.precificacao?.planoSol.vendaFinal.toLocaleString(
+        "pt-br",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      )}`,
+      precoPlanoSolMais: `R$ ${propose.precificacao?.planoSolPlus.vendaFinal.toLocaleString(
+        "pt-br",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      )}`,
+    },
+  };
   return obj;
 }
 export function useKitQueryPipelines(

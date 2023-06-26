@@ -11,14 +11,50 @@ import { useProject } from "@/utils/methods";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import LoadingPage from "@/components/utils/LoadingPage";
-import { IProposeInfo, ISession } from "@/utils/models";
+import { IProject, IProposeInfo, ISession } from "@/utils/models";
 import Sale from "@/components/ProposeStages/Sale";
 import Propose from "@/components/ProposeStages/Propose";
+import SolarSystemPropose from "@/components/ProposeUtilBlocks/SolarSystemPropose";
+import OeMPropose from "@/components/ProposeUtilBlocks/OeMPropose";
 function checkQueryEnableStatus(session: ISession | null, queryId: any) {
   if (session?.user && typeof queryId === "string") {
     return true;
   } else {
     return false;
+  }
+}
+
+function getProposeInfoBasedOnProjectType(project: IProject) {
+  if (project.tipoProjeto == "SISTEMA FOTOVOLTAICO") {
+    return {
+      projeto: {
+        nome: project?.nome,
+        id: project?._id,
+      },
+      premissas: {
+        consumoEnergiaMensal: 0,
+        tarifaEnergia: 0,
+        tarifaTUSD: 0,
+        tensaoRede: "127/220V",
+        fase: "Bifásico",
+        fatorSimultaneidade: 0,
+        tipoEstrutura: "Fibrocimento",
+        distancia: 0,
+      },
+    };
+  }
+  if (project.tipoProjeto == "OPERAÇÃO E MANUTENÇÃO") {
+    return {
+      projeto: {
+        nome: project?.nome,
+        id: project?._id,
+      },
+      premissas: {
+        consumoEnergiaMensal: 0,
+        tarifaEnergia: 0,
+        distancia: 0,
+      },
+    };
   }
 }
 
@@ -35,7 +71,6 @@ function PropostaPage() {
     typeof router.query.id === "string" ? router.query.id : "",
     checkQueryEnableStatus(session, router.query.id)
   );
-  const [proposeStage, setProposeStage] = useState(1);
   const [proposeInfo, setProposeInfo] = useState<IProposeInfo>({
     projeto: {
       nome: project?.nome,
@@ -105,7 +140,13 @@ function PropostaPage() {
               </h1>
             </div>
           </div>
-          <div className="m-6 flex h-fit flex-col rounded-md border border-gray-200 bg-[#fff] p-2 shadow-lg">
+          {project.tipoProjeto == "OPERAÇÃO E MANUTENÇÃO" ? (
+            <OeMPropose project={project} />
+          ) : null}
+          {project.tipoProjeto == "SISTEMA FOTOVOLTAICO" ? (
+            <SolarSystemPropose project={project} />
+          ) : null}
+          {/* <div className="m-6 flex h-fit flex-col rounded-md border border-gray-200 bg-[#fff] p-2 shadow-lg">
             <div className="grid min-h-[50px] w-full grid-cols-1 grid-rows-5 items-center gap-6 border-b border-gray-200 pb-4 lg:grid-cols-5 lg:grid-rows-1 lg:gap-1">
               <div
                 className={`flex items-center justify-center gap-1 ${
@@ -148,173 +189,6 @@ function PropostaPage() {
                 <p className="text-sm font-bold lg:text-lg">PROPOSTA</p>
               </div>
             </div>
-            {/* <div className="flex w-full flex-col gap-4 py-4 lg:flex-row">
-            <div className="flex w-full flex-col gap-4">
-              <h1 className="font-bold">UNIDADE GERADORA</h1>
-              <div className="flex w-full items-center gap-2">
-                <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-                  <p className="text-md font-light text-gray-500">
-                    Consumo médio mensal (kWh)
-                  </p>
-                  <input
-                    type="number"
-                    value={proposeInfo.consumoEnergiaMensal.toString()}
-                    onChange={(e) =>
-                      setProposeInfo((prev) => ({
-                        ...prev,
-                        consumoEnergiaMensal: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-                  />
-                </div>
-                <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-                  <p className="text-md font-light text-gray-500">
-                    Tarifa (R$)
-                  </p>
-                  <input
-                    type="number"
-                    value={proposeInfo.tarifa.toString()}
-                    onChange={(e) =>
-                      setProposeInfo((prev) => ({
-                        ...prev,
-                        tarifa: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-                  />
-                </div>
-              </div>
-              <div className="flex w-full items-center gap-2">
-                <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-                  <p className="text-md font-light text-gray-500">
-                    TUSD Fio B (R$/kWh)
-                  </p>
-                  <input
-                    type="number"
-                    value={proposeInfo.tarifaTUSD.toString()}
-                    onChange={(e) =>
-                      setProposeInfo((prev) => ({
-                        ...prev,
-                        tarifaTUSD: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-                  />
-                </div>
-                <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-                  <p className="text-md font-light text-gray-500">
-                    Fator de simultaneidade
-                  </p>
-                  <input
-                    type="number"
-                    value={proposeInfo.tarifa.toString()}
-                    onChange={(e) =>
-                      setProposeInfo((prev) => ({
-                        ...prev,
-                        tarifa: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-                  />
-                </div>
-              </div>
-              <div className="flex w-full items-center gap-2">
-                <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-                  <p className="text-md font-light text-gray-500">
-                    Tensão da Rede
-                  </p>
-                  <select
-                    value={proposeInfo.tensao}
-                    onChange={(e) =>
-                      setProposeInfo((prev) => ({
-                        ...prev,
-                        tensao: e.target.value,
-                      }))
-                    }
-                    className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-                  >
-                    <option>127/220V</option>
-                    <option>220/380V</option>
-                    <option>277/480V</option>
-                  </select>
-                </div>
-                <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-                  <p className="text-md font-light text-gray-500">Fase</p>
-                  <select
-                    value={proposeInfo.fase}
-                    onChange={(e) =>
-                      setProposeInfo((prev) => ({
-                        ...prev,
-                        fase: e.target.value,
-                      }))
-                    }
-                    className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-                  >
-                    <option>Monofásico</option>
-                    <option>Bifásico</option>
-                    <option>Trifásico</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div className="flex w-full flex-col gap-4">
-              <h1 className="font-bold">CARACTERÍSTICAS</h1>
-              <div className="flex w-full items-center gap-2">
-                <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-                  <p className="text-md font-light text-gray-500">
-                    Tipo de telhado
-                  </p>
-                  <select
-                    value={proposeInfo.tipoTelhado}
-                    onChange={(e) =>
-                      setProposeInfo((prev) => ({
-                        ...prev,
-                        tipoTelhado: e.target.value,
-                      }))
-                    }
-                    className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-                  >
-                    <option value="Carport">Carport</option>
-                    <option value="Cerâmico">Cerâmico</option>
-                    <option value="Fibrocimento">Fibrocimento</option>
-                    <option value="Laje">Laje</option>
-                    <option value="Shingle">Shingle</option>
-                    <option value="Metálico">Metálico</option>
-                    <option value="Zipado">Zipado</option>
-                    <option value="Solo">Solo</option>
-                    <option value="Sem estrutura">Sem estrutura</option>
-                  </select>
-                </div>
-                <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-                  <p className="text-md font-light text-gray-500">
-                    Sombreamento
-                  </p>
-                  <select
-                    value={proposeInfo.sombreamento}
-                    onChange={(e) =>
-                      setProposeInfo((prev) => ({
-                        ...prev,
-                        sombreamento: e.target.value,
-                      }))
-                    }
-                    className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-                  >
-                    <option value="Nenhum">Nenhum</option>
-                    <option value="Pouco">Pouco</option>
-                    <option value="Médio">Médio</option>
-                    <option value="Alto">Alto</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex w-full items-center justify-end px-1">
-            <button className="rounded bg-gray-400 p-2 font-bold hover:bg-black hover:text-white">
-              Prosseguir
-            </button>
-          </div> */}
-            {/* <Sizing proposeInfo={proposeInfo} setProposeInfo={setProposeInfo}/> */}
             {proposeStage == 1 ? (
               <Sizing
                 proposeInfo={proposeInfo}
@@ -346,10 +220,9 @@ function PropostaPage() {
                 proposeInfo={proposeInfo}
                 setProposeInfo={setProposeInfo}
                 project={project}
-                moveToNextStage={() => setProposeStage((prev) => prev + 1)}
               />
             ) : null}
-          </div>
+          </div> */}
         </div>
       </div>
     );

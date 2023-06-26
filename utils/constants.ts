@@ -306,8 +306,24 @@ export const projectTypes = [
   { label: "SISTEMA FOTOVOLTAICO", value: "SISTEMA FOTOVOLTAICO" },
   { label: "OPERAÇÃO E MANUTENÇÃO", value: "OPERAÇÃO E MANUTENÇÃO" },
 ] as const;
+export const oemPlans = [
+  { label: "MANUTENÇÃO SIMPLES", value: "MANUTENÇÃO SIMPLES", id: 1 },
+  { label: "PLANO SOL", value: "PLANO SOL", id: 2 },
+  { label: "PLANO SOL+", value: "PLANO SOL+", id: 3 },
+];
 export const proposeTemplates = [
-  { label: "TEMPLATE SIMPLES", value: "TEMPLATE SIMPLES" },
+  {
+    label: "TEMPLATE SIMPLES",
+    value: "TEMPLATE SIMPLES",
+    templateId: "LPHl6ETXfSmY3QsHJqAW",
+    applicableProjectTypes: ["SISTEMA FOTOVOLTAICO"],
+  },
+  {
+    label: "TEMPLATE O&M",
+    value: "TEMPLATE O&M",
+    templateId: "Cf2vPPIkSi7XEpuXV8Xv",
+    applicableProjectTypes: ["OPERAÇÃO E MANUTENÇÃO"],
+  },
 ] as const;
 export const leadLoseJustification = {
   "Demora no follow": {
