@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import {
   creditors,
   phases,
+  projectTypes,
   proposeTemplates,
   proposeVoltageOptions,
   structureTypes,
@@ -48,7 +49,9 @@ export interface IKit {
   _id?: string;
   nome: string;
   categoria: "ON-GRID" | "OFF-GRID" | "BOMBA SOLAR";
+  tipo: "TRADICIONAL" | "PROMOCIONAL";
   topologia: "INVERSOR" | "MICRO-INVERSOR";
+  potPico?: number;
   preco: number;
   ativo: boolean;
   fornecedor: string;
@@ -157,6 +160,7 @@ export interface IResponsible {
 export interface IProject {
   _id?: string;
   nome: string;
+  tipoProjeto: (typeof projectTypes)[number]["value"];
   identificador: number;
   idOportunidade?: string;
   responsavel: {
@@ -319,6 +323,17 @@ export type ProjectNote = {
   anotacao: string;
   dataInsercao?: string;
   responsavelId?: string;
+};
+export type ProjectUpdateLog = {
+  _id?: string;
+  projetoId: string;
+  autor: {
+    id: string;
+    nome: string;
+  };
+  alteracoes: {
+    [key: string]: string;
+  };
 };
 export interface INotification {
   remetenteId: string;

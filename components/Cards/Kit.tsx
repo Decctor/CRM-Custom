@@ -3,11 +3,14 @@ import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FaSolarPanel } from "react-icons/fa";
 import { ImPower, ImPriceTag } from "react-icons/im";
+import { MdAttachMoney } from "react-icons/md";
 import { TbTopologyFullHierarchy } from "react-icons/tb";
 import Modules from "../../utils/pvmodules.json";
 import { useSession } from "next-auth/react";
+import { HiBadgeCheck } from "react-icons/hi";
 type KitCardProps = {
   kit: IKit;
+  handleClick: () => void;
 };
 function getPeakPotByModules(modules: ModuleType[]) {
   var peakPotSum = 0;
@@ -19,28 +22,52 @@ function getPeakPotByModules(modules: ModuleType[]) {
   }
   return peakPotSum / 1000;
 }
-function Kit({ kit }: KitCardProps) {
+function Kit({ kit, handleClick }: KitCardProps) {
   const { data: session } = useSession();
   return (
-    <div className="flex h-[400px] w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50">
+    <div
+      onClick={() => handleClick()}
+      className={
+        "relative flex h-[400px]  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50"
+      }
+    >
+      {kit.ativo ? (
+        <div className="absolute left-0 top-0">
+          <HiBadgeCheck style={{ color: "#00b4d8", fontSize: "25px" }} />
+        </div>
+      ) : null}
+
       <h1 className="text-center text-lg font-medium text-gray-800">
         {kit.nome}
       </h1>
       <p className="text-center text-xs text-gray-400">{kit.categoria}</p>
-      <div className="flex items-center gap-2">
-        <div className="flex w-1/2 items-center justify-start gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-start gap-2">
           <ImPower style={{ color: "rgb(239,68,68)", fontSize: "20px" }} />
           <p className="text-xs font-thin text-gray-600">
-            {getPeakPotByModules(kit.modulos).toLocaleString("pt-br", {
-              minimumFractionDigits: 1,
-              maximumFractionDigits: 2,
-            })}{" "}
+            {kit.potPico
+              ? (kit.potPico / 1000).toLocaleString("pt-br", {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 2,
+                })
+              : getPeakPotByModules(kit.modulos).toLocaleString("pt-br", {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 2,
+                })}{" "}
             kWp
           </p>
         </div>
+        {kit.tipo == "PROMOCIONAL" ? (
+          <div className="flex items-center justify-end gap-2 rounded border border-green-500 p-1">
+            <ImPriceTag style={{ color: "rgb(34,197,94)", fontSize: "15px" }} />
+            <p className="text-xs font-thin text-green-500">PROMOCIONAL</p>
+          </div>
+        ) : null}
         {session?.user.permissoes.precos.visualizar ? (
-          <div className="flex w-1/2 items-center justify-end gap-2">
-            <ImPriceTag style={{ color: "rgb(34,197,94)", fontSize: "20px" }} />
+          <div className="flex items-center justify-end gap-2">
+            <MdAttachMoney
+              style={{ color: "rgb(34,197,94)", fontSize: "20px" }}
+            />
             <p className="text-xs font-thin text-gray-600">
               R${" "}
               {kit.preco.toLocaleString("pt-br", {

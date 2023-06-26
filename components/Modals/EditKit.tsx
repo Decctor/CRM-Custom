@@ -14,9 +14,10 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { AiOutlineMinus } from "react-icons/ai";
 import { structureTypes } from "@/utils/constants";
-type ModalNewKitProps = {
+type EditKitProps = {
   isOpen: boolean;
   setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  info: IKitInfo;
 };
 
 type InverterInfo = {
@@ -32,11 +33,9 @@ type ModuleInfo = {
   qtde: number;
   potencia: number;
 };
-type PersonalizedItem = {
-  nome: string;
-  categoria: "INVERSOR" | "MÓDULOS";
-  potencia: number;
-  qtde: number;
+type CreationMsgType = {
+  text: string;
+  color: string;
 };
 interface IKitInfo {
   _id?: string;
@@ -53,46 +52,21 @@ interface IKitInfo {
   inversores: InverterInfo[] | [];
   modulos: ModuleInfo[] | [];
 }
-function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
+function EditKit({ isOpen, setModalIsOpen, info }: EditKitProps) {
   const queryClient = useQueryClient();
-  const [kitInfo, setKitInfo] = useState<IKitInfo>({
-    nome: "",
-    categoria: null,
-    topologia: "INVERSOR",
-    preco: 0,
-    ativo: false,
-    fornecedor: null,
-    estruturasCompativeis: [],
-    incluiEstrutura: false,
-    incluiTransformador: false,
-    inversores: [],
-    modulos: [],
-  });
+  const [kitInfo, setKitInfo] = useState<IKitInfo>(info);
   const [componentMsg, setComponentMsg] = useState({
     text: "",
     color: "",
   });
 
   const { mutate: createKit, status } = useMutation({
-    mutationKey: ["addKit"],
+    mutationKey: ["updateKit", info._id],
     mutationFn: async () => {
       try {
-        const { data } = await axios.post("/api/kits", kitInfo);
+        const { data } = await axios.put(`/api/kits?id=${info._id}`, kitInfo);
         queryClient.invalidateQueries({ queryKey: ["kits"] });
-        if (data.message) toast.success(data.message);
-        setKitInfo({
-          nome: "",
-          categoria: null,
-          topologia: "INVERSOR",
-          preco: 0,
-          ativo: false,
-          fornecedor: null,
-          estruturasCompativeis: [],
-          incluiEstrutura: false,
-          incluiTransformador: false,
-          inversores: [],
-          modulos: [],
-        });
+        if (data) toast.success(data.data);
       } catch (error) {
         console.log("ERROR", error);
         if (error instanceof AxiosError) {
@@ -122,13 +96,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     qtde: 1,
     potencia: 0,
   });
-  const [personalizedItemHolder, setPersonalizedItemHolder] =
-    useState<PersonalizedItem>({
-      nome: "",
-      categoria: "INVERSOR",
-      potencia: 0,
-      qtde: 1,
-    });
+
   function addInverterToKit() {
     if (
       !inverterHolder.id &&
@@ -184,50 +152,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
       potencia: 0,
     });
   }
-  function addPersonalizedItemToKit() {
-    if (personalizedItemHolder.nome.trim().length < 3) {
-      setComponentMsg({
-        text: "Por favor, prencha o nome do item personalizado.",
-        color: "text-red-500",
-      });
-    }
-    if (personalizedItemHolder.qtde <= 0) {
-      setComponentMsg({
-        text: "Por favor, prencha uma quantidade válida para o item personalizado.",
-        color: "text-red-500",
-      });
-    }
-    if (personalizedItemHolder.potencia <= 0) {
-      setComponentMsg({
-        text: "Por favor, prencha uma potência válida para o item personalizado.",
-        color: "text-red-500",
-      });
-    }
-    if (personalizedItemHolder.categoria == "INVERSOR") {
-      const insertObj = {
-        id: "N/A",
-        fabricante: "KIT MANUAL",
-        modelo: personalizedItemHolder.nome,
-        qtde: personalizedItemHolder.qtde,
-      };
-      var inverterArr = [...kitInfo.inversores];
-      inverterArr.push(insertObj);
-      setKitInfo((prev) => ({ ...prev, inversores: inverterArr }));
-    }
-    if (personalizedItemHolder.categoria == "MÓDULOS") {
-      const insertObj = {
-        id: "N/A",
-        fabricante: "KIT MANUAL",
-        modelo: personalizedItemHolder.nome,
-        qtde: personalizedItemHolder.qtde,
-        potencia: personalizedItemHolder.potencia,
-      };
-      var modulesArr = [...kitInfo.modulos];
-      modulesArr.push(insertObj);
-      setKitInfo((prev) => ({ ...prev, modulos: modulesArr }));
-    }
-  }
-  console.log(kitInfo);
+  console.log(moduleHolder);
   return (
     <div
       id="defaultModal"
@@ -572,87 +497,6 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                   </button>
                 </div>
               </div>
-              {kitInfo.tipo == "PROMOCIONAL" ? (
-                <>
-                  <div className="flex w-full items-center gap-4">
-                    <div className="w-[40%]">
-                      <TextInput
-                        label="ITEM PERSONALIZADO"
-                        placeholder="ITEM PERSONALIZADO"
-                        value={personalizedItemHolder.nome}
-                        handleChange={(value) =>
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            nome: value,
-                          }))
-                        }
-                        width="100%"
-                      />
-                    </div>
-                    <div className="w-[30%]">
-                      <SelectInput
-                        label="CATEGORIA"
-                        selectedItemLabel="NÃO DEFINIDO"
-                        options={[
-                          { id: 1, label: "INVERSOR", value: "INVERSOR" },
-                          { id: 2, label: "MÓDULOS", value: "MÓDULOS" },
-                        ]}
-                        value={personalizedItemHolder.categoria}
-                        handleChange={(value) =>
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            categoria: value,
-                          }))
-                        }
-                        onReset={() => {
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            categoria: "INVERSOR",
-                          }));
-                        }}
-                        width="100%"
-                      />
-                    </div>
-                    <div className="w-[10%]">
-                      <NumberInput
-                        label="POTÊNCIA"
-                        value={personalizedItemHolder.potencia}
-                        handleChange={(value) =>
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            potencia: Number(value),
-                          }))
-                        }
-                        placeholder="POTÊNCIA"
-                        width="100%"
-                      />
-                    </div>
-                    <div className="w-[10%]">
-                      <NumberInput
-                        label="QTDE"
-                        value={personalizedItemHolder.qtde}
-                        handleChange={(value) =>
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            qtde: Number(value),
-                          }))
-                        }
-                        placeholder="QTDE"
-                        width="100%"
-                      />
-                    </div>
-                    <div className="flex h-fit w-[10%] flex-col items-center justify-center gap-1 lg:h-full">
-                      <p className="h-[24px] w-full"></p>
-                      <button
-                        onClick={addPersonalizedItemToKit}
-                        className="flex items-center justify-center rounded bg-green-300 p-2 duration-300 ease-out hover:scale-105 hover:bg-green-500 hover:text-white"
-                      >
-                        <IoMdAdd />
-                      </button>
-                    </div>
-                  </div>
-                </>
-              ) : null}
               {componentMsg.text ? (
                 <p
                   className={`w-full text-center ${componentMsg.color} text-xs italic`}
@@ -743,9 +587,9 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
               ) : (
                 <button
                   onClick={() => createKit()}
-                  className="rounded bg-green-300 p-2 font-medium duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
+                  className="rounded bg-blue-300 p-2 font-medium duration-300 ease-in-out hover:scale-105 hover:bg-blue-500 hover:text-white"
                 >
-                  CRIAR KIT
+                  SALVAR
                 </button>
               )}
             </div>
@@ -756,4 +600,4 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
   );
 }
 
-export default ModalNewKit;
+export default EditKit;

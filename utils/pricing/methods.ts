@@ -141,7 +141,8 @@ function getLaborPrice(
   return peakPower * 275;
 }
 function getProjectPrice(peakPower: number) {
-  return peakPower * 100 + 228;
+  // return peakPower * 100 + 228;
+  return peakPower * 80;
 }
 function getSalePrice({
   kitPrice,
@@ -189,7 +190,9 @@ export function getPrices(
   const moduleQty = getModulesQty(propose.kit?.modulos); // extract from kit info
   const distance = propose.premissas.distancia; // get initially from API call
   const extraServicesPrice = 0; // to be defined
-  const paPrice = 0; // to be defined
+  const paPrice = project?.servicosAdicionais?.padrao
+    ? project.servicosAdicionais.padrao
+    : 0; // to be defined
   const maintance = 1; // to be defined
   const delivery = 1; // to be defined
 

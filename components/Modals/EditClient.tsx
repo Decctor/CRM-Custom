@@ -24,9 +24,7 @@ type EditClientModalProps = {
   };
   client: IClient;
   representatives: IRepresentative[] | null;
-  updateInfo: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<IClient, Error>>;
+  updateInfo?: any;
   closeModal: () => void;
 };
 
@@ -116,7 +114,7 @@ function EditClient({
           funis: [],
         });
         // queryClient.invalidateQueries({ queryKey: ["clients"] });
-        updateInfo();
+        if (updateInfo) updateInfo();
       } catch (error) {
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
@@ -299,9 +297,11 @@ function EditClient({
                             {projeto.representante.nome}
                           </div>
                           <div className="w-[20%] py-1 text-center">
-                            {new Date(
-                              projeto.dataInsercao
-                            ).toLocaleDateString()}
+                            {projeto.dataInsercao
+                              ? new Date(
+                                  projeto.dataInsercao
+                                ).toLocaleDateString()
+                              : "-"}
                           </div>
                         </div>
                       ))}

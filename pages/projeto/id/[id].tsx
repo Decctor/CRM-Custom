@@ -1,4 +1,8 @@
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import {
+  UseQueryResult,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -7,8 +11,8 @@ import { toast } from "react-hot-toast";
 import { GoKebabVertical } from "react-icons/go";
 import { Sidebar } from "@/components/Sidebar";
 import LoadingComponent from "@/components/utils/LoadingComponent";
-import { IProject, IProposeInfo } from "@/utils/models";
-import { AiOutlineStar, AiOutlineUser } from "react-icons/ai";
+import { IClient, IProject, IProposeInfo } from "@/utils/models";
+import { AiFillEdit, AiOutlineStar, AiOutlineUser } from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
 import { BsClipboardCheck, BsTelephoneFill } from "react-icons/bs";
 import { FaCity } from "react-icons/fa";
@@ -25,6 +29,7 @@ import {
   checkQueryEnableStatus,
   formatDate,
   useProject,
+  useRepresentatives,
   useResponsibles,
 } from "@/utils/methods";
 import DetailsBlock from "@/components/ProjectBlocks/DetailsBlock";
@@ -33,35 +38,17 @@ import ProjectHistoryBlock from "@/components/ProjectBlocks/ProjectHistoryBlock"
 import Link from "next/link";
 import DropdownSelect from "@/components/Inputs/DropdownSelect";
 import LoseProject from "@/components/ProjectBlocks/LoseProject";
+import EditClient from "@/components/Modals/EditClient";
 
 function Projeto() {
   const { data: session } = useSession({
     required: true,
   });
   const { query } = useRouter();
-
-  // const {
-  //   data: project,
-  //   isLoading: projectLoading,
-  //   isSuccess: projectSuccess,
-  //   isError: projectError,
-  // }: UseQueryResult<IProject, Error> = useQuery({
-  //   queryKey: ["projectPage"],
-  //   queryFn: async () => {
-  //     try {
-  //       const { data } = await axios.get(`/api/projects?id=${query.id}`);
-  //       console.log("FETCH", data);
-
-  //       return data.data;
-  //     } catch (error) {
-  //       toast.error(
-  //         "Erro ao buscar informações desse cliente. Por favor, tente novamente mais tarde."
-  //       );
-  //       return error;
-  //     }
-  //   },
-  //   enabled: !!session?.user,
-  // });
+  const queryClient = useQueryClient();
+  const [editModalIsOpen, setEditModalIsOpen] = useState<boolean>(false);
+  const [editModalInfo, setEditModalInfo] = useState<IClient | null>();
+  const { data: representatives = [] } = useRepresentatives();
   const {
     data: project,
     isLoading: projectLoading,
@@ -101,6 +88,7 @@ function Projeto() {
     },
     enabled: !!project,
   });
+  console.log(project);
   if (projectLoading) return <LoadingComponent />;
 
   if (projectError)
@@ -114,7 +102,7 @@ function Projeto() {
         </div>
       </div>
     );
-
+  console.log(project);
   if (projectSuccess)
     return (
       <div className="flex h-full">
@@ -144,8 +132,14 @@ function Projeto() {
             <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[40%]">
               <div className="flex h-[40px] items-center justify-between border-b border-gray-200 pb-2">
                 <h1 className="font-bold text-black">Dados do Cliente</h1>
-                <div className="cursor-pointer text-lg text-[#15599a] duration-300 ease-in-out hover:scale-110">
-                  <GoKebabVertical />
+                <div
+                  onClick={() => {
+                    setEditModalInfo(project.cliente);
+                    setEditModalIsOpen(true);
+                  }}
+                  className="cursor-pointer text-lg text-[#15599a] duration-300 ease-in-out hover:scale-110"
+                >
+                  <AiFillEdit />
                 </div>
               </div>
               <div className="mt-3 flex w-full grow flex-col gap-1 lg:flex-row">
@@ -296,6 +290,26 @@ function Projeto() {
             ) : null}
           </div>
         </div>
+        {editModalIsOpen && editModalInfo ? (
+          <EditClient
+            client={editModalInfo}
+            representatives={representatives}
+            user={
+              session
+                ? { id: session.user.id, nome: session.user.name }
+                : { id: "", nome: "" }
+            }
+            closeModal={() => {
+              setEditModalInfo(null);
+              setEditModalIsOpen(false);
+            }}
+            updateInfo={async () => {
+              await queryClient.invalidateQueries({
+                queryKey: ["project", query.id],
+              });
+            }}
+          />
+        ) : null}
       </div>
     );
 }

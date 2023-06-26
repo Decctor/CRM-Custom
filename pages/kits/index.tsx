@@ -15,6 +15,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import TextInput from "@/components/Inputs/TextInput";
 import MultipleSelectInput from "@/components/Inputs/MultipleSelectInput";
 import Suppliers from "../../utils/pvsuppliers.json";
+import EditKit from "@/components/Modals/EditKit";
 
 type Filters = {
   suppliers: string[];
@@ -31,6 +32,10 @@ function Kits() {
     topology: [],
     search: "",
   });
+
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [editKitInfo, setEditKitInfo] = useState<IKit | null>();
+
   const [newKitModalIsOpen, setNewKitModalIsOpen] = useState(false);
 
   function handleSearchFilter(value: string) {
@@ -172,10 +177,19 @@ function Kits() {
               </div>
             </div>
           </div>
-          <div className="flex grow flex-wrap justify-around gap-3 p-3">
+          <div className="flex grow flex-wrap justify-between gap-3 p-3">
             {kitsStatus == "loading" ? <LoadingComponent /> : null}
             {kitsStatus == "success"
-              ? filteredKits?.map((kit, index) => <Kit key={index} kit={kit} />)
+              ? filteredKits?.map((kit, index) => (
+                  <Kit
+                    key={index}
+                    kit={kit}
+                    handleClick={() => {
+                      setEditKitInfo(kit);
+                      setEditModalIsOpen(true);
+                    }}
+                  />
+                ))
               : null}
             {kitsStatus == "error" ? (
               <div className="flex w-full grow items-center justify-center">
@@ -191,6 +205,13 @@ function Kits() {
           <NewKit
             isOpen={newKitModalIsOpen}
             setModalIsOpen={setNewKitModalIsOpen}
+          />
+        ) : null}
+        {editModalIsOpen && editKitInfo ? (
+          <EditKit
+            isOpen={editModalIsOpen}
+            info={editKitInfo}
+            setModalIsOpen={setEditModalIsOpen}
           />
         ) : null}
       </div>

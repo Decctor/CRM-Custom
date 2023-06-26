@@ -76,9 +76,10 @@ export const funnels: Funnel[] = [
     nome: "INSIDE SALES (TESTE)",
     modo: "REPRESENTANTE",
     etapas: [
-      { id: 1, nome: "Para Atender" },
-      { id: 2, nome: "Para Qualificar" },
-      { id: 3, nome: "Criação de Proposta" },
+      { id: 1, nome: "Primeiros contatos" },
+      { id: 2, nome: "Identificação de interesse" },
+      { id: 3, nome: "Qualificação" },
+      { id: 4, nome: "Envio" },
     ],
   },
 ];
@@ -301,7 +302,10 @@ export const proposeVoltageOptions = [
   { label: "220/380V", value: "220/380V" },
   { label: "277/480V", value: "277/480V" },
 ] as const;
-
+export const projectTypes = [
+  { label: "SISTEMA FOTOVOLTAICO", value: "SISTEMA FOTOVOLTAICO" },
+  { label: "OPERAÇÃO E MANUTENÇÃO", value: "OPERAÇÃO E MANUTENÇÃO" },
+] as const;
 export const proposeTemplates = [
   { label: "TEMPLATE SIMPLES", value: "TEMPLATE SIMPLES" },
 ] as const;
