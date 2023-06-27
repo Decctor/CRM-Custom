@@ -28,32 +28,6 @@ import PeriodDropdownFilter from "@/components/Inputs/PeriodDropdownFilter";
 import { AiOutlinePlus } from "react-icons/ai";
 import NewProject from "@/components/Modals/NewProject";
 import dayjs from "dayjs";
-{
-  // Exemplo de mutation com tratamento de erros
-  /**
-  const { mutate, isLoading } = useMutation({
-    mutationFn: async () => {
-      try {
-        let { data } = await axios.post("/api/test", {
-          nome: "Lucas",
-          email: "email",
-          role: "ADMIN",
-        });
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          let errorMsg = error.response?.data.error.message;
-          toast.error(errorMsg);
-          return;
-        }
-        if (error instanceof Error) {
-          let errorMsg = error.message;
-          toast.error(errorMsg);
-          return;
-        }
-      }
-    },
-  }); */
-}
 
 type Options = {
   activeResponsible: string | null;
@@ -184,26 +158,6 @@ export default function Home() {
     dateParam.before,
     session
   );
-  // const {
-  //   data: projects = [],
-  //   isLoading: projectsLoading,
-  // }: UseQueryResult<IProject[], Error> = useQuery({
-  //   queryKey: ["projects", funnel, responsible],
-  //   queryFn: async (): Promise<IProject[]> => {
-  //     try {
-  //       const { data } = await axios.get(
-  //         `/api/projects?responsible=${responsible}&funnel=${funnel}`
-  //       );
-  //       return data.data;
-  //     } catch (error) {
-  //       toast.error(
-  //         "Erro ao buscar informações desse cliente. Por favor, tente novamente mais tarde."
-  //       );
-  //       return [];
-  //     }
-  //   },
-  //   enabled: !!session?.user,
-  // });
 
   const { mutate } = useMutation({
     mutationKey: ["updateObjFunnelStage"],
@@ -390,6 +344,18 @@ export default function Home() {
                               (resp) => resp.id == item.responsavel.id
                             )[0].avatar_url,
                             atividades: item.atividades,
+                            nomeProposta:
+                              item.proposta && item.proposta?.length > 0
+                                ? item.proposta[0].nome
+                                : undefined,
+                            valorProposta:
+                              item.proposta && item.proposta?.length > 0
+                                ? item.proposta[0].valorProposta
+                                : undefined,
+                            potenciaPicoProposta:
+                              item.proposta && item.proposta?.length > 0
+                                ? item.proposta[0].potenciaPico
+                                : undefined,
                           };
                         }
                       )}

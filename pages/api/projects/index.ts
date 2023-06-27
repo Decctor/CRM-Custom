@@ -147,15 +147,36 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         { $match: { _id: new ObjectId(id) } },
         {
           $addFields: {
-            objectId: { $toObjectId: "$clienteId" },
+            clientObjectId: { $toObjectId: "$clienteId" },
+            propostaAtivaObjectId: { $toObjectId: "$propostaAtiva" },
           },
         },
         {
           $lookup: {
             from: "clients",
-            localField: "objectId",
+            localField: "clientObjectId",
             foreignField: "_id",
             as: "cliente",
+          },
+        },
+        {
+          $lookup: {
+            from: "proposes",
+            localField: "propostaAtivaObjectId",
+            foreignField: "_id",
+            as: "proposta",
+          },
+        },
+        {
+          $project: {
+            "proposta.template": 0,
+            "proposta.projeto": 0,
+            "proposta.premissas": 0,
+            "proposta.kit": 0,
+            "proposta.precificacao": 0,
+            "proposta.linkArquivo": 0,
+            "proposta.potenciaPico": 0,
+            "proposta.autor": 0,
           },
         },
       ])
@@ -211,15 +232,35 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         },
         {
           $addFields: {
-            objectId: { $toObjectId: "$clienteId" },
+            clientObjectId: { $toObjectId: "$clienteId" },
+            propostaAtivaObjectId: { $toObjectId: "$propostaAtiva" },
           },
         },
         {
           $lookup: {
             from: "clients",
-            localField: "objectId",
+            localField: "clientObjectId",
             foreignField: "_id",
             as: "cliente",
+          },
+        },
+        {
+          $lookup: {
+            from: "proposes",
+            localField: "propostaAtivaObjectId",
+            foreignField: "_id",
+            as: "proposta",
+          },
+        },
+        {
+          $project: {
+            "proposta.template": 0,
+            "proposta.projeto": 0,
+            "proposta.premissas": 0,
+            "proposta.kit": 0,
+            "proposta.precificacao": 0,
+            "proposta.linkArquivo": 0,
+            "proposta.autor": 0,
           },
         },
       ])
@@ -254,6 +295,15 @@ const editProjectSchema = z.object({
         "Por favor, preencha o nome para identificação do projeto.",
     })
     .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." })
+    .optional(),
+  tipoProjeto: z
+    .union(
+      [z.literal("SISTEMA FOTOVOLTAICO"), z.literal("OPERAÇÃO E MANUTENÇÃO")],
+      {
+        required_error: "Por favor, preencha o tipo do projeto.",
+        invalid_type_error: "Por favor, preencha um tipo válido de projeto.",
+      }
+    )
     .optional(),
   responsavel: z
     .object(
@@ -361,7 +411,7 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
   // });
 
   const setObj = formatUpdateSetObject(changes);
-
+  console.log(changes);
   if (typeof id === "string") {
     const data = await collection.findOneAndUpdate(
       {

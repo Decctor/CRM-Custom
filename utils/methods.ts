@@ -126,11 +126,11 @@ export function getModulesStr(modules: ModuleType[]) {
     if (i < modules.length - 1) {
       str =
         str +
-        `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].modelo}) & `;
+        `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].potencia}W) & `;
     } else {
       str =
         str +
-        `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].modelo})`;
+        `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].potencia}W)`;
     }
   }
   return str;
@@ -151,7 +151,10 @@ export function getProposeObject(
       cpfCnpj: project.cliente?.cpfCnpj,
       cidade: `${project.cliente?.cidade} - ${project.cliente?.uf}`,
       enderecoCliente: `${project.cliente?.endereco}`,
-      potPico: propose.potenciaPico,
+      potPico: propose.potenciaPico?.toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
       consumoMedio: propose.premissas.consumoEnergiaMensal,
       gastoMensalAtual: `R$ ${(
         propose.premissas.consumoEnergiaMensal * propose.premissas.tarifaEnergia
@@ -301,7 +304,7 @@ export function getProposeOeMObject(
       telefoneVendedor: sellerPhone,
       qtdepotModulos: `${propose.premissas.qtdeModulos} - ${propose.premissas.potModulos}W`,
       potPico: propose.potenciaPico,
-      eficienciaAtual: propose.premissas.eficienciaAtual,
+      eficienciaAtual: `${propose.premissas.eficienciaAtual}%`,
       perdaFinanceira: `R$ ${(
         12 *
         (1 - propose.premissas.eficienciaAtual / 100) *

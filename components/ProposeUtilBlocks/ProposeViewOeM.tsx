@@ -25,6 +25,7 @@ import {
 import { getPrices } from "@/utils/pricing/methods";
 import { BsPatchCheckFill } from "react-icons/bs";
 import { AiFillCloseCircle } from "react-icons/ai";
+import Link from "next/link";
 
 function copyToClipboard(text: string | undefined) {
   if (text) {
@@ -175,10 +176,12 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
             <h1 className="font-Raleway text-xl font-bold text-gray-800">
               {propose?.nome}
             </h1>
-            <div className="flex items-center gap-2">
-              <RxDashboard style={{ color: "#15599a" }} />
-              <p className="text-xs">{propose?.infoProjeto?.nome}</p>
-            </div>
+            <Link href={`/projeto/id/${propose.infoProjeto?._id}`}>
+              <div className="flex items-center gap-2">
+                <RxDashboard style={{ color: "#15599a" }} />
+                <p className="text-xs">{propose?.infoProjeto?.nome}</p>
+              </div>
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">

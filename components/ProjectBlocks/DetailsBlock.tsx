@@ -17,6 +17,7 @@ import {
   creditors,
   customersAcquisitionChannels,
   funnels,
+  projectTypes,
 } from "@/utils/constants";
 import NumberInput from "../Inputs/NumberInput";
 import SingleFileInput from "../Inputs/SingleFileInput";
@@ -106,6 +107,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
   const { mutate: updateProject } = useMutation({
     mutationKey: ["editProject"],
     mutationFn: async (changes: { [key: string]: any }) => {
+      console.log(changes);
       try {
         const { data } = await axios.put(
           `/api/projects?id=${info._id}&responsavel=${info.responsavel?.id}`,
@@ -208,7 +210,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
       updateProject(obj);
     }
   }
-
+  console.log("HOLDER", infoHolder);
   return (
     <div className="flex w-full flex-col gap-6 lg:flex-row">
       <div className="flex w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">
@@ -270,6 +272,54 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
                   fontSize: "18px",
                   color:
                     infoHolder?.responsavel.id != info.responsavel.id
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <div className="flex w-full gap-2">
+            <div className="flex grow flex-col items-start">
+              <SelectInput
+                label="TIPO DO PROJETO"
+                value={infoHolder?.tipoProjeto ? infoHolder?.tipoProjeto : null}
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                options={projectTypes.map((type, index) => {
+                  return {
+                    id: index + 1,
+                    label: type.label,
+                    value: type.value,
+                  };
+                })}
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      tipoProjeto: value,
+                    }));
+                }}
+                onReset={() => {
+                  console.log("OOPS");
+                }}
+                selectedItemLabel="NÃO DEFINIDO"
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={infoHolder?.tipoProjeto == info.tipoProjeto}
+              onClick={() =>
+                updateData("PROJETO", "tipoProjeto", infoHolder?.tipoProjeto)
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.tipoProjeto != info.tipoProjeto
                       ? "rgb(34,197,94)"
                       : "rgb(156,163,175)",
                 }}

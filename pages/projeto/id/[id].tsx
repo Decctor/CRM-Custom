@@ -39,6 +39,7 @@ import Link from "next/link";
 import DropdownSelect from "@/components/Inputs/DropdownSelect";
 import LoseProject from "@/components/ProjectBlocks/LoseProject";
 import EditClient from "@/components/Modals/EditClient";
+import EditClientSimplified from "@/components/Modals/EditClientSimplified";
 
 function Projeto() {
   const { data: session } = useSession({
@@ -261,6 +262,11 @@ function Projeto() {
                     </p>
                   )
                 ) : null}
+                {projectLoading ? (
+                  <div className="flex grow items-center justify-center">
+                    <LoadingComponent />
+                  </div>
+                ) : null}
                 {projectProposesError ? (
                   <p className="flex grow items-center justify-center italic text-gray-500">
                     Oops, houve um erro na busca das propostas desse projeto.
@@ -291,23 +297,14 @@ function Projeto() {
           </div>
         </div>
         {editModalIsOpen && editModalInfo ? (
-          <EditClient
+          <EditClientSimplified
             client={editModalInfo}
             representatives={representatives}
-            user={
-              session
-                ? { id: session.user.id, nome: session.user.name }
-                : { id: "", nome: "" }
-            }
             closeModal={() => {
               setEditModalInfo(null);
               setEditModalIsOpen(false);
             }}
-            updateInfo={async () => {
-              await queryClient.invalidateQueries({
-                queryKey: ["project", query.id],
-              });
-            }}
+            projectId={project._id ? project._id : ""}
           />
         ) : null}
       </div>

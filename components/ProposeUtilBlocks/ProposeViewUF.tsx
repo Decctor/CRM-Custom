@@ -23,6 +23,7 @@ import {
   priceDescription,
 } from "@/utils/pricing/methods";
 import { getPrices } from "@/utils/pricing/methods";
+import Link from "next/link";
 
 function copyToClipboard(text: string | undefined) {
   if (text) {
@@ -171,8 +172,10 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
               {propose?.nome}
             </h1>
             <div className="flex items-center gap-2">
-              <RxDashboard style={{ color: "#15599a" }} />
-              <p className="text-xs">{propose?.infoProjeto?.nome}</p>
+              <Link href={`/projeto/id/${propose.infoProjeto?._id}`}>
+                <RxDashboard style={{ color: "#15599a" }} />
+                <p className="text-xs">{propose?.infoProjeto?.nome}</p>
+              </Link>
             </div>
           </div>
 

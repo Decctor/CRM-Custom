@@ -173,7 +173,7 @@ export interface IProject {
   };
   clienteId: string;
   cliente?: IClient; // ajustar pós criação da interface de Cliente
-  propostas?: IProposeInfo[];
+  proposta?: IProposeInfo[];
   propostaAtiva?: string;
   titularInstalacao?: string;
   numeroInstalacaoConcessionaria?: string;

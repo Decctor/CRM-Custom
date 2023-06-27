@@ -15,6 +15,9 @@ interface FunnelListItemProps {
     responsavel: string;
     responsavel_avatar?: string;
     atividades?: ProjectActivity[];
+    nomeProposta?: string;
+    valorProposta?: number;
+    potenciaPicoProposta?: number;
   };
 }
 function getTagColor(activities: ProjectActivity[]) {
@@ -33,7 +36,7 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="relative flex min-h-[100px] w-full flex-col justify-between rounded border border-gray-200 bg-[#fff] p-2 shadow-sm"
+          className="relative flex min-h-[110px] w-full flex-col justify-between rounded border border-gray-200 bg-[#fff] p-2 shadow-sm"
         >
           {openActivitiesModal && item.atividades ? (
             <ProjectOpenActivities
@@ -61,6 +64,33 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
               </div>
             ) : null}
           </div>
+          {(item.valorProposta || item.potenciaPicoProposta) &&
+          item.nomeProposta ? (
+            <div className="flex w-full grow flex-col">
+              <h1 className="text-xxs font-thin text-gray-500">
+                PROPOSTA ATIVA
+              </h1>
+              <div className="flex w-full items-center justify-between">
+                <p className="text-xs text-green-500">{item.nomeProposta}</p>
+                <p className="text-xs text-green-500">
+                  {item.potenciaPicoProposta?.toLocaleString("pt-br", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  kWp
+                </p>
+                <p className="text-xs text-green-500">
+                  R${" "}
+                  {item.valorProposta
+                    ? item.valorProposta.toLocaleString("pt-br", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
+                    : 0.0}
+                </p>
+              </div>
+            </div>
+          ) : null}
 
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
