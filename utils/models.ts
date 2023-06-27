@@ -7,6 +7,7 @@ import {
   proposeVoltageOptions,
   structureTypes,
 } from "./constants";
+import { PricesObj, PricesPromoObj } from "./pricing/methods";
 type Etiqueta = {
   id: number;
   nome: string;
@@ -252,49 +253,14 @@ export interface IProposeInfo {
   };
   kit?: {
     kitId: string;
+    tipo?: "TRADICIONAL" | "PROMOCIONAL";
     nome: string;
     topologia: string;
     modulos: ModuleType[];
     inversores: InverterType[];
     preco: number;
   };
-  precificacao?: {
-    kit: {
-      margemLucro: number;
-      imposto: number;
-      custo: number;
-      vendaProposto: number;
-      vendaFinal: number;
-    };
-    instalacao: {
-      margemLucro: number;
-      imposto: number;
-      custo: number;
-      vendaProposto: number;
-      vendaFinal: number;
-    };
-    maoDeObra: {
-      margemLucro: number;
-      imposto: number;
-      custo: number;
-      vendaProposto: number;
-      vendaFinal: number;
-    };
-    projeto: {
-      margemLucro: number;
-      imposto: number;
-      custo: number;
-      vendaProposto: number;
-      vendaFinal: number;
-    };
-    venda: {
-      margemLucro: number;
-      imposto: number;
-      custo: number;
-      vendaProposto: number;
-      vendaFinal: number;
-    };
-  };
+  precificacao?: PricesObj | PricesPromoObj;
   infoProjeto?: IProject;
   linkArquivo?: string;
   potenciaPico?: number;

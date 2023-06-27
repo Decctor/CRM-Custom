@@ -14,6 +14,7 @@ type SaleCostArguments = {
   extraServicesPrice: number;
   paPrice: number;
 };
+export type Pricing = PricesObj | PricesPromoObj;
 export interface PricesObj {
   kit: {
     margemLucro: number;
@@ -44,6 +45,15 @@ export interface PricesObj {
     vendaFinal: number;
   };
   venda: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
+}
+export interface PricesPromoObj {
+  kit: {
     margemLucro: number;
     imposto: number;
     custo: number;
@@ -198,89 +208,110 @@ function getSalePrice({
 export function getPrices(
   project: IProject | undefined,
   propose: IProposeInfo
-) {
-  const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
-  const peakPower = getPeakPotByModules(propose.kit?.modulos); // extract from kit info
-  const moduleQty = getModulesQty(propose.kit?.modulos); // extract from kit info
-  const distance = propose.premissas.distancia; // get initially from API call
-  const extraServicesPrice = 0; // to be defined
-  const paPrice = project?.servicosAdicionais?.padrao
-    ? project.servicosAdicionais.padrao
-    : 0; // to be defined
-  const maintance = 1; // to be defined
-  const delivery = 1; // to be defined
+): PricesObj | PricesPromoObj {
+  if (propose.kit?.tipo == "PROMOCIONAL") {
+    const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
+    const peakPower = getPeakPotByModules(propose.kit?.modulos); // extract from kit info
+    const moduleQty = getModulesQty(propose.kit?.modulos); // extract from kit info
+    const distance = propose.premissas.distancia; // get initially from API call
+    const extraServicesPrice = 0; // to be defined
+    const paPrice = project?.servicosAdicionais?.padrao
+      ? project.servicosAdicionais.padrao
+      : 0; // to be defined
+    var pricesPromo: PricesPromoObj = {
+      kit: {
+        margemLucro: 0,
+        imposto: 0,
+        custo: kitPrice,
+        vendaProposto: getProposedPrice(kitPrice, 0, 0),
+        vendaFinal: getProposedPrice(kitPrice, 0, 0),
+      },
+    };
+    return pricesPromo;
+  } else {
+    const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
+    const peakPower = getPeakPotByModules(propose.kit?.modulos); // extract from kit info
+    const moduleQty = getModulesQty(propose.kit?.modulos); // extract from kit info
+    const distance = propose.premissas.distancia; // get initially from API call
+    const extraServicesPrice = 0; // to be defined
+    const paPrice = project?.servicosAdicionais?.padrao
+      ? project.servicosAdicionais.padrao
+      : 0; // to be defined
+    const maintance = 1; // to be defined
+    const delivery = 1; // to be defined
 
-  var prices: PricesObj = {
-    kit: {
-      margemLucro: fixedMargin,
-      imposto: 0,
-      custo: kitPrice,
-      vendaProposto: getProposedPrice(kitPrice, 0),
-      vendaFinal: getProposedPrice(kitPrice, 0),
-    },
-    instalacao: {
-      margemLucro: fixedMargin,
-      imposto: fixedTaxAliquot,
-      custo: 0,
-      vendaProposto: 0,
-      vendaFinal: 0,
-    },
-    maoDeObra: {
-      margemLucro: fixedMargin,
-      imposto: fixedTaxAliquot,
-      custo: 0,
-      vendaProposto: 0,
-      vendaFinal: 0,
-    },
-    projeto: {
-      margemLucro: fixedMargin,
-      imposto: fixedTaxAliquot,
-      custo: 0,
-      vendaProposto: 0,
-      vendaFinal: 0,
-    },
-    venda: {
-      margemLucro: fixedMargin,
-      imposto: fixedTaxAliquot,
-      custo: 0,
-      vendaProposto: 0,
-      vendaFinal: 0,
-    },
-  };
-  // Costs
-  prices.instalacao.custo = getInstallationCost(peakPower, distance);
-  prices.maoDeObra.custo = getLaborPrice(
-    project?.cliente?.cidade,
-    moduleQty,
-    peakPower,
-    project?.responsavel.id ? project?.responsavel.id : ""
-  );
-  prices.projeto.custo = getProjectPrice(peakPower);
-  prices.venda.custo = getSalePrice({
-    kitPrice: kitPrice,
-    peakPower: peakPower,
-    moduleQty: moduleQty,
-    city: project?.cliente?.cidade,
-    uf: project?.cliente?.uf,
-    structureType: propose.premissas.tipoEstrutura,
-    laborPrice: prices.maoDeObra.custo,
-    projectPrice: prices.projeto.custo,
-    extraServicesPrice: extraServicesPrice,
-    paPrice: paPrice,
-  });
+    var prices: PricesObj = {
+      kit: {
+        margemLucro: fixedMargin,
+        imposto: 0,
+        custo: kitPrice,
+        vendaProposto: getProposedPrice(kitPrice, 0),
+        vendaFinal: getProposedPrice(kitPrice, 0),
+      },
+      instalacao: {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: 0,
+        vendaProposto: 0,
+        vendaFinal: 0,
+      },
+      maoDeObra: {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: 0,
+        vendaProposto: 0,
+        vendaFinal: 0,
+      },
+      projeto: {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: 0,
+        vendaProposto: 0,
+        vendaFinal: 0,
+      },
+      venda: {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: 0,
+        vendaProposto: 0,
+        vendaFinal: 0,
+      },
+    };
+    // Costs
+    prices.instalacao.custo = getInstallationCost(peakPower, distance);
+    prices.maoDeObra.custo = getLaborPrice(
+      project?.cliente?.cidade,
+      moduleQty,
+      peakPower,
+      project?.responsavel.id ? project?.responsavel.id : ""
+    );
+    prices.projeto.custo = getProjectPrice(peakPower);
+    prices.venda.custo = getSalePrice({
+      kitPrice: kitPrice,
+      peakPower: peakPower,
+      moduleQty: moduleQty,
+      city: project?.cliente?.cidade,
+      uf: project?.cliente?.uf,
+      structureType: propose.premissas.tipoEstrutura,
+      laborPrice: prices.maoDeObra.custo,
+      projectPrice: prices.projeto.custo,
+      extraServicesPrice: extraServicesPrice,
+      paPrice: paPrice,
+    });
 
-  // Proposed Price
-  prices.instalacao.vendaProposto = getProposedPrice(prices.instalacao.custo);
-  prices.maoDeObra.vendaProposto = getProposedPrice(prices.maoDeObra.custo);
-  prices.projeto.vendaProposto = getProposedPrice(prices.projeto.custo);
-  prices.venda.vendaProposto = getProposedPrice(prices.venda.custo);
+    // Proposed Price
+    prices.instalacao.vendaProposto = getProposedPrice(prices.instalacao.custo);
+    prices.maoDeObra.vendaProposto = getProposedPrice(prices.maoDeObra.custo);
+    prices.projeto.vendaProposto = getProposedPrice(prices.projeto.custo);
+    prices.venda.vendaProposto = getProposedPrice(prices.venda.custo);
 
-  // Final sale price for each item (initially, equal to proposed price)
-  prices.instalacao.vendaFinal = getProposedPrice(prices.instalacao.custo);
-  prices.maoDeObra.vendaFinal = getProposedPrice(prices.maoDeObra.custo);
-  prices.projeto.vendaFinal = getProposedPrice(prices.projeto.custo);
-  prices.venda.vendaFinal = getProposedPrice(prices.venda.custo);
-  return prices;
+    // Final sale price for each item (initially, equal to proposed price)
+    prices.instalacao.vendaFinal = getProposedPrice(prices.instalacao.custo);
+    prices.maoDeObra.vendaFinal = getProposedPrice(prices.maoDeObra.custo);
+    prices.projeto.vendaFinal = getProposedPrice(prices.projeto.custo);
+    prices.venda.vendaFinal = getProposedPrice(prices.venda.custo);
+    return prices;
+  }
 }
 
 // OeM pricing

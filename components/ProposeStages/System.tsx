@@ -32,15 +32,24 @@ function getIdealPowerInterval(
   consumption: number,
   city: string | undefined | null,
   uf: string | undefined | null
-): { max: number; min: number } {
+): { max: number; min: number; ideal: number } {
   if (!city || !uf)
-    return { max: 400 + consumption / 127, min: -400 + consumption / 127 };
+    return {
+      max: 400 + consumption / 127,
+      min: -400 + consumption / 127,
+      ideal: consumption / 127,
+    };
   const cityFactors = genFactors[city as keyof typeof genFactors];
   if (!cityFactors)
-    return { max: 400 + consumption / 127, min: -400 + consumption / 127 };
+    return {
+      max: 400 + consumption / 127,
+      min: -400 + consumption / 127,
+      ideal: consumption / 127,
+    };
   return {
     max: 400 + (consumption / cityFactors.fatorGen) * 1000,
     min: -400 + (consumption / cityFactors.fatorGen) * 1000,
+    ideal: consumption / cityFactors.fatorGen,
   };
 }
 function System({
@@ -153,6 +162,7 @@ function System({
       ...prev,
       kit: {
         kitId: kit._id ? kit._id : "",
+        tipo: kit.tipo,
         nome: kit.nome,
         topologia: topology,
         modulos: modules,
@@ -173,6 +183,23 @@ function System({
         <h1 className="text-center font-medium italic text-[#fead61]">
           Nessa etapa, por favor escolha o kit que melhor se adeque as
           necessidades desse projeto.
+        </h1>
+      </div>
+      <div className="flex w-full flex-col items-center justify-center">
+        <h1 className="text-center font-thin italic text-gray-500">
+          Calculamos, com base nas premissas preenchidas, que a potência pico
+          ideal para esse projeto é de aproximadamente:
+        </h1>
+        <h1 className="text-center font-medium italic text-gray-800">
+          {getIdealPowerInterval(
+            proposeInfo.premissas.consumoEnergiaMensal,
+            project.cliente?.cidade,
+            project.cliente?.uf
+          ).ideal.toLocaleString("pt-br", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}{" "}
+          kWp
         </h1>
       </div>
       <div className="flex w-full flex-col border-b border-gray-200 pb-2">
@@ -314,6 +341,8 @@ function System({
           kits.length > 0 ? (
             filteredKits?.map((kit, index) => (
               <ProposeKit
+                project={project}
+                propose={proposeInfo}
                 key={index}
                 kit={kit}
                 handleSelect={(value) => selectKit(value)}

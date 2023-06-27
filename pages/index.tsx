@@ -269,7 +269,7 @@ export default function Home() {
       <Sidebar />
       <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
         <div className="flex flex-col items-center border-b border-[#fead61] pb-2 xl:flex-row">
-          <div className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
+          <div className="flex font-Poppins text-2xl font-bold text-[#fead61]">
             FUNIL
           </div>
           <div className="flex grow flex-col items-center justify-end  gap-2 xl:flex-row">

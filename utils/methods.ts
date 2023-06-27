@@ -19,10 +19,7 @@ export function getPeakPotByModules(modules: ModuleType[] | undefined) {
   if (modules) {
     var peakPotSum = 0;
     for (let i = 0; i < modules.length; i++) {
-      const moduleInfo = Modules.find((mod) => mod.id == modules[i].id);
-      if (moduleInfo) {
-        peakPotSum = peakPotSum + modules[i].qtde * moduleInfo.potencia;
-      }
+      peakPotSum = peakPotSum + modules[i].qtde * modules[i].potencia;
     }
     return peakPotSum / 1000;
   } else {
@@ -105,34 +102,65 @@ export function formatUpdateSetObject(changes: object) {
   });
   return setObj;
 }
-export function getInverterStr(inverters: InverterType[]) {
+export function getInverterStr(
+  inverters: InverterType[],
+  kitType: string | undefined
+) {
   var str = "";
-  for (let i = 0; i < inverters.length; i++) {
-    if (i < inverters.length - 1) {
-      str =
-        str +
-        `${inverters[i].qtde}x ${inverters[i].fabricante} (${inverters[i].modelo}) & `;
-    } else {
-      str =
-        str +
-        `${inverters[i].qtde}x ${inverters[i].fabricante} (${inverters[i].modelo})`;
+  if (kitType == "PROMOCIONAL") {
+    for (let i = 0; i < inverters.length; i++) {
+      if (i < inverters.length - 1) {
+        str = str + `${inverters[i].qtde}x ${inverters[i].modelo} & `;
+      } else {
+        str = str + `${inverters[i].qtde}x ${inverters[i].modelo}`;
+      }
+    }
+  } else {
+    for (let i = 0; i < inverters.length; i++) {
+      if (i < inverters.length - 1) {
+        str =
+          str +
+          `${inverters[i].qtde}x ${inverters[i].fabricante} (${inverters[i].modelo}) & `;
+      } else {
+        str =
+          str +
+          `${inverters[i].qtde}x ${inverters[i].fabricante} (${inverters[i].modelo})`;
+      }
     }
   }
   return str;
 }
-export function getModulesStr(modules: ModuleType[]) {
+export function getModulesStr(
+  modules: ModuleType[],
+  kitType: string | undefined
+) {
   var str = "";
-  for (let i = 0; i < modules.length; i++) {
-    if (i < modules.length - 1) {
-      str =
-        str +
-        `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].potencia}W) & `;
-    } else {
-      str =
-        str +
-        `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].potencia}W)`;
+  if (kitType == "PROMOCIONAL") {
+    for (let i = 0; i < modules.length; i++) {
+      if (i < modules.length - 1) {
+        str =
+          str +
+          `${modules[i].qtde}x PAINÉIS PROMOCIONAIS DE ${modules[i].potencia}W & `;
+      } else {
+        str =
+          str +
+          `${modules[i].qtde}x PAINÉIS PROMOCIONAIS DE ${modules[i].potencia}W`;
+      }
+    }
+  } else {
+    for (let i = 0; i < modules.length; i++) {
+      if (i < modules.length - 1) {
+        str =
+          str +
+          `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].potencia}W) & `;
+      } else {
+        str =
+          str +
+          `${modules[i].qtde}x ${modules[i].fabricante} (${modules[i].potencia}W)`;
+      }
     }
   }
+
   return str;
 }
 export function getProposeObject(
@@ -211,10 +239,14 @@ export function getProposeObject(
         maximumFractionDigits: 2,
       })}`,
       inversores: getInverterStr(
-        propose.kit?.inversores ? propose.kit?.inversores : []
+        propose.kit?.inversores ? propose.kit?.inversores : [],
+        propose?.kit?.tipo
       ),
       garantiaInversores: "10 anos",
-      modulos: getModulesStr(propose.kit?.modulos ? propose.kit?.modulos : []),
+      modulos: getModulesStr(
+        propose.kit?.modulos ? propose.kit?.modulos : [],
+        propose.kit?.tipo
+      ),
       valorProposta: `R$ ${propose.valorProposta?.toLocaleString("pt-br", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,

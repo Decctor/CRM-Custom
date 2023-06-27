@@ -1,5 +1,7 @@
 import {
   PricesObj,
+  PricesPromoObj,
+  Pricing,
   getMarginValue,
   getProposedPrice,
   getTaxValue,
@@ -11,8 +13,8 @@ import NumberInput from "../Inputs/NumberInput";
 type EditPriceModalProps = {
   closeModal: React.Dispatch<React.SetStateAction<boolean>>;
   priceType: string;
-  pricing: PricesObj;
-  setPricing: React.Dispatch<React.SetStateAction<PricesObj>>;
+  pricing: Pricing;
+  setPricing: React.Dispatch<React.SetStateAction<PricesObj | PricesPromoObj>>;
 };
 function EditPriceModal({
   closeModal,
@@ -20,7 +22,9 @@ function EditPriceModal({
   pricing,
   setPricing,
 }: EditPriceModalProps) {
-  const tag = priceType as keyof PricesObj;
+  const tag = priceType as keyof Pricing;
+  const pricesObj = pricing[priceType as keyof Pricing];
+  const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
   return (
     <div
       id="defaultModal"
@@ -44,16 +48,12 @@ function EditPriceModal({
             <div className="w-full self-center lg:w-[50%]">
               <NumberInput
                 label="MARGEM DE LUCRO"
-                value={
-                  pricing[tag].margemLucro
-                    ? Number(pricing[tag].margemLucro.toFixed(2))
-                    : 0
-                }
+                value={margemLucro ? Number(margemLucro.toFixed(2)) : 0}
                 placeholder="Valor da margem de lucro..."
                 handleChange={(value) => {
                   const newSellingPrice = getProposedPrice(
-                    pricing[tag].custo,
-                    pricing[tag].imposto,
+                    custo,
+                    imposto,
                     value
                   );
 
@@ -72,17 +72,13 @@ function EditPriceModal({
             <div className="w-full self-center lg:w-[50%]">
               <NumberInput
                 label="TAXA DE IMPOSTO"
-                value={
-                  pricing[tag].imposto
-                    ? Number(pricing[tag].imposto.toFixed(2))
-                    : 0
-                }
+                value={imposto ? Number(imposto.toFixed(2)) : 0}
                 placeholder="Valor da taxa de imposto..."
                 handleChange={(value) => {
                   const newSellingPrice = getProposedPrice(
-                    pricing[tag].custo,
+                    custo,
                     value,
-                    pricing[tag].margemLucro
+                    margemLucro
                   );
                   setPricing((prev) => ({
                     ...prev,
@@ -99,18 +95,10 @@ function EditPriceModal({
             <div className="w-full self-center lg:w-[50%]">
               <NumberInput
                 label="PREÇO DE VENDA"
-                value={
-                  pricing[tag].vendaFinal
-                    ? Number(pricing[tag].vendaFinal.toFixed(2))
-                    : 0
-                }
+                value={vendaFinal ? Number(vendaFinal.toFixed(2)) : 0}
                 placeholder="Valor de venda final..."
                 handleChange={(value) => {
-                  const newMargin = getMarginValue(
-                    pricing[tag].custo,
-                    value,
-                    pricing[priceType as keyof PricesObj].imposto
-                  );
+                  const newMargin = getMarginValue(custo, value, imposto);
 
                   setPricing((prev) => ({
                     ...prev,

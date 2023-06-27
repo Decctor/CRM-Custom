@@ -66,7 +66,9 @@ const proposeSchema = z.union([
         }
       ),
       fatorSimultaneidade: z
-        .number()
+        .number({
+          required_error: "Por favor, preencha o fator de simultaneidade.",
+        })
         .min(0, "Por favor, preencha um fator de simultaneidade de no mínimo.")
         .max(
           100,
@@ -84,7 +86,7 @@ const proposeSchema = z.union([
       kitId: z.string({ required_error: "Por favor, forneça o ID do kit." }),
       nome: z.string({ required_error: "Por favor, forneça o nome do kit." }),
       topologia: z.string({
-        required_error: "Por vaor, forneça a topologia do kit.",
+        required_error: "Por favor, forneça a topologia do kit.",
       }),
       modulos: z.array(
         z.object({
@@ -141,34 +143,42 @@ const proposeSchema = z.union([
         vendaProposto: z.number(),
         vendaFinal: z.number(),
       }),
-      instalacao: z.object({
-        margemLucro: z.number(),
-        imposto: z.number(),
-        custo: z.number(),
-        vendaProposto: z.number(),
-        vendaFinal: z.number(),
-      }),
-      maoDeObra: z.object({
-        margemLucro: z.number(),
-        imposto: z.number(),
-        custo: z.number(),
-        vendaProposto: z.number(),
-        vendaFinal: z.number(),
-      }),
-      projeto: z.object({
-        margemLucro: z.number(),
-        imposto: z.number(),
-        custo: z.number(),
-        vendaProposto: z.number(),
-        vendaFinal: z.number(),
-      }),
-      venda: z.object({
-        margemLucro: z.number(),
-        imposto: z.number(),
-        custo: z.number(),
-        vendaProposto: z.number(),
-        vendaFinal: z.number(),
-      }),
+      instalacao: z
+        .object({
+          margemLucro: z.number(),
+          imposto: z.number(),
+          custo: z.number(),
+          vendaProposto: z.number(),
+          vendaFinal: z.number(),
+        })
+        .optional(),
+      maoDeObra: z
+        .object({
+          margemLucro: z.number(),
+          imposto: z.number(),
+          custo: z.number(),
+          vendaProposto: z.number(),
+          vendaFinal: z.number(),
+        })
+        .optional(),
+      projeto: z
+        .object({
+          margemLucro: z.number(),
+          imposto: z.number(),
+          custo: z.number(),
+          vendaProposto: z.number(),
+          vendaFinal: z.number(),
+        })
+        .optional(),
+      venda: z
+        .object({
+          margemLucro: z.number(),
+          imposto: z.number(),
+          custo: z.number(),
+          vendaProposto: z.number(),
+          vendaFinal: z.number(),
+        })
+        .optional(),
     }),
     linkArquivo: z.string().optional(),
     potenciaPico: z.number({

@@ -1,12 +1,17 @@
-import { PricesObj, getMarginValue } from "@/utils/pricing/methods";
+import {
+  PricesObj,
+  PricesOeMObj,
+  PricesPromoObj,
+  getMarginValue,
+} from "@/utils/pricing/methods";
 import React, { useState } from "react";
 import { VscChromeClose } from "react-icons/vsc";
 import NumberInput from "../Inputs/NumberInput";
 
 type EditPriceModalProps = {
   closeModal: React.Dispatch<React.SetStateAction<boolean>>;
-  pricing: PricesObj;
-  setPricing: React.Dispatch<React.SetStateAction<PricesObj>>;
+  pricing: PricesObj | PricesOeMObj | PricesPromoObj;
+  setPricing: React.Dispatch<React.SetStateAction<PricesObj | PricesPromoObj>>;
   finalProposePrice: number;
 };
 function EditProposePrice({

@@ -1,6 +1,8 @@
 import { IProposeInfo, ISession } from "@/utils/models";
 import {
   PricesObj,
+  PricesPromoObj,
+  Pricing,
   getMarginValue,
   getProposedPrice,
   getTaxValue,
@@ -11,8 +13,8 @@ import { AiFillEdit } from "react-icons/ai";
 import EditPriceModal from "./EditPriceModal";
 
 type PricingTableProps = {
-  pricing: PricesObj;
-  setPricing: React.Dispatch<React.SetStateAction<PricesObj>>;
+  pricing: PricesObj | PricesPromoObj;
+  setPricing: React.Dispatch<React.SetStateAction<PricesObj | PricesPromoObj>>;
   proposeInfo: IProposeInfo;
   session: ISession;
 };
@@ -31,46 +33,92 @@ function PricingTable({
     priceTag: null,
   });
   function getTotals() {
-    // const kitPrice = proposeInfo.kit ? proposeInfo.kit.preco : 0;
-    // var totalCosts = kitPrice;
-    // var totalTaxes = 0;
-    // var totalProfits =
-    //   getMarginValue(kitPrice, getProposedPrice(kitPrice, 0), 0) *
-    //   getProposedPrice(kitPrice, 0);
-    const kitPrice = proposeInfo.kit ? proposeInfo.kit.preco : 0;
-    var totalCosts = 0;
-    var totalTaxes = 0;
-    var totalProfits = 0;
-    var finalProposePrice = 0;
-    Object.keys(pricing).forEach((priceType) => {
-      const cost = pricing[priceType as keyof PricesObj].custo;
-      const finalSellingPrice =
-        pricing[priceType as keyof PricesObj].vendaFinal;
-      const taxValue =
-        getTaxValue(
-          cost,
-          finalSellingPrice,
-          pricing[priceType as keyof PricesObj].margemLucro
-        ) * finalSellingPrice;
-      const marginValue =
-        getMarginValue(
-          cost,
-          finalSellingPrice,
-          pricing[priceType as keyof PricesObj].imposto
-        ) * finalSellingPrice;
+    switch (proposeInfo.kit?.tipo) {
+      case "PROMOCIONAL":
+        var totalCosts = 0;
+        var totalTaxes = 0;
+        var totalProfits = 0;
+        var finalProposePrice = 0;
+        const promotionalPricing = pricing as PricesPromoObj;
+        Object.keys(promotionalPricing).forEach((priceType) => {
+          const pricesObj =
+            promotionalPricing[priceType as keyof PricesPromoObj];
+          const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
 
-      totalCosts = totalCosts + cost;
-      totalTaxes = totalTaxes + taxValue;
-      totalProfits = totalProfits + marginValue;
-      finalProposePrice = finalProposePrice + finalSellingPrice;
-    });
-    return {
-      totalCosts,
-      totalTaxes,
-      totalProfits,
-      finalProposePrice,
-    };
+          const taxValue =
+            getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+          const marginValue =
+            getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
+
+          totalCosts = totalCosts + custo;
+          totalTaxes = totalTaxes + taxValue;
+          totalProfits = totalProfits + marginValue;
+          finalProposePrice = finalProposePrice + vendaFinal;
+        });
+        return {
+          totalCosts,
+          totalTaxes,
+          totalProfits,
+          finalProposePrice,
+        };
+      case "TRADICIONAL":
+        var totalCosts = 0;
+        var totalTaxes = 0;
+        var totalProfits = 0;
+        var finalProposePrice = 0;
+        const traditionalPricing = pricing as PricesObj;
+        Object.keys(traditionalPricing).forEach((priceType) => {
+          const pricesObj = traditionalPricing[priceType as keyof PricesObj];
+          const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
+
+          const taxValue =
+            getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+          const marginValue =
+            getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
+
+          totalCosts = totalCosts + custo;
+          totalTaxes = totalTaxes + taxValue;
+          totalProfits = totalProfits + marginValue;
+          finalProposePrice = finalProposePrice + vendaFinal;
+        });
+        return {
+          totalCosts,
+          totalTaxes,
+          totalProfits,
+          finalProposePrice,
+        };
+
+      default:
+        var totalCosts = 0;
+        var totalTaxes = 0;
+        var totalProfits = 0;
+        var finalProposePrice = 0;
+        Object.keys(pricing).forEach((priceType) => {
+          const pricesObj = pricing[priceType as keyof Pricing];
+
+          const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
+          const finalSellingPrice = vendaFinal;
+          const taxValue =
+            getTaxValue(custo, finalSellingPrice, margemLucro) *
+            finalSellingPrice;
+          const marginValue =
+            getMarginValue(custo, finalSellingPrice, imposto) *
+            finalSellingPrice;
+
+          totalCosts = totalCosts + custo;
+          totalTaxes = totalTaxes + taxValue;
+          totalProfits = totalProfits + marginValue;
+          finalProposePrice = finalProposePrice + finalSellingPrice;
+        });
+        return {
+          totalCosts,
+          totalTaxes,
+          totalProfits,
+          finalProposePrice,
+        };
+    }
   }
+
   return (
     <div className="flex w-full grow flex-col gap-1">
       <div className="flex w-full items-center rounded bg-blue-100">
@@ -136,34 +184,22 @@ function PricingTable({
         </div>
       </div> */}
       {Object.keys(pricing).map((priceType, index) => {
+        const pricesObj = pricing[priceType as keyof Pricing];
+        const { custo, vendaFinal, margemLucro, imposto, vendaProposto } =
+          pricesObj;
         const description =
           priceType == "kit"
             ? proposeInfo.kit?.nome
             : priceDescription[priceType];
-        const cost = pricing[priceType as keyof PricesObj].custo;
-        const finalSellingPrice =
-          pricing[priceType as keyof PricesObj].vendaFinal;
+
         const taxValue =
-          getTaxValue(
-            cost,
-            finalSellingPrice,
-            pricing[priceType as keyof PricesObj].margemLucro
-          ) * finalSellingPrice;
+          getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
         const marginValue =
-          getMarginValue(
-            cost,
-            finalSellingPrice,
-            pricing[priceType as keyof PricesObj].imposto
-          ) * finalSellingPrice;
+          getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
         return (
           <div
             className={`flex w-full items-center rounded ${
-              Math.abs(
-                pricing[priceType as keyof PricesObj].vendaFinal -
-                  pricing[priceType as keyof PricesObj].vendaProposto
-              ) > 1
-                ? "bg-orange-200"
-                : ""
+              Math.abs(vendaFinal - vendaProposto) > 1 ? "bg-orange-200" : ""
             }`}
             key={index}
           >
@@ -173,7 +209,7 @@ function PricingTable({
             <div className="flex w-2/12 items-center justify-center p-1">
               <h1 className="text-gray-500">
                 R${" "}
-                {cost.toLocaleString("pt-br", {
+                {custo.toLocaleString("pt-br", {
                   maximumFractionDigits: 2,
                   minimumFractionDigits: 2,
                 })}
@@ -200,7 +236,7 @@ function PricingTable({
             <div className="flex w-2/12 items-center justify-center gap-4 p-1">
               <h1 className="w-full text-center text-gray-500 lg:w-1/2">
                 R${" "}
-                {finalSellingPrice.toLocaleString("pt-br", {
+                {vendaFinal.toLocaleString("pt-br", {
                   maximumFractionDigits: 2,
                   minimumFractionDigits: 2,
                 })}

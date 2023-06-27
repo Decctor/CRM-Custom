@@ -206,7 +206,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     if (personalizedItemHolder.categoria == "INVERSOR") {
       const insertObj = {
         id: "N/A",
-        fabricante: "KIT MANUAL",
+        fabricante: "PROMO",
         modelo: personalizedItemHolder.nome,
         qtde: personalizedItemHolder.qtde,
       };
@@ -217,7 +217,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     if (personalizedItemHolder.categoria == "MÓDULOS") {
       const insertObj = {
         id: "N/A",
-        fabricante: "KIT MANUAL",
+        fabricante: "PROMO",
         modelo: personalizedItemHolder.nome,
         qtde: personalizedItemHolder.qtde,
         potencia: personalizedItemHolder.potencia,
