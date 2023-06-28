@@ -7,8 +7,10 @@ import { TbTopologyFullHierarchy } from "react-icons/tb";
 import Modules from "../../utils/pvmodules.json";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { useSession } from "next-auth/react";
-import { PricesObj, getPrices } from "@/utils/pricing/methods";
+import { PricesObj, Pricing, getPrices } from "@/utils/pricing/methods";
 import { MdAttachMoney } from "react-icons/md";
+import { BsFillCalendarCheckFill } from "react-icons/bs";
+import dayjs from "dayjs";
 type KitCardProps = {
   kit: IKit;
   project: IProject;
@@ -31,6 +33,7 @@ function ProposeKit({ kit, project, propose, handleSelect }: KitCardProps) {
       ...propose,
       kit: {
         kitId: kit._id ? kit._id : "",
+        tipo: kit.tipo,
         nome: kit.nome,
         topologia: kit.topologia,
         modulos: kit.modulos,
@@ -43,15 +46,18 @@ function ProposeKit({ kit, project, propose, handleSelect }: KitCardProps) {
   function getProposeExpectedPrice() {
     var finalProposePrice = 0;
     Object.keys(pricing).forEach((priceType) => {
-      const cost = pricing[priceType as keyof PricesObj].custo;
-      const finalSellingPrice =
-        pricing[priceType as keyof PricesObj].vendaFinal;
+      const cost = pricing[priceType as keyof Pricing]?.custo;
 
-      finalProposePrice = finalProposePrice + finalSellingPrice;
+      const finalSellingPrice = pricing[priceType as keyof Pricing]?.vendaFinal
+        ? pricing[priceType as keyof Pricing]?.vendaFinal
+        : 0;
+      if (finalSellingPrice)
+        finalProposePrice = finalProposePrice + finalSellingPrice;
     });
     return finalProposePrice;
   }
-  console.log(pricing);
+  if (kit.nome == "PROMOCIONAL JUNHO 05 SÃO JOÃO")
+    console.log("KIT05", pricing);
   return (
     <div className="relative flex h-[320px] min-h-[320px] w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg">
       <h1 className="text-center text-lg font-medium text-gray-800">
@@ -155,6 +161,13 @@ function ProposeKit({ kit, project, propose, handleSelect }: KitCardProps) {
           </strong>
           R$/Wp
         </div>
+        {kit.dataInsercao ? (
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <BsFillCalendarCheckFill />
+            <p>{dayjs(kit.dataInsercao).format("DD/MM/YYYY")}</p>
+          </div>
+        ) : null}
+
         <button
           onClick={() => handleSelect(kit)}
           className="flex h-[30px] w-[30px] items-center justify-center rounded-full border border-[#15599a] p-1 text-[#15599a] hover:bg-[#15599a] hover:text-white"

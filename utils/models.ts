@@ -61,6 +61,7 @@ export interface IKit {
   incluiTransformador: boolean;
   inversores: InverterType[];
   modulos: ModuleType[];
+  dataInsercao?: string;
 }
 export interface IUsuario {
   _id?: ObjectId | string;
@@ -158,6 +159,11 @@ export interface IResponsible {
   telefone?: string;
   _id?: string;
 }
+export type aditionalServicesType = {
+  padrao?: number;
+  estrutura?: number;
+  outros?: number;
+};
 export interface IProject {
   _id?: string;
   nome: string;
@@ -182,10 +188,7 @@ export interface IProject {
   tipoLigacao?: "EXISTENTE" | "NOVA";
   tipoInstalacao?: "URBANO" | "RURAL";
   credor?: (typeof creditors)[number]["value"];
-  servicosAdicionais?: {
-    padrao?: number;
-    outros?: number;
-  };
+  servicosAdicionais?: aditionalServicesType;
   anexos?: {
     documentoComFoto?: string;
     iptu?: string;

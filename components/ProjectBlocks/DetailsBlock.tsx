@@ -1219,6 +1219,57 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
           <div className="flex w-full gap-2">
             <div className="grow">
               <NumberInput
+                label="ESTRUTURA"
+                placeholder="Preencha aqui o preço de estrutura, se necessária."
+                value={
+                  infoHolder?.servicosAdicionais?.estrutura
+                    ? infoHolder?.servicosAdicionais?.estrutura
+                    : null
+                }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      servicosAdicionais: {
+                        ...prev.servicosAdicionais,
+                        estrutura: Number(value),
+                      },
+                    }));
+                }}
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={
+                infoHolder?.servicosAdicionais?.estrutura ==
+                info.servicosAdicionais?.estrutura
+              }
+              onClick={() =>
+                updateData("PROJETO", "servicosAdicionais", {
+                  estrutura: infoHolder?.servicosAdicionais?.estrutura,
+                })
+              }
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.servicosAdicionais?.estrutura !=
+                    info.servicosAdicionais?.estrutura
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <div className="flex w-full gap-2">
+            <div className="grow">
+              <NumberInput
                 label="SERVIÇOS EXTRA"
                 placeholder="Preencha aqui o preço de serviços extra, se houverem."
                 value={

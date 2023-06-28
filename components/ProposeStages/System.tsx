@@ -343,7 +343,7 @@ function System({
               <ProposeKit
                 project={project}
                 propose={proposeInfo}
-                key={index}
+                key={kit._id}
                 kit={kit}
                 handleSelect={(value) => selectKit(value)}
               />

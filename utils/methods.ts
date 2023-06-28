@@ -383,6 +383,11 @@ export function useKitQueryPipelines(
     case "TODOS OS KITS":
       return [
         {
+          $match: {
+            ativo: true,
+          },
+        },
+        {
           $addFields: {
             potPico: {
               $reduce: {
@@ -400,9 +405,19 @@ export function useKitQueryPipelines(
             },
           },
         },
+        {
+          $sort: {
+            dataInsercao: -1,
+          },
+        },
       ];
     case "KITS POR PREMISSA":
       return [
+        {
+          $match: {
+            ativo: true,
+          },
+        },
         {
           $addFields: {
             potPico: {
@@ -429,9 +444,19 @@ export function useKitQueryPipelines(
             ],
           },
         },
+        {
+          $sort: {
+            dataInsercao: -1,
+          },
+        },
       ];
     default:
       return [
+        {
+          $match: {
+            ativo: true,
+          },
+        },
         {
           $addFields: {
             potPico: {
@@ -448,6 +473,11 @@ export function useKitQueryPipelines(
                 },
               },
             },
+          },
+        },
+        {
+          $sort: {
+            dataInsercao: -1,
           },
         },
       ];

@@ -43,6 +43,7 @@ function PricingTable({
         Object.keys(promotionalPricing).forEach((priceType) => {
           const pricesObj =
             promotionalPricing[priceType as keyof PricesPromoObj];
+          if (!pricesObj) return;
           const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
 
           const taxValue =
@@ -69,6 +70,7 @@ function PricingTable({
         const traditionalPricing = pricing as PricesObj;
         Object.keys(traditionalPricing).forEach((priceType) => {
           const pricesObj = traditionalPricing[priceType as keyof PricesObj];
+          if (!pricesObj) return;
           const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
 
           const taxValue =
@@ -95,7 +97,7 @@ function PricingTable({
         var finalProposePrice = 0;
         Object.keys(pricing).forEach((priceType) => {
           const pricesObj = pricing[priceType as keyof Pricing];
-
+          if (!pricesObj) return;
           const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
           const finalSellingPrice = vendaFinal;
           const taxValue =
@@ -185,6 +187,7 @@ function PricingTable({
       </div> */}
       {Object.keys(pricing).map((priceType, index) => {
         const pricesObj = pricing[priceType as keyof Pricing];
+        if (!pricesObj) return;
         const { custo, vendaFinal, margemLucro, imposto, vendaProposto } =
           pricesObj;
         const description =
@@ -218,10 +221,12 @@ function PricingTable({
             <div className="flex w-2/12 items-center justify-center p-1">
               <h1 className="text-gray-500">
                 R${" "}
-                {taxValue.toLocaleString("pt-br", {
-                  maximumFractionDigits: 2,
-                  minimumFractionDigits: 2,
-                })}
+                {taxValue >= 0
+                  ? taxValue.toLocaleString("pt-br", {
+                      maximumFractionDigits: 2,
+                      minimumFractionDigits: 2,
+                    })
+                  : "N/A"}
               </h1>
             </div>
             <div className="flex w-2/12 items-center justify-center p-1">

@@ -1,4 +1,9 @@
-import { IProject, IProposeInfo, ModuleType } from "../models";
+import {
+  IProject,
+  IProposeInfo,
+  ModuleType,
+  aditionalServicesType,
+} from "../models";
 import Modules from "../../utils/pvmodules.json";
 const fixedMargin = 0.12;
 const fixedTaxAliquot = 0.175;
@@ -11,7 +16,7 @@ type SaleCostArguments = {
   structureType: string;
   laborPrice: number;
   projectPrice: number;
-  extraServicesPrice: number;
+  aditionalServices: aditionalServicesType;
   paPrice: number;
 };
 export type Pricing = PricesObj | PricesPromoObj;
@@ -51,9 +56,58 @@ export interface PricesObj {
     vendaProposto: number;
     vendaFinal: number;
   };
+  padrao?: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
+  estrutura?: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
+  extra?: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
 }
 export interface PricesPromoObj {
   kit: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
+  maoDeObra?: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
+  padrao?: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
+  estrutura?: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
+  extra?: {
     margemLucro: number;
     imposto: number;
     custo: number;
@@ -75,6 +129,13 @@ export interface PricesOeMObj {
     vendaFinal: number;
   };
 }
+export interface StructureCostArguments {
+  structurePrice?: number;
+  structureType: string;
+  city?: string | null;
+  peakPower: number;
+  moduleQty: number;
+}
 interface IPriceDescription {
   [key: string]: string;
 }
@@ -84,6 +145,9 @@ export const priceDescription: IPriceDescription = {
   maoDeObra: "MÃO DE OBRA",
   projeto: "CUSTOS DE PROJETO",
   venda: "CUSTOS DE VENDA",
+  padrao: "ADEQUAÇÕES DE PADRÃO",
+  estrutura: "ADEQUAÇÕES DE ESTRUTURA",
+  extra: "OUTROS SERVIÇOS",
 };
 export function getProposedPrice(
   cost: number,
@@ -138,7 +202,26 @@ function getModulesQty(modules: ModuleType[] | undefined) {
     return 0;
   }
 }
-
+function getStructureCost({
+  structurePrice,
+  structureType,
+  city,
+  peakPower,
+  moduleQty,
+}: StructureCostArguments) {
+  if (structurePrice) {
+    return structurePrice;
+  } else {
+    var structureCost = 0;
+    if (structureType == "Solo" && city != "INACIOLÂNDIA") {
+      structureCost = peakPower * 100;
+    }
+    if (structureType == "Carport") {
+      structureCost = moduleQty * 350;
+    }
+    return structureCost;
+  }
+}
 function getInstallationCost(peakPower: number, distance: number) {
   // Peak system power must be in kilowatts
   if (distance > 30) {
@@ -177,30 +260,33 @@ function getSalePrice({
   structureType,
   laborPrice,
   projectPrice,
-  extraServicesPrice,
+  aditionalServices,
   paPrice,
 }: SaleCostArguments) {
   var grounding = 0;
-  var brickwork = 0;
-  var carportPrice = 0;
+  var structureAdequations = 0;
+
   if (uf == "GO") {
     grounding = 900;
   }
-  if (structureType == "Solo" && city != "INACIOLÂNDIA") {
-    // conferir
-    brickwork = peakPower * 100;
+
+  if (aditionalServices.estrutura) {
+    structureAdequations = aditionalServices.estrutura;
+  } else {
+    if (structureType == "Solo" && city != "INACIOLÂNDIA") {
+      structureAdequations = peakPower * 100;
+    }
+    if (structureType == "Carport") {
+      structureAdequations = moduleQty * 350;
+    }
   }
-  if (structureType == "Carport") {
-    carportPrice = moduleQty * 350;
-  }
+
   return (
     (kitPrice +
       grounding +
-      brickwork +
+      structureAdequations +
       laborPrice +
       projectPrice +
-      extraServicesPrice +
-      carportPrice +
       paPrice) *
     0.05
   );
@@ -210,14 +296,30 @@ export function getPrices(
   propose: IProposeInfo
 ): PricesObj | PricesPromoObj {
   if (propose.kit?.tipo == "PROMOCIONAL") {
+    // Extracting premisses and other info from project/propose
+    const city = project?.cliente?.cidade;
+    const structureType = propose.premissas.tipoEstrutura;
+    const peakPower = getPeakPotByModules(propose.kit?.modulos);
+    const moduleQty = getModulesQty(propose.kit?.modulos);
+    const distance = propose.premissas.distancia;
+
+    // Extracting and defining prices
     const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
-    const peakPower = getPeakPotByModules(propose.kit?.modulos); // extract from kit info
-    const moduleQty = getModulesQty(propose.kit?.modulos); // extract from kit info
-    const distance = propose.premissas.distancia; // get initially from API call
-    const extraServicesPrice = 0; // to be defined
     const paPrice = project?.servicosAdicionais?.padrao
       ? project.servicosAdicionais.padrao
       : 0; // to be defined
+    const structurePrice = getStructureCost({
+      structurePrice: project?.servicosAdicionais?.estrutura,
+      structureType: structureType,
+      moduleQty: moduleQty,
+      peakPower: peakPower,
+      city: city,
+    });
+    const extraServicesPrice = project?.servicosAdicionais?.outros
+      ? project?.servicosAdicionais?.outros
+      : 0; // to be defined
+
+    // Defining price object
     var pricesPromo: PricesPromoObj = {
       kit: {
         margemLucro: 0,
@@ -227,15 +329,68 @@ export function getPrices(
         vendaFinal: getProposedPrice(kitPrice, 0, 0),
       },
     };
+
+    // Updating labor prices for Inaciolandia projects
+    if (city == "INACIOLÂNDIA") {
+      const specialLaborPriceInaciolandia = moduleQty * 150;
+      pricesPromo.maoDeObra = {
+        margemLucro: 0,
+        imposto: 0,
+        custo: specialLaborPriceInaciolandia,
+        vendaProposto: getProposedPrice(specialLaborPriceInaciolandia, 0, 0),
+        vendaFinal: getProposedPrice(specialLaborPriceInaciolandia, 0, 0),
+      };
+    }
+    // Updating prices object in case of PA/structure costs
+    if (paPrice > 0) {
+      pricesPromo.padrao = {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: paPrice,
+        vendaProposto: getProposedPrice(paPrice),
+        vendaFinal: getProposedPrice(paPrice),
+      };
+    }
+    if (structurePrice > 0) {
+      pricesPromo.estrutura = {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: structurePrice,
+        vendaProposto: getProposedPrice(structurePrice),
+        vendaFinal: getProposedPrice(structurePrice),
+      };
+    }
+    if (extraServicesPrice > 0) {
+      pricesPromo.extra = {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: extraServicesPrice,
+        vendaProposto: getProposedPrice(extraServicesPrice),
+        vendaFinal: getProposedPrice(extraServicesPrice),
+      };
+    }
     return pricesPromo;
   } else {
-    const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
+    // Extracting premisses and other info from project/propose
+    const city = project?.cliente?.cidade;
+    const structureType = propose.premissas.tipoEstrutura;
     const peakPower = getPeakPotByModules(propose.kit?.modulos); // extract from kit info
     const moduleQty = getModulesQty(propose.kit?.modulos); // extract from kit info
     const distance = propose.premissas.distancia; // get initially from API call
-    const extraServicesPrice = 0; // to be defined
+    // Extracting and defining prices
+    const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
     const paPrice = project?.servicosAdicionais?.padrao
       ? project.servicosAdicionais.padrao
+      : 0; // to be defined
+    const structurePrice = getStructureCost({
+      structurePrice: project?.servicosAdicionais?.estrutura,
+      structureType: structureType,
+      moduleQty: moduleQty,
+      peakPower: peakPower,
+      city: city,
+    });
+    const extraServicesPrice = project?.servicosAdicionais?.outros
+      ? project?.servicosAdicionais?.outros
       : 0; // to be defined
     const maintance = 1; // to be defined
     const delivery = 1; // to be defined
@@ -295,7 +450,9 @@ export function getPrices(
       structureType: propose.premissas.tipoEstrutura,
       laborPrice: prices.maoDeObra.custo,
       projectPrice: prices.projeto.custo,
-      extraServicesPrice: extraServicesPrice,
+      aditionalServices: project?.servicosAdicionais
+        ? project.servicosAdicionais
+        : {},
       paPrice: paPrice,
     });
 
@@ -310,6 +467,35 @@ export function getPrices(
     prices.maoDeObra.vendaFinal = getProposedPrice(prices.maoDeObra.custo);
     prices.projeto.vendaFinal = getProposedPrice(prices.projeto.custo);
     prices.venda.vendaFinal = getProposedPrice(prices.venda.custo);
+
+    // Updating prices object in case of PA/structure costs
+    if (paPrice > 0) {
+      prices.padrao = {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: paPrice,
+        vendaProposto: getProposedPrice(paPrice),
+        vendaFinal: getProposedPrice(paPrice),
+      };
+    }
+    if (structurePrice > 0) {
+      prices.estrutura = {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: structurePrice,
+        vendaProposto: getProposedPrice(structurePrice),
+        vendaFinal: getProposedPrice(structurePrice),
+      };
+    }
+    if (extraServicesPrice > 0) {
+      prices.extra = {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: extraServicesPrice,
+        vendaProposto: getProposedPrice(extraServicesPrice),
+        vendaFinal: getProposedPrice(extraServicesPrice),
+      };
+    }
     return prices;
   }
 }

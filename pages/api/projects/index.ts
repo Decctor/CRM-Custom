@@ -340,6 +340,7 @@ const editProjectSchema = z.object({
   servicosAdicionais: z
     .object({
       padrao: z.number().optional().nullable(),
+      estrutura: z.number().optional().nullable(),
       outros: z.number().optional().nullable(),
     })
     .optional(),

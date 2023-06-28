@@ -42,6 +42,7 @@ function Sale({
         Object.keys(promotionalPricing).forEach((priceType) => {
           const pricesObj =
             promotionalPricing[priceType as keyof PricesPromoObj];
+          if (!pricesObj) return;
           const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
 
           const taxValue =
@@ -68,6 +69,7 @@ function Sale({
         const traditionalPricing = pricing as PricesObj;
         Object.keys(traditionalPricing).forEach((priceType) => {
           const pricesObj = traditionalPricing[priceType as keyof PricesObj];
+          if (!pricesObj) return;
           const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
 
           const taxValue =
@@ -94,6 +96,7 @@ function Sale({
         var finalProposePrice = 0;
         Object.keys(pricing).forEach((priceType) => {
           const pricesObj = pricing[priceType as keyof Pricing];
+          if (!pricesObj) return;
           const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
           const finalSellingPrice = vendaFinal;
           const taxValue =

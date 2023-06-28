@@ -48,7 +48,11 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
           <div className="relative flex w-full items-center justify-between">
             <div className="flex flex-col">
               <div className="h-1 w-1/3 rounded-sm bg-blue-400"></div>
-              <h1 className="font-medium text-[#353432]">{item.name}</h1>
+              <Link href={`/projeto/id/${item.id}`}>
+                <h1 className="font-medium text-[#353432] hover:text-blue-400">
+                  {item.name}
+                </h1>
+              </Link>
             </div>
             {item.atividades && item.atividades.length > 0 ? (
               <div
@@ -95,7 +99,7 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
               {item.responsavel_avatar ? (
-                <div className="relative h-[20px] w-[20px] rounded-full">
+                <div className="relative h-[23px] w-[23px] rounded-full">
                   <Image
                     src={item.responsavel_avatar}
                     // width={96}
