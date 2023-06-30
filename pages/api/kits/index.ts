@@ -98,16 +98,17 @@ type GetResponse = {
   data: IKit[] | IKit;
 };
 const getKits: NextApiHandler<GetResponse> = async (req, res) => {
-  await validateAuthorization(req, "kits", "visualizar", true);
+  const session = await validateAuthorization(req, "kits", "visualizar", true);
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("kits");
   const { id, active } = req.query;
+  const editKitsPermisson = session.user.permissoes.kits.editar;
   if (id && typeof id === "string") {
     const kit = await collection.findOne({ _id: new ObjectId(id) });
     res.status(200).json({ data: kit });
     return;
   }
-  if (active == "true") {
+  if (active == "true" || !editKitsPermisson) {
     const kits = await collection
       .aggregate([
         {

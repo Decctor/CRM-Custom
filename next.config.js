@@ -11,6 +11,7 @@ const nextConfig = {
     domains: [
       "avatars.githubusercontent.com",
       "firebasestorage.googleapis.com",
+      "sc-erp.s3.amazonaws.com",
       "localhost",
     ],
   },

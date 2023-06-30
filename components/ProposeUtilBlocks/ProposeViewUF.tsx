@@ -17,6 +17,8 @@ import { FullMetadata, getMetadata, ref } from "firebase/storage";
 import { storage } from "@/services/firebase";
 import {
   PricesObj,
+  PricesPromoObj,
+  Pricing,
   getMarginValue,
   getProposedPrice,
   getTaxValue,
@@ -134,34 +136,112 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
       const pricing = propose.precificacao
         ? propose.precificacao
         : getPrices(propose?.infoProjeto, propose);
-      const kitPrice = propose.kit ? propose.kit.preco : 0;
-      var totalCosts = 0;
-      var totalTaxes = 0;
-      var totalProfits = 0;
-      var finalProposePrice = 0;
-      Object.keys(pricing).forEach((priceType) => {
-        const cost = pricing[priceType as keyof PricesObj].custo;
-        const finalSellingPrice =
-          pricing[priceType as keyof PricesObj].vendaFinal;
-        const taxValue =
-          pricing[priceType as keyof PricesObj].imposto * finalSellingPrice;
-        const marginValue =
-          pricing[priceType as keyof PricesObj].margemLucro * finalSellingPrice;
+      switch (propose.kit?.tipo) {
+        case "PROMOCIONAL":
+          var totalCosts = 0;
+          var totalTaxes = 0;
+          var totalProfits = 0;
+          var finalProposePrice = 0;
+          const promotionalPricing = pricing as PricesPromoObj;
+          Object.keys(promotionalPricing).forEach((priceType) => {
+            const pricesObj =
+              promotionalPricing[priceType as keyof PricesPromoObj];
+            if (!pricesObj) return;
+            const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
 
-        totalCosts = totalCosts + cost;
-        totalTaxes = totalTaxes + taxValue;
-        totalProfits = totalProfits + marginValue;
-        finalProposePrice = finalProposePrice + finalSellingPrice;
-      });
-      return {
-        totalCosts,
-        totalTaxes,
-        totalProfits,
-        finalProposePrice,
-      };
+            const taxValue =
+              getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+            const marginValue =
+              getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
+
+            totalCosts = totalCosts + custo;
+            totalTaxes = totalTaxes + taxValue;
+            totalProfits = totalProfits + marginValue;
+            finalProposePrice = finalProposePrice + vendaFinal;
+          });
+          return {
+            totalCosts,
+            totalTaxes,
+            totalProfits,
+            finalProposePrice,
+          };
+        case "TRADICIONAL":
+          var totalCosts = 0;
+          var totalTaxes = 0;
+          var totalProfits = 0;
+          var finalProposePrice = 0;
+          const traditionalPricing = pricing as PricesObj;
+          Object.keys(traditionalPricing).forEach((priceType) => {
+            const pricesObj = traditionalPricing[priceType as keyof PricesObj];
+            if (!pricesObj) return;
+            const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
+
+            const taxValue =
+              getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+            const marginValue =
+              getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
+
+            totalCosts = totalCosts + custo;
+            totalTaxes = totalTaxes + taxValue;
+            totalProfits = totalProfits + marginValue;
+            finalProposePrice = finalProposePrice + vendaFinal;
+          });
+          return {
+            totalCosts,
+            totalTaxes,
+            totalProfits,
+            finalProposePrice,
+          };
+
+        default:
+          var totalCosts = 0;
+          var totalTaxes = 0;
+          var totalProfits = 0;
+          var finalProposePrice = 0;
+          Object.keys(pricing).forEach((priceType) => {
+            const pricesObj = pricing[priceType as keyof Pricing];
+            if (!pricesObj) return;
+            const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
+            const finalSellingPrice = vendaFinal;
+            const taxValue =
+              getTaxValue(custo, finalSellingPrice, margemLucro) *
+              finalSellingPrice;
+            const marginValue =
+              getMarginValue(custo, finalSellingPrice, imposto) *
+              finalSellingPrice;
+
+            totalCosts = totalCosts + custo;
+            totalTaxes = totalTaxes + taxValue;
+            totalProfits = totalProfits + marginValue;
+            finalProposePrice = finalProposePrice + finalSellingPrice;
+          });
+          return {
+            totalCosts,
+            totalTaxes,
+            totalProfits,
+            finalProposePrice,
+          };
+      }
     }
   }
+  async function handleESigning(url: string | undefined) {
+    if (!url) {
+      alert("Houve um erro com o link. Por favor, tente novamente.");
+      return;
+    }
+    let fileRef = ref(storage, url);
+    const metadata = await getMetadata(fileRef);
+    const md = metadata as FullMetadata;
 
+    const filePath = fileRef.fullPath;
+    // @ts-ignore
+    const extension = fileTypes[metadata.contentType]?.extension;
+
+    const { data } = await axios.post(
+      `/api/utils/clicksignUpload?filePath=${encodeURIComponent(filePath)}`
+    );
+    toast.success("DEU CERTO");
+  }
   return (
     <div className="flex h-full">
       <Sidebar />
@@ -336,6 +416,13 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                   <p>DOWNLOAD DO PDF</p>
                   <TbDownload />
                 </button>
+                {/* <button
+                  onClick={() => handleESigning(propose?.linkArquivo)}
+                  className="flex w-fit items-center gap-2 self-center rounded-lg border border-dashed border-[#15599a] p-2 text-[#15599a]"
+                >
+                  <p>ASSINATURA DIGITAL</p>
+                  <TbDownload />
+                </button> */}
                 <button
                   onClick={() => copyToClipboard(propose?.linkArquivo)}
                   className="flex w-fit items-center gap-2 self-center rounded-lg border border-dashed border-[#fead61] p-2 font-medium text-[#fead61]"
@@ -375,67 +462,73 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
               </div>
               {Object.keys(getPrices(propose?.infoProjeto, propose)).map(
                 (priceType, index) => {
-                  const description =
-                    priceType == "kit"
-                      ? propose.kit?.nome
-                      : priceDescription[priceType];
-                  const cost = propose.precificacao
-                    ? propose.precificacao[priceType as keyof PricesObj].custo
-                    : 0;
-                  const finalSellingPrice = propose.precificacao
-                    ? propose.precificacao[priceType as keyof PricesObj]
-                        .vendaFinal
-                    : 0;
-                  const taxValue =
-                    getTaxValue(cost, finalSellingPrice) * finalSellingPrice;
-                  const marginValue =
-                    getMarginValue(cost, finalSellingPrice) * finalSellingPrice;
-                  return (
-                    <div
-                      className="flex w-full items-center rounded"
-                      key={index}
-                    >
-                      <div className="flex w-4/12 items-center justify-center p-1">
-                        <h1 className="text-gray-500">{description}</h1>
+                  if (propose.precificacao) {
+                    const pricesObj =
+                      propose?.precificacao[priceType as keyof Pricing];
+                    if (!pricesObj) return;
+                    const {
+                      custo,
+                      vendaFinal,
+                      margemLucro,
+                      imposto,
+                      vendaProposto,
+                    } = pricesObj;
+                    const description =
+                      priceType == "kit"
+                        ? propose.kit?.nome
+                        : priceDescription[priceType];
+
+                    const taxValue =
+                      getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+                    const marginValue =
+                      getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
+                    return (
+                      <div
+                        className="flex w-full items-center rounded"
+                        key={index}
+                      >
+                        <div className="flex w-4/12 items-center justify-center p-1">
+                          <h1 className="text-gray-500">{description}</h1>
+                        </div>
+                        <div className="flex w-2/12 items-center justify-center p-1">
+                          <h1 className="text-gray-500">
+                            R${" "}
+                            {custo.toLocaleString("pt-br", {
+                              maximumFractionDigits: 2,
+                              minimumFractionDigits: 2,
+                            })}
+                          </h1>
+                        </div>
+                        <div className="flex w-2/12 items-center justify-center p-1">
+                          <h1 className="text-gray-500">
+                            R${" "}
+                            {taxValue.toLocaleString("pt-br", {
+                              maximumFractionDigits: 2,
+                              minimumFractionDigits: 2,
+                            })}
+                          </h1>
+                        </div>
+                        <div className="flex w-2/12 items-center justify-center p-1">
+                          <h1 className="text-gray-500">
+                            R${" "}
+                            {marginValue.toLocaleString("pt-br", {
+                              maximumFractionDigits: 2,
+                              minimumFractionDigits: 2,
+                            })}
+                          </h1>
+                        </div>
+                        <div className="flex w-2/12 items-center justify-center p-1">
+                          <h1 className="text-gray-500">
+                            R${" "}
+                            {vendaFinal.toLocaleString("pt-br", {
+                              maximumFractionDigits: 2,
+                              minimumFractionDigits: 2,
+                            })}
+                          </h1>
+                        </div>
                       </div>
-                      <div className="flex w-2/12 items-center justify-center p-1">
-                        <h1 className="text-gray-500">
-                          R${" "}
-                          {cost.toLocaleString("pt-br", {
-                            maximumFractionDigits: 2,
-                            minimumFractionDigits: 2,
-                          })}
-                        </h1>
-                      </div>
-                      <div className="flex w-2/12 items-center justify-center p-1">
-                        <h1 className="text-gray-500">
-                          R${" "}
-                          {taxValue.toLocaleString("pt-br", {
-                            maximumFractionDigits: 2,
-                            minimumFractionDigits: 2,
-                          })}
-                        </h1>
-                      </div>
-                      <div className="flex w-2/12 items-center justify-center p-1">
-                        <h1 className="text-gray-500">
-                          R${" "}
-                          {marginValue.toLocaleString("pt-br", {
-                            maximumFractionDigits: 2,
-                            minimumFractionDigits: 2,
-                          })}
-                        </h1>
-                      </div>
-                      <div className="flex w-2/12 items-center justify-center p-1">
-                        <h1 className="text-gray-500">
-                          R${" "}
-                          {finalSellingPrice.toLocaleString("pt-br", {
-                            maximumFractionDigits: 2,
-                            minimumFractionDigits: 2,
-                          })}
-                        </h1>
-                      </div>
-                    </div>
-                  );
+                    );
+                  }
                 }
               )}
               <div className="flex w-full items-center rounded border-t border-gray-200 py-1">
@@ -494,17 +587,19 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
               </div>
               {Object.keys(getPrices(propose?.infoProjeto, propose)).map(
                 (priceType, index) => {
+                  //@ts-ignore
+                  const pricesObj = pricing[priceType];
+                  const {
+                    custo,
+                    vendaFinal,
+                    margemLucro,
+                    imposto,
+                    vendaProposto,
+                  } = pricesObj;
                   const description =
                     priceType == "kit"
                       ? propose.kit?.nome
                       : priceDescription[priceType];
-                  const cost = propose.precificacao
-                    ? propose.precificacao[priceType as keyof PricesObj].custo
-                    : 0;
-                  const finalSellingPrice = propose.precificacao
-                    ? propose.precificacao[priceType as keyof PricesObj]
-                        .vendaFinal
-                    : 0;
                   return (
                     <div
                       className="flex w-full items-center rounded"
@@ -517,7 +612,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                       <div className="flex w-4/12 items-center justify-center p-1">
                         <h1 className="text-gray-500">
                           R${" "}
-                          {finalSellingPrice.toLocaleString("pt-br", {
+                          {vendaFinal.toLocaleString("pt-br", {
                             maximumFractionDigits: 2,
                             minimumFractionDigits: 2,
                           })}

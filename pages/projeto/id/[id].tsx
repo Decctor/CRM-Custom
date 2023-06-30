@@ -6,7 +6,7 @@ import {
 import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { toast } from "react-hot-toast";
 import { GoKebabVertical } from "react-icons/go";
 import { Sidebar } from "@/components/Sidebar";
@@ -40,6 +40,7 @@ import DropdownSelect from "@/components/Inputs/DropdownSelect";
 import LoseProject from "@/components/ProjectBlocks/LoseProject";
 import EditClient from "@/components/Modals/EditClient";
 import EditClientSimplified from "@/components/Modals/EditClientSimplified";
+import ProposeListBlock from "@/components/ProjectBlocks/ProposeListBlock";
 
 function Projeto() {
   const { data: session } = useSession({
@@ -47,9 +48,13 @@ function Projeto() {
   });
   const { query } = useRouter();
   const queryClient = useQueryClient();
+  const [blockMode, setBlockMode] = useState<"PROPOSES" | "DOCUMENTS">(
+    "PROPOSES"
+  );
   const [editModalIsOpen, setEditModalIsOpen] = useState<boolean>(false);
   const [editModalInfo, setEditModalInfo] = useState<IClient | null>();
   const { data: representatives = [] } = useRepresentatives();
+
   const {
     data: project,
     isLoading: projectLoading,
@@ -90,6 +95,7 @@ function Projeto() {
     enabled: !!project,
   });
   console.log(project);
+
   if (projectLoading) return <LoadingComponent />;
 
   if (projectError)
@@ -198,7 +204,7 @@ function Projeto() {
                 </div>
               </div>
             </div>
-            <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
+            {/* <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
               <div className="flex  h-[40px] items-center justify-between border-b border-gray-200 pb-2">
                 <div className="flex items-center justify-center gap-10">
                   <h1 className="w-[120px] cursor-pointer border-b border-blue-500 p-1 text-center font-bold text-black hover:border-blue-500">
@@ -274,7 +280,16 @@ function Projeto() {
                   </p>
                 ) : null}
               </div>
-            </div>
+            </div> */}
+            {blockMode == "PROPOSES" ? (
+              <ProposeListBlock
+                projectId={project._id ? project._id : ""}
+                projectProposes={projectProposes ? projectProposes : []}
+                projectProposesSuccess={projectProposesSuccess}
+                projectProposesLoading={projectProposesLoading}
+                projectProposesError={projectProposesError}
+              />
+            ) : null}
           </div>
           <div className="flex w-full flex-col gap-6 lg:flex-row">
             {project._id ? (

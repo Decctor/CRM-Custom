@@ -13,6 +13,22 @@ export const opportunityReceivers = [
     nome: "Yasmim Araujo",
   },
 ];
+export const companySignerKeys = [
+  {
+    key: "8cb69cac-4044-48fd-8ada-1d699f64bd1d",
+    email: "matheus.oliveira@ampereenergias.com.br",
+    name: "Matheus de Lima Oliveira",
+    documentation: "136.680.836-30",
+    sign_as: "validator",
+  },
+  {
+    key: "06d287f1-ae2a-4e01-ba10-4ca31c944dd2",
+    email: "financeiro@ampereenergias.com.br",
+    name: "Diogo Paulino Carvalho",
+    documentation: "072.427.186-43",
+    sign_as: "contractee",
+  },
+];
 export const fileTypes = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
     title: "WORD",
@@ -73,7 +89,7 @@ export const funnels: Funnel[] = [
   },
   {
     id: 2,
-    nome: "INSIDE SALES (TESTE)",
+    nome: "INSIDE SALES",
     modo: "REPRESENTANTE",
     etapas: [
       { id: 1, nome: "Primeiros contatos" },

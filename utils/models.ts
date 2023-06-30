@@ -104,6 +104,7 @@ export interface IUsuario {
       editar: boolean; // editar precificacao de propostas
     };
   };
+  dataInsercao?: string;
 }
 export interface ISession {
   user: {

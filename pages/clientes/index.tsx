@@ -9,6 +9,7 @@ import { Sidebar } from "@/components/Sidebar";
 import LoadingPage from "@/components/utils/LoadingPage";
 import EditClient from "@/components/Modals/EditClient";
 import { useClients, useRepresentatives } from "@/utils/methods";
+import LoadingComponent from "@/components/utils/LoadingComponent";
 
 function Clientes() {
   // Session
@@ -21,7 +22,11 @@ function Clientes() {
   const [editClientId, setEditClientId] = useState<string | null>(null);
   // Queries and functions
   const { data: representatives = [] } = useRepresentatives();
-  const { data: clients = [] } = useClients(
+  const {
+    data: clients = [],
+    isLoading: clientsLoading,
+    isSuccess: clientsSuccess,
+  } = useClients(
     session?.user.visibilidade != "GERAL" ? session?.user.id : null
   );
   const { data: editClient, refetch }: UseQueryResult<IClient, Error> =
@@ -54,7 +59,7 @@ function Clientes() {
           </h1>
         </div>
         <div className="mt-4  flex flex-wrap justify-around gap-3">
-          {clients && clients.length > 0 ? (
+          {clientsSuccess && clients.length > 0 ? (
             clients.map((client) => (
               <div
                 onClick={() => {
@@ -88,8 +93,18 @@ function Clientes() {
               </div>
             ))
           ) : (
-            <LoadingPage />
+            <div className="flex grow flex-col items-center justify-center">
+              <p className="text-lg italic text-gray-500">
+                Oops, parece que não há clientes cadastrados pelo seu usuário.
+              </p>
+              <p className="text-lg italic text-gray-500">
+                Clique em{" "}
+                <strong className="text-[#15599a]">NOVO CLIENTE</strong> para
+                criar um !
+              </p>
+            </div>
           )}
+          {clientsLoading ? <LoadingComponent /> : null}
         </div>
         <button
           onClick={() => setNewClientModalIsOpen(true)}
