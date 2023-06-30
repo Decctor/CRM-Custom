@@ -3,14 +3,12 @@ import { NextApiHandler } from "next";
 import { getDownloadURL } from "firebase/storage";
 import query from "../kits/query";
 import axios from "axios";
-import multer from "multer";
 import fs from "fs";
 import getBucket from "@/services/firebaseBucket";
 
 type PostResponse = {
   data: any;
 };
-const upload = multer({ dest: "uploads/" });
 
 const uploadDocument: NextApiHandler<PostResponse> = async (req, res) => {
   await validateAuthentication(req);
