@@ -28,7 +28,7 @@ function Kit({ kit, handleClick }: KitCardProps) {
     <div
       onClick={() => handleClick()}
       className={
-        "relative flex h-[400px]  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50"
+        "relative flex h-[500px] w-full cursor-pointer  flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50 lg:h-[400px] lg:w-[350px]"
       }
     >
       {kit.ativo ? (

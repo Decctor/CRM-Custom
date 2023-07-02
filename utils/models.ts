@@ -32,6 +32,7 @@ export type InverterType = {
   fabricante: string;
   modelo: string;
   qtde: number;
+  garantia: number;
 };
 export type ModuleType = {
   id: string | number;
@@ -39,6 +40,7 @@ export type ModuleType = {
   modelo: string;
   qtde: number;
   potencia: number;
+  garantia: number;
 };
 type StructureComponent = {
   insumo: string;

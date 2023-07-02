@@ -9,6 +9,8 @@ import { hashSync } from "bcrypt";
 import { roles } from "@/utils/constants";
 import { escape, uniq } from "lodash";
 import { decode } from "iconv-lite";
+import connectToDatabase from "@/services/mongoclient";
+import { ObjectId } from "mongodb";
 const users = [
   {
     id: 1,
@@ -83,34 +85,34 @@ type GetResponse = {
 //   res.status(200).json({ data: formattedUsers });
 // };
 const createClients: NextApiHandler<GetResponse> = async (req, res) => {
-  const formattedProjects = ProjetosSolarMarket.map((projeto) => {
-    return {
-      "NOME DO PROJETO": projeto.nome,
-      EFETIVADO: projeto.propostaDataEfetivacao
-        ? "VENDA FECHADA"
-        : "NÃO FECHADA",
-      "DATA EFETIVAÇÃO": projeto.propostaDataEfetivacao,
-      "DATA DE CRIAÇÃO": projeto.dataInsercao,
-      RESPONSÁVEL: projeto.responsavel,
-      REPRESENTANTE: projeto.representante,
-      "LINK DA PROPOSTA": projeto.propostaLinkPDF,
-      "NOME DO CLIENTE": projeto.clienteNome,
-      "EMPRESA DO CLIENTE (SE HOUVER)": projeto["Cliente - Empresa"],
-      "CPF OU CNPJ": projeto.clienteCPF_CNPJ,
-      EMAIL: projeto.clienteEmail,
-      TELEFONE: projeto.clienteTelefone,
-      CEP: projeto.clienteCEP,
-      ESTADO: projeto.clienteEstado,
-      CIDADE: projeto.clienteCidade,
-      ENDEREÇO: projeto.clienteEndereco,
-      BAIRRO: projeto.clienteBairro,
-      "NÚMERO DA RESIDÊNCIA": projeto.clienteNumeroRes,
-      "COMPLEMENTO DE ENDEREÇO": projeto.clienteComplemento,
-      "VALOR DA PROPOSTA": projeto.propostaValorProposta,
-      "POTÊNCIA PICO DA PROPOSTA": projeto.propostaPotenciaPico,
-      "VALOR DA FATURA DE ENERGIA": projeto["VALOR DA CONTA"],
-    };
-  });
+  // const formattedProjects = ProjetosSolarMarket.map((projeto) => {
+  //   return {
+  //     "NOME DO PROJETO": projeto.nome,
+  //     EFETIVADO: projeto.propostaDataEfetivacao
+  //       ? "VENDA FECHADA"
+  //       : "NÃO FECHADA",
+  //     "DATA EFETIVAÇÃO": projeto.propostaDataEfetivacao,
+  //     "DATA DE CRIAÇÃO": projeto.dataInsercao,
+  //     RESPONSÁVEL: projeto.responsavel,
+  //     REPRESENTANTE: projeto.representante,
+  //     "LINK DA PROPOSTA": projeto.propostaLinkPDF,
+  //     "NOME DO CLIENTE": projeto.clienteNome,
+  //     "EMPRESA DO CLIENTE (SE HOUVER)": projeto["Cliente - Empresa"],
+  //     "CPF OU CNPJ": projeto.clienteCPF_CNPJ,
+  //     EMAIL: projeto.clienteEmail,
+  //     TELEFONE: projeto.clienteTelefone,
+  //     CEP: projeto.clienteCEP,
+  //     ESTADO: projeto.clienteEstado,
+  //     CIDADE: projeto.clienteCidade,
+  //     ENDEREÇO: projeto.clienteEndereco,
+  //     BAIRRO: projeto.clienteBairro,
+  //     "NÚMERO DA RESIDÊNCIA": projeto.clienteNumeroRes,
+  //     "COMPLEMENTO DE ENDEREÇO": projeto.clienteComplemento,
+  //     "VALOR DA PROPOSTA": projeto.propostaValorProposta,
+  //     "POTÊNCIA PICO DA PROPOSTA": projeto.propostaPotenciaPico,
+  //     "VALOR DA FATURA DE ENERGIA": projeto["VALOR DA CONTA"],
+  //   };
+  // });
   // const { id } = req.query;
   // if (id) {
   //   const user = users.find((user) => user.id == Number(id));
@@ -122,7 +124,23 @@ const createClients: NextApiHandler<GetResponse> = async (req, res) => {
   // } else {
   //   res.status(200).json({ data: users });
   // }
-  res.status(200).json(formattedProjects);
+  const db = await connectToDatabase(process.env.MONGODB_URI, "main");
+  const kitsCollection = db.collection("kits");
+  try {
+    const updateResponse = await kitsCollection.updateMany(
+      {
+        inversores: { $elemMatch: { fabricante: { $ne: null } } },
+      },
+      { $set: { "inversores.$.garantia": 10 } }
+    );
+    // const kits = await kitsCollection.find({}).toArray();
+    res.status(200).json(updateResponse);
+  } catch (error) {
+    console.log(error);
+    throw "ERRO NO UPDATE";
+  }
+
+  // const kits = await kitsCollection.find({}).toArray();
 };
 
 type PostResponse = {

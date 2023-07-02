@@ -12,6 +12,10 @@ export const opportunityReceivers = [
     id: "6494484b518686bf3b32aeb0",
     nome: "Yasmim Araujo",
   },
+  {
+    id: "6494484b518686bf3b32aeb0",
+    nome: "Lucas Fernandes",
+  },
 ];
 export const companySignerKeys = [
   {

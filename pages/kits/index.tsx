@@ -110,7 +110,7 @@ function Kits() {
                 }}
                 placeholder="Pesquisa aqui o nome do kit..."
               />
-              <div className="flex items-end gap-1">
+              <div className="flex flex-wrap items-end gap-1">
                 <MultipleSelectInput
                   label="FORNECEDORES"
                   selected={
@@ -170,7 +170,7 @@ function Kits() {
                 />
                 <button
                   onClick={() => handleFilters()}
-                  className="flex h-[46px] items-center justify-center rounded border border-[#fead61] p-3 text-[#fead61] hover:bg-[#fead61] hover:text-black"
+                  className="flex h-[46px] w-full items-center justify-center rounded border border-[#fead61] p-3 text-[#fead61] hover:bg-[#fead61] hover:text-black lg:w-fit"
                 >
                   <AiOutlineSearch />
                 </button>

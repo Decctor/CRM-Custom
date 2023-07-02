@@ -24,6 +24,7 @@ type InverterInfo = {
   fabricante: string;
   modelo: string;
   qtde: number;
+  garantia: number;
 };
 type ModuleInfo = {
   id: string | number;
@@ -31,12 +32,14 @@ type ModuleInfo = {
   modelo: string;
   qtde: number;
   potencia: number;
+  garantia: number;
 };
 type PersonalizedItem = {
   nome: string;
   categoria: "INVERSOR" | "MÓDULOS";
   potencia: number;
   qtde: number;
+  garantia: number;
 };
 interface IKitInfo {
   _id?: string;
@@ -114,6 +117,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     fabricante: "",
     modelo: "",
     qtde: 1,
+    garantia: 10,
   });
   const [moduleHolder, setModuleHolder] = useState<ModuleInfo>({
     id: "",
@@ -121,6 +125,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     modelo: "",
     qtde: 1,
     potencia: 0,
+    garantia: 10,
   });
   const [personalizedItemHolder, setPersonalizedItemHolder] =
     useState<PersonalizedItem>({
@@ -128,6 +133,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
       categoria: "INVERSOR",
       potencia: 0,
       qtde: 1,
+      garantia: 10,
     });
   function addInverterToKit() {
     if (
@@ -156,6 +162,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
       fabricante: "",
       modelo: "",
       qtde: 1,
+      garantia: 10,
     });
   }
   function addModuleToKit() {
@@ -182,6 +189,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
       modelo: "",
       qtde: 1,
       potencia: 0,
+      garantia: 10,
     });
   }
   function addPersonalizedItemToKit() {
@@ -209,6 +217,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
         fabricante: "PROMO",
         modelo: personalizedItemHolder.nome,
         qtde: personalizedItemHolder.qtde,
+        garantia: personalizedItemHolder.garantia,
       };
       var inverterArr = [...kitInfo.inversores];
       inverterArr.push(insertObj);
@@ -221,6 +230,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
         modelo: personalizedItemHolder.nome,
         qtde: personalizedItemHolder.qtde,
         potencia: personalizedItemHolder.potencia,
+        garantia: personalizedItemHolder.garantia,
       };
       var modulesArr = [...kitInfo.modulos];
       modulesArr.push(insertObj);
@@ -447,56 +457,73 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
             </h1>
             <div className="flex w-full flex-col gap-1">
               <div className="flex w-full items-center gap-2">
-                <div className="w-[70%]">
-                  <SelectInput
-                    label="INVERSOR"
-                    value={
-                      inverterHolder.id
-                        ? Inverters.filter(
-                            (inverter) => inverter.id == inverterHolder.id
-                          )[0]
-                        : null
-                    }
-                    handleChange={(value) =>
-                      setInverterHolder((prev) => ({
-                        ...prev,
-                        id: value.id,
-                        fabricante: value.fabricante,
-                        modelo: value.modelo,
-                      }))
-                    }
-                    onReset={() =>
-                      setInverterHolder({
-                        id: "",
-                        fabricante: "",
-                        modelo: "",
-                        qtde: 1,
-                      })
-                    }
-                    selectedItemLabel="NÃO DEFINIDO"
-                    options={Inverters.map((inverter) => {
-                      return {
-                        id: inverter.id,
-                        label: `${inverter.fabricante} - ${inverter.modelo}`,
-                        value: inverter,
-                      };
-                    })}
-                    width="100%"
-                  />
-                </div>
-                <div className="w-[30%]">
-                  <NumberInput
-                    label="QTDE"
-                    value={inverterHolder.qtde}
-                    handleChange={(value) =>
-                      setInverterHolder((prev) => ({
-                        ...prev,
-                        qtde: Number(value),
-                      }))
-                    }
-                    placeholder="QTDE"
-                    width="100%"
-                  />
+                <div className="flex w-[90%] items-center gap-2">
+                  <div className="w-[50%]">
+                    <SelectInput
+                      label="INVERSOR"
+                      value={
+                        inverterHolder.id
+                          ? Inverters.filter(
+                              (inverter) => inverter.id == inverterHolder.id
+                            )[0]
+                          : null
+                      }
+                      handleChange={(value) =>
+                        setInverterHolder((prev) => ({
+                          ...prev,
+                          id: value.id,
+                          fabricante: value.fabricante,
+                          modelo: value.modelo,
+                        }))
+                      }
+                      onReset={() =>
+                        setInverterHolder({
+                          id: "",
+                          fabricante: "",
+                          modelo: "",
+                          qtde: 1,
+                          garantia: 10,
+                        })
+                      }
+                      selectedItemLabel="NÃO DEFINIDO"
+                      options={Inverters.map((inverter) => {
+                        return {
+                          id: inverter.id,
+                          label: `${inverter.fabricante} - ${inverter.modelo}`,
+                          value: inverter,
+                        };
+                      })}
+                      width="100%"
+                    />
+                  </div>
+                  <div className="w-[25%]">
+                    <NumberInput
+                      label="QTDE"
+                      value={inverterHolder.qtde}
+                      handleChange={(value) =>
+                        setInverterHolder((prev) => ({
+                          ...prev,
+                          qtde: Number(value),
+                        }))
+                      }
+                      placeholder="QTDE"
+                      width="100%"
+                    />
+                  </div>
+                  <div className="w-[25%]">
+                    <NumberInput
+                      label="GARANTIA"
+                      value={inverterHolder.garantia}
+                      handleChange={(value) =>
+                        setInverterHolder((prev) => ({
+                          ...prev,
+                          garantia: Number(value),
+                        }))
+                      }
+                      placeholder="GARANTIA"
+                      width="100%"
+                    />
+                  </div>
                 </div>
                 <div className="flex h-fit w-[10%] flex-col items-center justify-center gap-1">
                   <p className="h-[24px] w-full "></p>
@@ -509,59 +536,77 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                 </div>
               </div>
               <div className="flex w-full items-center gap-2">
-                <div className="w-[70%]">
-                  <SelectInput
-                    label="MÓDULO"
-                    value={
-                      moduleHolder.id
-                        ? Modules.filter(
-                            (module) => module.id == moduleHolder.id
-                          )[0]
-                        : null
-                    }
-                    handleChange={(value) =>
-                      setModuleHolder((prev) => ({
-                        ...prev,
-                        id: value.id,
-                        fabricante: value.fabricante,
-                        modelo: value.modelo,
-                        potencia: value.potencia,
-                      }))
-                    }
-                    onReset={() =>
-                      setModuleHolder({
-                        id: "",
-                        fabricante: "",
-                        modelo: "",
-                        qtde: 1,
-                        potencia: 0,
-                      })
-                    }
-                    selectedItemLabel="NÃO DEFINIDO"
-                    options={Modules.map((module) => {
-                      return {
-                        id: module.id,
-                        label: `${module.fabricante} - ${module.modelo}`,
-                        value: module,
-                      };
-                    })}
-                    width="100%"
-                  />
+                <div className="flex w-[90%] items-center gap-2">
+                  <div className="w-[50%]">
+                    <SelectInput
+                      label="MÓDULO"
+                      value={
+                        moduleHolder.id
+                          ? Modules.filter(
+                              (module) => module.id == moduleHolder.id
+                            )[0]
+                          : null
+                      }
+                      handleChange={(value) =>
+                        setModuleHolder((prev) => ({
+                          ...prev,
+                          id: value.id,
+                          fabricante: value.fabricante,
+                          modelo: value.modelo,
+                          potencia: value.potencia,
+                        }))
+                      }
+                      onReset={() =>
+                        setModuleHolder({
+                          id: "",
+                          fabricante: "",
+                          modelo: "",
+                          qtde: 1,
+                          potencia: 0,
+                          garantia: 10,
+                        })
+                      }
+                      selectedItemLabel="NÃO DEFINIDO"
+                      options={Modules.map((module) => {
+                        return {
+                          id: module.id,
+                          label: `${module.fabricante} - ${module.modelo}`,
+                          value: module,
+                        };
+                      })}
+                      width="100%"
+                    />
+                  </div>
+                  <div className="w-[25%]">
+                    <NumberInput
+                      label="QTDE"
+                      value={moduleHolder.qtde}
+                      handleChange={(value) =>
+                        setModuleHolder((prev) => ({
+                          ...prev,
+                          qtde: Number(value),
+                        }))
+                      }
+                      placeholder="QTDE"
+                      width="100%"
+                    />
+                  </div>
+                  <div className="w-[25%]">
+                    <NumberInput
+                      label="GARANTIA"
+                      value={moduleHolder.garantia}
+                      handleChange={(value) =>
+                        setModuleHolder((prev) => ({
+                          ...prev,
+                          garantia: Number(value),
+                        }))
+                      }
+                      placeholder="GARANTIA"
+                      width="100%"
+                    />
+                  </div>
                 </div>
-                <div className="w-[30%]">
-                  <NumberInput
-                    label="QTDE"
-                    value={moduleHolder.qtde}
-                    handleChange={(value) =>
-                      setModuleHolder((prev) => ({
-                        ...prev,
-                        qtde: Number(value),
-                      }))
-                    }
-                    placeholder="QTDE"
-                    width="100%"
-                  />
-                </div>
+
                 <div className="flex h-fit w-[10%] flex-col items-center justify-center gap-1 lg:h-full">
                   <p className="h-[24px] w-full"></p>
                   <button
@@ -575,72 +620,89 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
               {kitInfo.tipo == "PROMOCIONAL" ? (
                 <>
                   <div className="flex w-full items-center gap-4">
-                    <div className="w-[40%]">
-                      <TextInput
-                        label="ITEM PERSONALIZADO"
-                        placeholder="ITEM PERSONALIZADO"
-                        value={personalizedItemHolder.nome}
-                        handleChange={(value) =>
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            nome: value,
-                          }))
-                        }
-                        width="100%"
-                      />
+                    <div className="flex w-[90%] items-center gap-2">
+                      <div className="w-[40%]">
+                        <TextInput
+                          label="ITEM PERSONALIZADO"
+                          placeholder="ITEM PERSONALIZADO"
+                          value={personalizedItemHolder.nome}
+                          handleChange={(value) =>
+                            setPersonalizedItemHolder((prev) => ({
+                              ...prev,
+                              nome: value,
+                            }))
+                          }
+                          width="100%"
+                        />
+                      </div>
+                      <div className="w-[30%]">
+                        <SelectInput
+                          label="CATEGORIA"
+                          selectedItemLabel="NÃO DEFINIDO"
+                          options={[
+                            { id: 1, label: "INVERSOR", value: "INVERSOR" },
+                            { id: 2, label: "MÓDULOS", value: "MÓDULOS" },
+                          ]}
+                          value={personalizedItemHolder.categoria}
+                          handleChange={(value) =>
+                            setPersonalizedItemHolder((prev) => ({
+                              ...prev,
+                              categoria: value,
+                            }))
+                          }
+                          onReset={() => {
+                            setPersonalizedItemHolder((prev) => ({
+                              ...prev,
+                              categoria: "INVERSOR",
+                            }));
+                          }}
+                          width="100%"
+                        />
+                      </div>
+                      <div className="w-[10%]">
+                        <NumberInput
+                          label="POTÊNCIA"
+                          value={personalizedItemHolder.potencia}
+                          handleChange={(value) =>
+                            setPersonalizedItemHolder((prev) => ({
+                              ...prev,
+                              potencia: Number(value),
+                            }))
+                          }
+                          placeholder="POTÊNCIA"
+                          width="100%"
+                        />
+                      </div>
+                      <div className="w-[10%]">
+                        <NumberInput
+                          label="QTDE"
+                          value={personalizedItemHolder.qtde}
+                          handleChange={(value) =>
+                            setPersonalizedItemHolder((prev) => ({
+                              ...prev,
+                              qtde: Number(value),
+                            }))
+                          }
+                          placeholder="QTDE"
+                          width="100%"
+                        />
+                      </div>
+                      <div className="w-[10%]">
+                        <NumberInput
+                          label="GARANTIA"
+                          value={personalizedItemHolder.garantia}
+                          handleChange={(value) =>
+                            setPersonalizedItemHolder((prev) => ({
+                              ...prev,
+                              garantia: Number(value),
+                            }))
+                          }
+                          placeholder="GARANTIA"
+                          width="100%"
+                        />
+                      </div>
                     </div>
-                    <div className="w-[30%]">
-                      <SelectInput
-                        label="CATEGORIA"
-                        selectedItemLabel="NÃO DEFINIDO"
-                        options={[
-                          { id: 1, label: "INVERSOR", value: "INVERSOR" },
-                          { id: 2, label: "MÓDULOS", value: "MÓDULOS" },
-                        ]}
-                        value={personalizedItemHolder.categoria}
-                        handleChange={(value) =>
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            categoria: value,
-                          }))
-                        }
-                        onReset={() => {
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            categoria: "INVERSOR",
-                          }));
-                        }}
-                        width="100%"
-                      />
-                    </div>
-                    <div className="w-[10%]">
-                      <NumberInput
-                        label="POTÊNCIA"
-                        value={personalizedItemHolder.potencia}
-                        handleChange={(value) =>
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            potencia: Number(value),
-                          }))
-                        }
-                        placeholder="POTÊNCIA"
-                        width="100%"
-                      />
-                    </div>
-                    <div className="w-[10%]">
-                      <NumberInput
-                        label="QTDE"
-                        value={personalizedItemHolder.qtde}
-                        handleChange={(value) =>
-                          setPersonalizedItemHolder((prev) => ({
-                            ...prev,
-                            qtde: Number(value),
-                          }))
-                        }
-                        placeholder="QTDE"
-                        width="100%"
-                      />
-                    </div>
+
                     <div className="flex h-fit w-[10%] flex-col items-center justify-center gap-1 lg:h-full">
                       <p className="h-[24px] w-full"></p>
                       <button

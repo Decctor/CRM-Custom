@@ -288,6 +288,7 @@ function Projeto() {
                 projectProposesSuccess={projectProposesSuccess}
                 projectProposesLoading={projectProposesLoading}
                 projectProposesError={projectProposesError}
+                idActivePropose={project.propostaAtiva}
               />
             ) : null}
           </div>

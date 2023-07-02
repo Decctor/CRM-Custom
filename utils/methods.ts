@@ -242,7 +242,12 @@ export function getProposeObject(
         propose.kit?.inversores ? propose.kit?.inversores : [],
         propose?.kit?.tipo
       ),
-      garantiaInversores: "10 anos",
+      garantiaInversores: propose.kit?.inversores
+        ? `${Math.max(...propose.kit.inversores.map((x) => x.garantia))} anos`
+        : "10 anos",
+      garantiaModulos: propose.kit?.modulos
+        ? `${Math.max(...propose.kit.modulos.map((x) => x.garantia))} anos`
+        : "10 anos",
       modulos: getModulesStr(
         propose.kit?.modulos ? propose.kit?.modulos : [],
         propose.kit?.tipo
@@ -253,6 +258,24 @@ export function getProposeObject(
       })}`,
     },
   };
+  const arr = [
+    {
+      id: "727",
+      fabricante: "BYD",
+      modelo: "MLK-36-540",
+      qtde: 21,
+      potencia: 540,
+      garantia: 10,
+    },
+    {
+      id: "727",
+      fabricante: "BYD",
+      modelo: "MLK-36-540",
+      qtde: 21,
+      potencia: 540,
+      garantia: 15,
+    },
+  ];
   // const obj = {
   //   title: propose.projeto.nome,
   //   fontSize: 10,
@@ -335,7 +358,10 @@ export function getProposeOeMObject(
       vendedor: project.responsavel.nome,
       telefoneVendedor: sellerPhone,
       qtdepotModulos: `${propose.premissas.qtdeModulos} - ${propose.premissas.potModulos}W`,
-      potPico: propose.potenciaPico,
+      potPico: `${propose.potenciaPico?.toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })} kWp`,
       eficienciaAtual: `${propose.premissas.eficienciaAtual}%`,
       perdaFinanceira: `R$ ${(
         12 *
