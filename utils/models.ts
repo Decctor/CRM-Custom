@@ -399,12 +399,12 @@ export interface IContractRequest {
   tempoSegurado?: string;
   formaPagamentoOeMOuSeguro?: string;
   valorOeMOuSeguro?: number | null;
-  aumentoDeCarga?: "SIM" | "NÃO";
-  caixaConjugada?: "SIM" | "NÃO";
-  tipoDePadrao?: string;
-  aumentoDisjuntor?: "SIM" | "NÃO";
-  respTrocaPadrao?: "NÃO SE APLICA" | "AMPERE" | "CLIENTE";
-  formaPagamentoPadrao?: string;
+  aumentoDeCarga?: "SIM" | "NÃO" | null;
+  caixaConjugada?: "SIM" | "NÃO" | null;
+  tipoDePadrao?: string | null;
+  aumentoDisjuntor?: "SIM" | "NÃO" | null;
+  respTrocaPadrao?: "NÃO SE APLICA" | "AMPERE" | "CLIENTE" | null;
+  formaPagamentoPadrao?: string | null;
   valorPadrao?: number | null;
   nomePagador: string;
   contatoPagador: string;

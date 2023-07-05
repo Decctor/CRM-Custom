@@ -136,7 +136,7 @@ function OeMPlansInfo({
             }));
             goToNextStage();
           }}
-          className={`flex h-fit min-h-[400px] ${
+          className={`flex h-fit min-h-[450px] ${
             activePlanId == 2 ? "bg-green-200" : ""
           }  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
         >
@@ -232,7 +232,7 @@ function OeMPlansInfo({
             }));
             goToNextStage();
           }}
-          className={`flex h-fit min-h-[400px] ${
+          className={`flex h-fit min-h-[450px] ${
             activePlanId == 3 ? "bg-green-200" : ""
           }  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
         >

@@ -30,6 +30,7 @@ import HomologationInfo from "../ContractRequest/SolarSystem/HomologationInfo";
 import SystemInfo from "../ContractRequest/SolarSystem/SystemInfo";
 import StructureInfo from "../ContractRequest/SolarSystem/StructureInfo";
 import OeMPlansInfo from "../ContractRequest/SolarSystem/OeMPlansInfo";
+import PAInfo from "../ContractRequest/SolarSystem/PAInfo";
 type ContractRequestProps = {
   closeModal: () => void;
   proposeInfo: IProposeInfo;
@@ -165,12 +166,12 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
     tempoSegurado: "NÃO SE APLICA",
     formaPagamentoOeMOuSeguro: "NÃO SE APLICA",
     valorOeMOuSeguro: null,
-    aumentoDeCarga: "NÃO",
+    aumentoDeCarga: null,
     caixaConjugada: "NÃO",
-    tipoDePadrao: "NÃO DEFINIDO",
-    aumentoDisjuntor: "NÃO",
-    respTrocaPadrao: "NÃO SE APLICA",
-    formaPagamentoPadrao: "NÃO HAVERA TROCA PADRÃO",
+    tipoDePadrao: null,
+    aumentoDisjuntor: null,
+    respTrocaPadrao: null,
+    formaPagamentoPadrao: null,
     valorPadrao: proposeInfo.infoProjeto?.servicosAdicionais?.padrao,
     nomePagador: "",
     contatoPagador: "",
@@ -324,6 +325,14 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
               />
             ) : null}
             {stage == 6 ? (
+              <PAInfo
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                goToPreviousStage={() => setStage((prev) => prev - 1)}
+                goToNextStage={() => setStage((prev) => prev + 1)}
+              />
+            ) : null}
+            {stage == 7 ? (
               <OeMPlansInfo
                 requestInfo={requestInfo}
                 setRequestInfo={setRequestInfo}
@@ -332,13 +341,6 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
                 modulesQty={getModulesQty(proposeInfo.kit?.modulos)}
                 distance={proposeInfo.premissas.distancia}
               />
-            ) : null}
-            {stage == 7 ? (
-              <div className="flex grow items-center justify-center">
-                <h1 className="text-center italic text-gray-500">
-                  Em construção...
-                </h1>
-              </div>
             ) : null}
           </div>
         </div>
