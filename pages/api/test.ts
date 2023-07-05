@@ -11,15 +11,8 @@ import { escape, uniq } from "lodash";
 import { decode } from "iconv-lite";
 import connectToDatabase from "@/services/mongoclient";
 import { ObjectId } from "mongodb";
-const users = [
-  {
-    id: 1,
-    nome: "Lucas",
-    email: "email@teste.com",
-    role: "Teste",
-  },
-];
-
+import Kits from "../../kits.json";
+import Inverters from "../../utils/pvinverters.json";
 type GetResponse = {
   data: any;
 };
@@ -124,28 +117,24 @@ const createClients: NextApiHandler<GetResponse> = async (req, res) => {
   // } else {
   //   res.status(200).json({ data: users });
   // }
-  const db = await connectToDatabase(process.env.MONGODB_URI, "main");
-  const kitsCollection = db.collection("kits");
-  try {
-    const updateResponse = await kitsCollection.updateMany(
-      {
-        inversores: { $elemMatch: { fabricante: { $ne: null } } },
-      },
-      { $set: { "inversores.$.garantia": 10 } }
-    );
-    // const kits = await kitsCollection.find({}).toArray();
-    res.status(200).json(updateResponse);
-  } catch (error) {
-    console.log(error);
-    throw "ERRO NO UPDATE";
-  }
+  // const db = await connectToDatabase(process.env.MONGODB_URI, "main");
+  // const kitsCollection = db.collection("kits");
 
+  // const formattedKits = Kits.map((kit) => {
+  //   const formattedInvArr = kit.inversores.map((inverter) => {
+  //     const invInfo = Inverters.find((inv) => inv.id == inverter.id);
+  //     return {
+  //       ...inverter,
+  //       potenciaNominal: invInfo ? invInfo.potenciaNominal : 0,
+  //     };
+  //   });
+  //   return {
+  //     ...kit,
+  //     inversores: formattedInvArr,
+  //   };
+  // });
+  res.json({ data: "DESATIVADA" });
   // const kits = await kitsCollection.find({}).toArray();
-};
-
-type PostResponse = {
-  data: (typeof users)[number];
-  message: string;
 };
 
 const userSchema = z.object({
@@ -156,19 +145,6 @@ const userSchema = z.object({
   role: z.string({ required_error: "Preencha uma função para o usuário." }),
 });
 
-// Método para requisições POST
-const createUser: NextApiHandler<PostResponse> = async (req, res) => {
-  await validateAuthentication(req);
-
-  const data = userSchema.parse(req.body);
-
-  const newUser = { ...data, id: users.length + 1 };
-  users.push(newUser);
-  res
-    .status(201)
-    .json({ data: newUser, message: "Usuário criado com sucesso!" });
-};
 export default apiHandler({
   GET: createClients,
-  POST: createUser,
 });

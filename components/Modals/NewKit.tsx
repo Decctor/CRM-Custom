@@ -25,6 +25,7 @@ type InverterInfo = {
   modelo: string;
   qtde: number;
   garantia: number;
+  potenciaNominal: number;
 };
 type ModuleInfo = {
   id: string | number;
@@ -118,6 +119,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     modelo: "",
     qtde: 1,
     garantia: 10,
+    potenciaNominal: 0,
   });
   const [moduleHolder, setModuleHolder] = useState<ModuleInfo>({
     id: "",
@@ -163,6 +165,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
       modelo: "",
       qtde: 1,
       garantia: 10,
+      potenciaNominal: 0,
     });
   }
   function addModuleToKit() {
@@ -218,6 +221,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
         modelo: personalizedItemHolder.nome,
         qtde: personalizedItemHolder.qtde,
         garantia: personalizedItemHolder.garantia,
+        potenciaNominal: personalizedItemHolder.potencia,
       };
       var inverterArr = [...kitInfo.inversores];
       inverterArr.push(insertObj);
@@ -474,6 +478,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                           id: value.id,
                           fabricante: value.fabricante,
                           modelo: value.modelo,
+                          potenciaNominal: value.potenciaNominal,
                         }))
                       }
                       onReset={() =>
@@ -483,6 +488,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
                           modelo: "",
                           qtde: 1,
                           garantia: 10,
+                          potenciaNominal: 0,
                         })
                       }
                       selectedItemLabel="NÃO DEFINIDO"

@@ -15,6 +15,18 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import Modules from "../utils/pvmodules.json";
 import genFactors from "../utils/generationFactors.json";
+type ViaCEPSuccessfulReturn = {
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  ibge: string;
+  gia: string;
+  ddd: string;
+  siafi: string;
+};
 export function getPeakPotByModules(modules: ModuleType[] | undefined) {
   if (modules) {
     var peakPotSum = 0;
@@ -26,7 +38,7 @@ export function getPeakPotByModules(modules: ModuleType[] | undefined) {
     return 0;
   }
 }
-function getModulesQty(modules: ModuleType[] | undefined) {
+export function getModulesQty(modules: ModuleType[] | undefined) {
   if (modules) {
     var totalModulesQty = 0;
     for (let i = 0; i < modules.length; i++) {
@@ -37,7 +49,7 @@ function getModulesQty(modules: ModuleType[] | undefined) {
     return 0;
   }
 }
-function getEstimatedGen(
+export function getEstimatedGen(
   peakPower: number,
   city: string | undefined | null,
   uf: string | undefined | null
@@ -48,7 +60,20 @@ function getEstimatedGen(
   if (!genFactor) return 127 * peakPower;
   else return genFactor * peakPower;
 }
-
+export async function getCEPInfo(
+  cep: string
+): Promise<ViaCEPSuccessfulReturn | null> {
+  try {
+    const { data } = await axios.get(
+      `https://viacep.com.br/ws/${cep.replace("-", "")}/json/`
+    );
+    if (data.erro) throw new Error("Erro");
+    return data;
+  } catch (error) {
+    toast.error("Erro ao buscar informações à partir do CEP.");
+    return null;
+  }
+}
 export function formatToCPForCNPJ(value: string): string {
   const cnpjCpf = value.replace(/\D/g, "");
 
@@ -569,6 +594,31 @@ export function useProject(
       }
     },
     enabled: enabled && !!projectId,
+  });
+}
+export function useClient(
+  clientId: string,
+  enabled: boolean
+): UseQueryResult<IClient, Error> {
+  return useQuery<IClient, Error>({
+    queryKey: ["client", clientId],
+    queryFn: async () => {
+      try {
+        const { data } = await axios.get(`/api/clients?id=${clientId}`);
+        return data.data;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+        }
+        return [];
+      }
+    },
+    enabled: enabled && !!clientId,
   });
 }
 export function useResponsibles(): UseQueryResult<IResponsible[], Error> {

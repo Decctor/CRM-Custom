@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { Sidebar } from "../../components/Sidebar";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { RxDashboard } from "react-icons/rx";
@@ -26,6 +26,7 @@ import {
 } from "@/utils/pricing/methods";
 import { getPrices } from "@/utils/pricing/methods";
 import Link from "next/link";
+import RequestContract from "../Modals/RequestContract";
 
 function copyToClipboard(text: string | undefined) {
   if (text) {
@@ -80,6 +81,8 @@ type ProposeViewUFProps = {
 };
 function ProposeViewUF({ propose }: ProposeViewUFProps) {
   const router = useRouter();
+  const [requestContractModal, setRequestContractModal] =
+    useState<boolean>(false);
   const { data: session } = useSession({
     required: true,
   });
@@ -224,24 +227,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
       }
     }
   }
-  async function handleESigning(url: string | undefined) {
-    if (!url) {
-      alert("Houve um erro com o link. Por favor, tente novamente.");
-      return;
-    }
-    let fileRef = ref(storage, url);
-    const metadata = await getMetadata(fileRef);
-    const md = metadata as FullMetadata;
-
-    const filePath = fileRef.fullPath;
-    // @ts-ignore
-    const extension = fileTypes[metadata.contentType]?.extension;
-
-    const { data } = await axios.post(
-      `/api/utils/clicksignUpload?filePath=${encodeURIComponent(filePath)}`
-    );
-    toast.success("DEU CERTO");
-  }
+  console.log("PROPOSTA", propose);
   return (
     <div className="flex h-full">
       <Sidebar />
@@ -251,12 +237,12 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
             <h1 className="font-Raleway text-xl font-bold text-gray-800">
               {propose?.nome}
             </h1>
-            <div className="flex items-center gap-2">
-              <Link href={`/projeto/id/${propose.infoProjeto?._id}`}>
+            <Link href={`/projeto/id/${propose.infoProjeto?._id}`}>
+              <div className="flex items-center gap-2">
                 <RxDashboard style={{ color: "#15599a" }} />
                 <p className="text-xs">{propose?.infoProjeto?.nome}</p>
-              </Link>
-            </div>
+              </div>
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -264,10 +250,10 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
             propose?.infoProjeto?.dataEfetivacao ||
             propose.dataEfetivacao ? null : (
               <button
-                onClick={() => closePropose()}
+                onClick={() => setRequestContractModal(true)}
                 className="rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
               >
-                EFETIVAR CONTRATO
+                REQUISITAR CONTRATO
               </button>
             )}
 
@@ -641,6 +627,12 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
           )}
         </div>
       </div>
+      {requestContractModal ? (
+        <RequestContract
+          closeModal={() => setRequestContractModal(false)}
+          proposeInfo={propose}
+        />
+      ) : null}
     </div>
   );
 }

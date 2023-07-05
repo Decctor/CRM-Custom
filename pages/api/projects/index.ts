@@ -111,20 +111,21 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
       },
     ])
     .toArray();
-
-  const identificador = lastInsertedIdentificator[0]
-    ? lastInsertedIdentificator[0].identificador + 1
-    : 1;
+  const lastIdentifierNumber = lastInsertedIdentificator[0]
+    ? Number(lastInsertedIdentificator[0].split("-")[1])
+    : 0;
+  const newIdentifierNumber = lastIdentifierNumber + 1;
+  const identifier = `CRM-${newIdentifierNumber}`;
 
   let dbRes = await collection.insertOne({
     ...project,
-    identificador: identificador,
+    identificador: identifier,
     dataInsercao: new Date().toISOString(),
   });
   res.status(201).json({
     data: {
       ...project,
-      identificador: identificador,
+      identificador: identifier,
       dataInsercao: new Date().toISOString(),
     },
     message: "Projeto criado com sucesso.",

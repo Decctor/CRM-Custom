@@ -230,10 +230,20 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
               <SelectInput
                 label="TEMPLATE"
                 value={proposeInfo.template}
-                options={proposeTemplates.map((proposeTemplate, index) => ({
-                  ...proposeTemplate,
-                  id: index + 1,
-                }))}
+                options={proposeTemplates
+                  .filter((template) =>
+                    template.applicableProjectTypes.includes(
+                      // @ts-ignore
+                      project.tipoProjeto
+                    )
+                  )
+                  .map((temp, index) => {
+                    return {
+                      id: index + 1,
+                      label: temp.label,
+                      value: temp.value,
+                    };
+                  })}
                 handleChange={(value) =>
                   setProposeInfo((prev) => ({ ...prev, template: value }))
                 }

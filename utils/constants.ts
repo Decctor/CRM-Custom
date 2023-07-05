@@ -156,7 +156,7 @@ export const creditors = [
     label: "NÃO DEFINIDO",
     value: "NÃO DEFINIDO",
   },
-];
+] as const;
 export const customersAcquisitionChannels = [
   {
     id: 1,
@@ -201,7 +201,7 @@ export const customersAcquisitionChannels = [
     value: "PASSIVO",
   },
   { id: 11, label: "PROSPECÇÃO ATIVA", value: "PROSPECÇÃO ATIVA" },
-];
+] as const;
 export const roles = [
   {
     id: 1,
@@ -281,13 +281,49 @@ export const comissionTable = [
     comRepresentante: 2,
   },
 ];
+export const signMethods = [
+  {
+    value: "FISICO",
+    label: "FISICO",
+  },
+  {
+    value: "DIGITAL",
+    label: "DIGITAL",
+  },
+] as const;
 export const customersNich = [
-  { label: "NÃO DEFINIDO", value: "NÃO DEFINIDO" },
   { label: "RESIDENCIAL", value: "RESIDENCIAL" },
   { label: "COMERCIAL", value: "COMERCIAL" },
   { label: "RURAL", value: "RURAL" },
   { label: "INDUSTRIAL", value: "INDUSTRIAL" },
-];
+] as const;
+export const maritalStatus = [
+  {
+    id: 1,
+    label: "SOLTEIRO(A)",
+    value: "SOLTEIRO(A)",
+  },
+  {
+    id: 2,
+    label: "CASADO(A)",
+    value: "CASADO(A)",
+  },
+  {
+    id: 3,
+    label: "UNIÃO ESTÁVEL",
+    value: "UNIÃO ESTÁVEL",
+  },
+  {
+    id: 4,
+    label: "DIVORCIADO(A)",
+    value: "DIVORCIADO(A)",
+  },
+  {
+    id: 5,
+    label: "VIUVO(A)",
+    value: "VIUVO(A)",
+  },
+] as const;
 export const leadscoreBranding = [
   { label: "NÃO DEFINIDO", value: "NÃO DEFINIDO" },
   { label: "A", value: "A" },

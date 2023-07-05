@@ -1,10 +1,14 @@
 import { ObjectId } from "mongodb";
 import {
   creditors,
+  customersAcquisitionChannels,
+  customersNich,
+  maritalStatus,
   phases,
   projectTypes,
   proposeTemplates,
   proposeVoltageOptions,
+  signMethods,
   structureTypes,
 } from "./constants";
 import { PricesObj, PricesPromoObj } from "./pricing/methods";
@@ -33,6 +37,7 @@ export type InverterType = {
   modelo: string;
   qtde: number;
   garantia: number;
+  potenciaNominal: number;
 };
 export type ModuleType = {
   id: string | number;
@@ -171,7 +176,7 @@ export interface IProject {
   _id?: string;
   nome: string;
   tipoProjeto: (typeof projectTypes)[number]["value"];
-  identificador: number;
+  identificador: string;
   idOportunidade?: string;
   responsavel: {
     nome: string;
@@ -227,10 +232,10 @@ export interface IClient {
   cidade?: string | null;
   dataNascimento?: string;
   rg?: string;
-  estadoCivil?: string;
+  estadoCivil?: (typeof maritalStatus)[number]["value"];
   profissao?: string;
   ondeTrabalha?: string;
-  canalVenda?: string;
+  canalVenda?: (typeof customersAcquisitionChannels)[number]["value"] | null;
   dataInsercao?: Date | null;
   projetos?: IProject[];
 }
@@ -254,7 +259,7 @@ export interface IProposeInfo {
     tensaoRede: (typeof proposeVoltageOptions)[number]["value"] | string;
     fase: (typeof phases)[number]["value"] | string;
     fatorSimultaneidade: number;
-    tipoEstrutura: (typeof structureTypes)[number]["label"] | string;
+    tipoEstrutura: (typeof structureTypes)[number]["value"];
     distancia: number;
   };
   kit?: {
@@ -317,6 +322,113 @@ export interface IProposeOeMInfo {
   dataInsercao?: string;
   aceite?: boolean;
   dataEfetivacao?: string;
+}
+export interface IContractRequest {
+  nomeVendedor?: string;
+  nomeDoProjeto: string;
+  telefoneVendedor: string;
+  tipoDeServico: (typeof projectTypes)[number]["value"];
+  nomeDoContrato: string;
+  telefone: string;
+  cpf_cnpj: string;
+  rg: string;
+  dataDeNascimento?: string | null;
+  cep: string;
+  cidade?: string | null;
+  uf: "MG" | "GO" | null;
+  enderecoCobranca: string;
+  numeroResCobranca: string;
+  bairro: string;
+  pontoDeReferencia: string;
+  segmento?: (typeof customersNich)[number]["value"];
+  formaAssinatura?: (typeof signMethods)[number]["value"];
+  codigoSVB: string;
+  estadoCivil?: (typeof maritalStatus)[number]["value"] | null;
+  email: string;
+  profissao: string;
+  ondeTrabalha: string;
+  possuiDeficiencia: "NÃO" | "SIM";
+  qualDeficiencia: string;
+  canalVenda?: (typeof customersAcquisitionChannels)[number]["value"] | null;
+  nomeIndicador: string;
+  telefoneIndicador: string;
+  comoChegouAoCliente: string;
+  nomeContatoJornadaUm: string;
+  telefoneContatoUm: string;
+  nomeContatoJornadaDois: string;
+  telefoneContatoDois: string;
+  cuidadosContatoJornada: string;
+  nomeTitularProjeto?: string;
+  tipoDoTitular?: "PESSOA FISICA" | "PESSOA JURIDICA" | null;
+  tipoDaLigacao?: "NOVA" | "EXISTENTE" | null;
+  tipoDaInstalacao?: "URBANO" | "RURAL" | null;
+  cepInstalacao: string;
+  enderecoInstalacao: string;
+  numeroResInstalacao?: string;
+  numeroInstalacao?: string;
+  bairroInstalacao: string;
+  cidadeInstalacao?: string | null;
+  ufInstalacao: "MG" | "GO" | null;
+  pontoDeReferenciaInstalacao: string;
+  loginCemigAtende: string;
+  senhaCemigAtende: string;
+  latitude: string;
+  longitude: string;
+  potPico?: number;
+  geracaoPrevista?: number;
+  topologia?: "INVERSOR" | "MICRO-INVERSOR" | null;
+  marcaInversor: string;
+  qtdeInversor: string;
+  potInversor: string;
+  marcaModulos: string;
+  qtdeModulos: string | number;
+  potModulos: string | null;
+  tipoEstrutura: (typeof structureTypes)[number]["value"] | null;
+  materialEstrutura?: "MADEIRA" | "FERRO" | null;
+  estruturaAmpere?: "SIM" | "NÃO";
+  responsavelEstrutura?: "NÃO SE APLICA" | "AMPERE" | "CLIENTE";
+  formaPagamentoEstrutura?: string | null;
+  valorEstrutura?: number | null;
+  possuiOeM?: "SIM" | "NÃO";
+  planoOeM?:
+    | "PLANO SOL +"
+    | "MANUTENÇÃO SIMPLES"
+    | "NÃO SE APLICA"
+    | "PLANO SOL";
+  clienteSegurado?: "SIM" | "NÃO";
+  tempoSegurado?: string;
+  formaPagamentoOeMOuSeguro?: string;
+  valorOeMOuSeguro?: number | null;
+  aumentoDeCarga?: "SIM" | "NÃO";
+  caixaConjugada?: "SIM" | "NÃO";
+  tipoDePadrao?: string;
+  aumentoDisjuntor?: "SIM" | "NÃO";
+  respTrocaPadrao?: "NÃO SE APLICA" | "AMPERE" | "CLIENTE";
+  formaPagamentoPadrao?: string;
+  valorPadrao?: number | null;
+  nomePagador: string;
+  contatoPagador: string;
+  necessidaInscricaoRural?: "SIM" | "NÃO";
+  inscriçãoRural: string;
+  cpf_cnpjNF: string;
+  localEntrega?: string;
+  entregaIgualCobranca?: "NÃO" | "SIM" | "NÃO SE APLICA";
+  restricoesEntrega?: string;
+  valorContrato?: number | null;
+  origemRecurso?: "FINANCIAMENTO" | "CAPITAL PRÓPRIO" | null;
+  numParcelas?: number;
+  valorParcela?: number;
+  credor: (typeof creditors)[number]["value"];
+  nomeGerente: string;
+  contatoGerente: string;
+  necessidadeNFAdiantada?: "SIM" | "NÃO";
+  necessidadeCodigoFiname?: "SIM" | "NÃO";
+  formaDePagamento?: string;
+  descricaoNegociacao: string;
+  possuiDistribuicao?: "SIM" | "NÃO";
+  realizarHomologacao?: boolean;
+  obsComercial?: string;
+  distribuicoes: { numInstalacao: string; excedente?: number }[];
 }
 export type ProjectActivity = {
   _id?: string;
