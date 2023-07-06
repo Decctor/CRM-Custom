@@ -11,7 +11,7 @@ import { escape, uniq } from "lodash";
 import { decode } from "iconv-lite";
 import connectToDatabase from "@/services/mongoclient";
 import { ObjectId } from "mongodb";
-import Kits from "../../kits.json";
+
 import Inverters from "../../utils/pvinverters.json";
 type GetResponse = {
   data: any;
