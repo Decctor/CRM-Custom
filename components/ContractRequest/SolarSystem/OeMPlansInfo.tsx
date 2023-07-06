@@ -41,13 +41,16 @@ function OeMPlansInfo({
           onClick={() => {
             setRequestInfo((prev) => ({
               ...prev,
+              possuiOeM: "SIM",
               planoOeM: "MANUTENÇÃO SIMPLES",
               valorOeMOuSeguro: pricing.manutencaoSimples.vendaFinal,
             }));
             goToNextStage();
           }}
           className={`flex h-fit min-h-[450px] ${
-            activePlanId == 1 ? "bg-green-200" : ""
+            activePlanId == 1 || requestInfo.planoOeM == "MANUTENÇÃO SIMPLES"
+              ? "bg-green-200"
+              : ""
           }  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
         >
           <h1 className="text-center text-lg font-medium text-gray-800">
@@ -131,13 +134,16 @@ function OeMPlansInfo({
           onClick={() => {
             setRequestInfo((prev) => ({
               ...prev,
+              possuiOeM: "SIM",
               planoOeM: "PLANO SOL",
               valorOeMOuSeguro: pricing.planoSol.vendaFinal,
             }));
             goToNextStage();
           }}
           className={`flex h-fit min-h-[450px] ${
-            activePlanId == 2 ? "bg-green-200" : ""
+            activePlanId == 2 || requestInfo.planoOeM == "PLANO SOL"
+              ? "bg-green-200"
+              : ""
           }  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
         >
           <h1 className="text-center text-lg font-medium text-gray-800">
@@ -227,13 +233,16 @@ function OeMPlansInfo({
           onClick={() => {
             setRequestInfo((prev) => ({
               ...prev,
+              possuiOeM: "SIM",
               planoOeM: "PLANO SOL +",
               valorOeMOuSeguro: pricing.planoSolPlus.vendaFinal,
             }));
             goToNextStage();
           }}
           className={`flex h-fit min-h-[450px] ${
-            activePlanId == 3 ? "bg-green-200" : ""
+            activePlanId == 3 || requestInfo.planoOeM == "PLANO SOL +"
+              ? "bg-green-200"
+              : ""
           }  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
         >
           <h1 className="text-center text-lg font-medium text-gray-800">

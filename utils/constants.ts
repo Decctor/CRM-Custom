@@ -33,7 +33,13 @@ export const companySignerKeys = [
     sign_as: "contractee",
   },
 ];
-export const fileTypes = {
+type FileTypes = {
+  [contentType: string]: {
+    title: string;
+    extension: string;
+  };
+};
+export const fileTypes: FileTypes = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
     title: "WORD",
     extension: ".docx",
@@ -151,10 +157,6 @@ export const creditors = [
   {
     label: "SICOOB",
     value: "SICOOB",
-  },
-  {
-    label: "NÃO DEFINIDO",
-    value: "NÃO DEFINIDO",
   },
 ] as const;
 export const customersAcquisitionChannels = [

@@ -27,6 +27,7 @@ import {
 import { getPrices } from "@/utils/pricing/methods";
 import Link from "next/link";
 import RequestContract from "../Modals/RequestContract";
+import { BsPatchCheckFill } from "react-icons/bs";
 
 function copyToClipboard(text: string | undefined) {
   if (text) {
@@ -251,12 +252,17 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
             propose.dataEfetivacao ? null : (
               <button
                 onClick={() => setRequestContractModal(true)}
-                className="rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
+                className="items-center rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
               >
                 REQUISITAR CONTRATO
               </button>
             )}
-
+            {propose.aceite ? (
+              <div className="flex items-center gap-2 rounded bg-green-500 p-2 text-sm font-medium italic text-white">
+                ACEITA
+                <BsPatchCheckFill />
+              </div>
+            ) : null}
             {/* <button className="rounded border border-red-500 p-1 font-medium text-red-500 duration-300 ease-in-out hover:scale-105 hover:bg-red-500 hover:text-white">
               Perder
             </button> */}

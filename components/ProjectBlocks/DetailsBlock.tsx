@@ -795,7 +795,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
                   session?.user.id == infoHolder?.responsavel?.id ||
                   session?.user.permissoes.projetos.editar
                 }
-                options={customersAcquisitionChannels}
+                options={customersAcquisitionChannels.map((value) => value)}
                 handleChange={(value) => {
                   if (infoHolder)
                     setInfoHolder((prev: any) => ({

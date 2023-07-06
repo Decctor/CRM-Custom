@@ -31,6 +31,10 @@ import SystemInfo from "../ContractRequest/SolarSystem/SystemInfo";
 import StructureInfo from "../ContractRequest/SolarSystem/StructureInfo";
 import OeMPlansInfo from "../ContractRequest/SolarSystem/OeMPlansInfo";
 import PAInfo from "../ContractRequest/SolarSystem/PAInfo";
+import PaymentInfo from "../ContractRequest/SolarSystem/PaymentInfo";
+import DocumentAttachmentInfo from "../ContractRequest/SolarSystem/DocumentAttachmentInfo";
+import CreditDistributionInfo from "../ContractRequest/SolarSystem/CreditDistributionInfo";
+import ReviewInfo from "../ContractRequest/SolarSystem/ReviewInfo";
 type ContractRequestProps = {
   closeModal: () => void;
   proposeInfo: IProposeInfo;
@@ -175,26 +179,26 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
     valorPadrao: proposeInfo.infoProjeto?.servicosAdicionais?.padrao,
     nomePagador: "",
     contatoPagador: "",
-    necessidaInscricaoRural: "NÃO",
+    necessidaInscricaoRural: null,
     inscriçãoRural: "",
     cpf_cnpjNF: "",
-    localEntrega: "NÃO DEFINIDO",
-    entregaIgualCobranca: "NÃO",
-    restricoesEntrega: "NÃO DEFINIDO",
+    localEntrega: null,
+    entregaIgualCobranca: null,
+    restricoesEntrega: null,
     valorContrato: null,
     origemRecurso: null,
     numParcelas: 0,
     valorParcela: 0,
     credor: proposeInfo?.infoProjeto?.credor
       ? proposeInfo?.infoProjeto?.credor
-      : "NÃO DEFINIDO",
+      : null,
     nomeGerente: "",
     contatoGerente: "",
-    necessidadeNFAdiantada: "NÃO",
-    necessidadeCodigoFiname: "NÃO",
-    formaDePagamento: "NÃO DEFINIDO",
+    necessidadeNFAdiantada: null,
+    necessidadeCodigoFiname: null,
+    formaDePagamento: null,
     descricaoNegociacao: "",
-    possuiDistribuicao: "NÃO",
+    possuiDistribuicao: null,
     realizarHomologacao: true,
     distribuicoes: [],
   });
@@ -246,7 +250,7 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
           </div>
 
           <div className="flex h-full flex-col gap-y-2 overflow-y-auto overscroll-y-auto p-2 py-1 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
-            <div className="my-1 flex w-full items-center justify-center gap-2">
+            <div className="my-1 flex w-full flex-wrap items-center justify-center gap-2">
               <SelectInput
                 label="VENDEDOR"
                 value={requestInfo.nomeVendedor}
@@ -340,6 +344,44 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
                 goToNextStage={() => setStage((prev) => prev + 1)}
                 modulesQty={getModulesQty(proposeInfo.kit?.modulos)}
                 distance={proposeInfo.premissas.distancia}
+              />
+            ) : null}
+            {stage == 8 ? (
+              <PaymentInfo
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                goToPreviousStage={() => setStage((prev) => prev - 1)}
+                goToNextStage={() => setStage((prev) => prev + 1)}
+              />
+            ) : null}
+            {stage == 9 ? (
+              <CreditDistributionInfo
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                goToPreviousStage={() => setStage((prev) => prev - 1)}
+                goToNextStage={() => setStage((prev) => prev + 1)}
+              />
+            ) : null}
+            {stage == 10 ? (
+              <DocumentAttachmentInfo
+                projectInfo={proposeInfo.infoProjeto}
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                goToPreviousStage={() => setStage((prev) => prev - 1)}
+                goToNextStage={() => setStage((prev) => prev + 1)}
+              />
+            ) : null}
+            {stage == 11 ? (
+              <ReviewInfo
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                goToPreviousStage={() => setStage((prev) => prev - 1)}
+                goToNextStage={() => setStage((prev) => prev + 1)}
+                kit={proposeInfo.kit}
+                modulesQty={getModulesQty(proposeInfo.kit?.modulos)}
+                distance={proposeInfo.premissas.distancia}
+                projectId={proposeInfo?.infoProjeto?._id}
+                proposeInfo={proposeInfo}
               />
             ) : null}
           </div>

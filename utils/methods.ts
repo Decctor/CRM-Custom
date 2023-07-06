@@ -27,6 +27,9 @@ type ViaCEPSuccessfulReturn = {
   ddd: string;
   siafi: string;
 };
+export function isFile(variable: any): variable is File {
+  return variable instanceof File;
+}
 export function getPeakPotByModules(modules: ModuleType[] | undefined) {
   if (modules) {
     var peakPotSum = 0;
@@ -753,4 +756,43 @@ export function useProjects(
     },
     enabled: !!session?.user,
   });
+}
+
+//
+function getLevenshteinDistance(string1: string, string2: string): number {
+  const matrix = Array(string1.length + 1)
+    .fill(null)
+    .map(() => Array(string2.length + 1).fill(null));
+
+  for (let i = 0; i <= string1.length; i++) {
+    matrix[i][0] = i;
+  }
+
+  for (let j = 0; j <= string2.length; j++) {
+    matrix[0][j] = j;
+  }
+
+  for (let i = 1; i <= string1.length; i++) {
+    for (let j = 1; j <= string2.length; j++) {
+      const indicator = string1[i - 1] === string2[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + indicator
+      );
+    }
+  }
+
+  return matrix[string1.length][string2.length];
+}
+export function calculateStringSimilarity(
+  string1: string,
+  string2: string
+): number {
+  const maxLength = Math.max(string1.length, string2.length);
+  const distance = getLevenshteinDistance(string1, string2);
+  const similarity = (maxLength - distance) / maxLength;
+  const similarityPercentage = similarity * 100;
+
+  return similarityPercentage;
 }

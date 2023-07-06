@@ -246,7 +246,7 @@ function StructureInfo({
         </button>
         <button
           onClick={() => {
-            goToNextStage();
+            if (validateFields()) goToNextStage();
           }}
           className="rounded p-2 font-bold hover:bg-black hover:text-white"
         >
