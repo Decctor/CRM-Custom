@@ -67,15 +67,18 @@ const createRequest: NextApiHandler<PostResponse> = async (req, res) => {
   if (!requestInfo) return "Solicitação de contrato vazia";
   //Fixing seller name for correct form in Sistema Ampere
   const requestSeller = requestInfo.nomeVendedor
-    ? requestInfo.nome
+    ? requestInfo.nomeVendedor.toUpperCase()
     : "NÃO DEFINIDO";
   const correctSellerName = sellers.find(
     (x) => calculateStringSimilarity(requestSeller, x) > 80
   );
+  console.log(requestSeller, correctSellerName);
   const insertResponse = await collection.insertOne({
     ...requestInfo,
     nomeVendedor: correctSellerName,
+    dataSolicitacao: new Date().toISOString(),
   });
+  console.log("INSERIDO", insertResponse);
   if (insertResponse?.insertedId) {
     res.status(201).json({
       data: insertResponse.insertedId,

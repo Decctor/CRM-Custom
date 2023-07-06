@@ -93,7 +93,7 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projects");
   const project = projectSchema.parse(req.body);
-
+  console.log("PARSED", project);
   const lastInsertedIdentificator = await collection
     .aggregate([
       {
@@ -103,7 +103,7 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
       },
       {
         $sort: {
-          identificador: -1,
+          _id: -1,
         },
       },
       {
@@ -112,7 +112,7 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
     ])
     .toArray();
   const lastIdentifierNumber = lastInsertedIdentificator[0]
-    ? Number(lastInsertedIdentificator[0].split("-")[1])
+    ? Number(lastInsertedIdentificator[0].identificador.split("-")[1])
     : 0;
   const newIdentifierNumber = lastIdentifierNumber + 1;
   const identifier = `CRM-${newIdentifierNumber}`;

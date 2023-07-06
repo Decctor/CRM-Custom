@@ -1,7 +1,7 @@
 import { storage } from "@/services/firebase";
 import { fileTypes } from "@/utils/constants";
 import { isFile } from "@/utils/methods";
-import { IContractRequest, IProject } from "@/utils/models";
+import { IContractRequest, IProject, IProposeInfo } from "@/utils/models";
 import {
   UploadResult,
   getDownloadURL,
@@ -18,6 +18,7 @@ type DocumentAttachmentInfoProps = {
   setRequestInfo: React.Dispatch<React.SetStateAction<IContractRequest>>;
   goToPreviousStage: () => void;
   goToNextStage: () => void;
+  proposeInfo: IProposeInfo;
 };
 function formatLongString(str: string) {
   if (str.length > 35) {
@@ -32,6 +33,7 @@ function DocumentAttachmentInfo({
   setRequestInfo,
   goToPreviousStage,
   goToNextStage,
+  proposeInfo,
 }: DocumentAttachmentInfoProps) {
   const savingRef = projectInfo
     ? `formSolicitacao/${projectInfo.nome}`
@@ -44,6 +46,7 @@ function DocumentAttachmentInfo({
       ? projectInfo?.anexos?.documentoComFoto
       : null,
     iptu: projectInfo?.anexos?.iptu ? projectInfo?.anexos?.iptu : null,
+    propostaComercial: proposeInfo.linkArquivo ? proposeInfo.linkArquivo : null,
   });
   const [uploadOK, setUploadOK] = useState<boolean | "loading">(false);
   function validateDocuments() {

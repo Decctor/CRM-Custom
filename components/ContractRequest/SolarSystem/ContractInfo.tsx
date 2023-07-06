@@ -63,10 +63,6 @@ function ContractInfo({
       toast.error("Por favor, preencha uma profissão válida.");
       return false;
     }
-    if (!requestInfo.tipoDoTitular) {
-      toast.error("Por favor, preencha o tipo do cliente.");
-      return false;
-    }
     if (requestInfo.cidade == "NÃO DEFINIDO") {
       toast.error("Por favor, preencha uma cidade válida.");
       return false;

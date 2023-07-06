@@ -185,7 +185,7 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
     localEntrega: null,
     entregaIgualCobranca: null,
     restricoesEntrega: null,
-    valorContrato: null,
+    valorContrato: proposeInfo.valorProposta ? proposeInfo.valorProposta : null,
     origemRecurso: null,
     numParcelas: 0,
     valorParcela: 0,
@@ -366,6 +366,7 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
               <DocumentAttachmentInfo
                 projectInfo={proposeInfo.infoProjeto}
                 requestInfo={requestInfo}
+                proposeInfo={proposeInfo}
                 setRequestInfo={setRequestInfo}
                 goToPreviousStage={() => setStage((prev) => prev - 1)}
                 goToNextStage={() => setStage((prev) => prev + 1)}

@@ -143,6 +143,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
         descricao: newProject.descricao,
         funis: newProject.funis,
       };
+      console.log("CRIAÇÃO DE CLIENTE", clientResponse);
       const { data } = await axios.post("/api/projects", insertObj);
       setClientInfo({
         representante: null,
