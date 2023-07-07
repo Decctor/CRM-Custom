@@ -36,7 +36,7 @@ export type InverterType = {
   fabricante: string;
   modelo: string;
   qtde: number;
-  garantia: number;
+  garantia?: number;
   potenciaNominal: number;
 };
 export type ModuleType = {
@@ -45,7 +45,7 @@ export type ModuleType = {
   modelo: string;
   qtde: number;
   potencia: number;
-  garantia: number;
+  garantia?: number;
 };
 type StructureComponent = {
   insumo: string;
@@ -210,7 +210,9 @@ export interface IProject {
   dataInsercao?: string;
   dataPerda?: string;
   motivoPerda?: string;
+  efetivacao?: boolean;
   dataEfetivacao?: string;
+  idSolicitacaoContrato?: string;
 }
 export interface IClient {
   _id?: string;
@@ -279,6 +281,7 @@ export interface IProposeInfo {
   dataInsercao?: string;
   aceite?: boolean;
   dataEfetivacao?: string;
+  idSolicitacaoContrato?: string;
 }
 export interface IProposeOeMInfo {
   _id?: string;
@@ -322,6 +325,7 @@ export interface IProposeOeMInfo {
   dataInsercao?: string;
   aceite?: boolean;
   dataEfetivacao?: string;
+  idSolicitacaoContrato?: string;
 }
 export interface IContractRequest {
   nomeVendedor?: string;

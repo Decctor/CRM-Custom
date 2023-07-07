@@ -330,8 +330,17 @@ const editProjectSchema = z.object({
     })
     .optional(),
   propostaAtiva: z.string().optional(),
-  titularInstalacao: z.string().optional(),
-  numeroInstalacaoConcessionaria: z.string().optional(),
+  titularInstalacao: z
+    .string({
+      invalid_type_error: "Tipo de dado inválido para titular da instalação.",
+    })
+    .optional(),
+  numeroInstalacaoConcessionaria: z
+    .string({
+      invalid_type_error:
+        "Tipo de dado inválido para número de instalação da concessionária.",
+    })
+    .optional(),
   tipoTitular: z
     .union([z.literal("PESSOA FISICA"), z.literal("PESSOA JURIDICA")])
     .optional(),
@@ -360,7 +369,9 @@ const editProjectSchema = z.object({
     .optional(),
   dataPerda: z.string().optional(),
   motivoPerda: z.string().optional(),
+  efetivacao: z.boolean().optional(),
   dataEfetivacao: z.string().optional(),
+  idSolicitacaoContrato: z.string().optional(),
 });
 const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
   const session = await validateAuthorization(
@@ -377,7 +388,7 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
     responsavel != session.user.id
   ) {
     throw new createHttpError.Unauthorized(
-      "Somente o responsável ou administradores podem alterar esse cliente."
+      "Somente o responsável ou administradores podem alterar esse projeto."
     );
   }
   if (!id && typeof id !== "string")
@@ -392,25 +403,6 @@ const editProjects: NextApiHandler<PutResponse> = async (req, res) => {
   const collection = db.collection("projects");
 
   const changes = editProjectSchema.parse(req.body.changes);
-  // var setObj: any = {};
-  // console.log(changes);
-  // Object.entries(changes).forEach((entry) => {
-  //   if (typeof entry[1] == "object") {
-  //     console.log("PELO IF");
-  //     const tag = entry[0];
-  //     // Object.keys(entry[1]).forEach((x) => {
-  //     //   console.log(`${tag}.${x}`);
-  //     // });
-  //     Object.entries(entry[1]).forEach((insideEntry) => {
-  //       console.log({ [`${tag}.${insideEntry[0]}`]: insideEntry[1] });
-  //       setObj[`${tag}.${insideEntry[0]}`] = insideEntry[1];
-  //     });
-  //   } else {
-  //     console.log("PELO ELSE");
-  //     const tag = entry[0];
-  //     console.log(tag);
-  //   }
-  // });
 
   const setObj = formatUpdateSetObject(changes);
   console.log(changes);

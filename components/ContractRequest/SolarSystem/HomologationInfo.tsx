@@ -21,7 +21,9 @@ function HomologationInfo({
 }: HomologationInfoProps) {
   async function setAddressDataByCEP(cep: string) {
     const addressInfo = await getCEPInfo(cep);
-    const toastID = toast.loading("Buscando informações sobre o CEP...");
+    const toastID = toast.loading("Buscando informações sobre o CEP...", {
+      duration: 2000,
+    });
     setTimeout(() => {
       if (addressInfo) {
         toast.dismiss(toastID);

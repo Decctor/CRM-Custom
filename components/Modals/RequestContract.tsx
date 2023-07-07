@@ -35,6 +35,7 @@ import PaymentInfo from "../ContractRequest/SolarSystem/PaymentInfo";
 import DocumentAttachmentInfo from "../ContractRequest/SolarSystem/DocumentAttachmentInfo";
 import CreditDistributionInfo from "../ContractRequest/SolarSystem/CreditDistributionInfo";
 import ReviewInfo from "../ContractRequest/SolarSystem/ReviewInfo";
+import { Pricing } from "@/utils/pricing/methods";
 type ContractRequestProps = {
   closeModal: () => void;
   proposeInfo: IProposeInfo;
@@ -51,6 +52,22 @@ function getSellerContact(
     return responsible?.telefone ? responsible.telefone : "";
   } else {
     return "";
+  }
+}
+function getContractValueWithoutAdditionalCosts(
+  pricing: IProposeInfo["precificacao"]
+): number {
+  var totalSum = 0;
+  if (pricing) {
+    Object.keys(pricing).map((key) => {
+      if (!["padrao", "estrutura", "extra"].includes(key)) {
+        const sellingValue = pricing[key as keyof Pricing]?.vendaFinal;
+        if (sellingValue) totalSum = totalSum + sellingValue;
+      }
+    });
+    return totalSum;
+  } else {
+    return totalSum;
   }
 }
 function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
@@ -118,7 +135,7 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
     cepInstalacao: "",
     enderecoInstalacao: "",
     numeroResInstalacao: "",
-    numeroInstalacao: "",
+    numeroInstalacao: proposeInfo.infoProjeto?.numeroInstalacaoConcessionaria,
     bairroInstalacao: "",
     cidadeInstalacao: "NÃO DEFINIDO",
     ufInstalacao: null,
@@ -163,20 +180,22 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
     estruturaAmpere: "NÃO",
     responsavelEstrutura: "NÃO SE APLICA",
     formaPagamentoEstrutura: null,
-    valorEstrutura: proposeInfo.infoProjeto?.servicosAdicionais?.estrutura,
+    valorEstrutura: proposeInfo.precificacao?.estrutura?.vendaFinal,
     possuiOeM: "NÃO",
     planoOeM: "NÃO SE APLICA",
     clienteSegurado: "NÃO",
     tempoSegurado: "NÃO SE APLICA",
     formaPagamentoOeMOuSeguro: "NÃO SE APLICA",
     valorOeMOuSeguro: null,
-    aumentoDeCarga: null,
+    aumentoDeCarga: proposeInfo.infoProjeto?.servicosAdicionais?.padrao
+      ? "SIM"
+      : "NÃO",
     caixaConjugada: "NÃO",
     tipoDePadrao: null,
     aumentoDisjuntor: null,
     respTrocaPadrao: null,
     formaPagamentoPadrao: null,
-    valorPadrao: proposeInfo.infoProjeto?.servicosAdicionais?.padrao,
+    valorPadrao: proposeInfo.precificacao?.padrao?.vendaFinal,
     nomePagador: "",
     contatoPagador: "",
     necessidaInscricaoRural: null,
@@ -185,7 +204,9 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
     localEntrega: null,
     entregaIgualCobranca: null,
     restricoesEntrega: null,
-    valorContrato: proposeInfo.valorProposta ? proposeInfo.valorProposta : null,
+    valorContrato: proposeInfo.precificacao
+      ? getContractValueWithoutAdditionalCosts(proposeInfo.precificacao)
+      : null,
     origemRecurso: null,
     numParcelas: 0,
     valorParcela: 0,

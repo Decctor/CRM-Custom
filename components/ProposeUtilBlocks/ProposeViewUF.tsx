@@ -580,7 +580,11 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
               {Object.keys(getPrices(propose?.infoProjeto, propose)).map(
                 (priceType, index) => {
                   //@ts-ignore
-                  const pricesObj = pricing[priceType];
+                  const pricing = propose.precificacao
+                    ? propose.precificacao
+                    : getPrices(propose?.infoProjeto, propose);
+                  const pricesObj = pricing[priceType as keyof Pricing];
+                  if (!pricesObj) return;
                   const {
                     custo,
                     vendaFinal,

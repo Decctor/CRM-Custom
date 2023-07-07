@@ -7,6 +7,7 @@ import { AiOutlineRight } from "react-icons/ai";
 import { MdOpenInNew } from "react-icons/md";
 import { VscChromeClose } from "react-icons/vsc";
 import ProjectOpenActivities from "../Modals/ProjectOpenActivities";
+import { BsPatchCheckFill } from "react-icons/bs";
 interface FunnelListItemProps {
   index: number;
   item: {
@@ -18,6 +19,7 @@ interface FunnelListItemProps {
     nomeProposta?: string;
     valorProposta?: number;
     potenciaPicoProposta?: number;
+    efetivacao?: boolean;
   };
 }
 function getTagColor(activities: ProjectActivity[]) {
@@ -44,6 +46,11 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
               activities={item.atividades}
               setOpenActivitiesModal={setOpenActivitiesModal}
             />
+          ) : null}
+          {item.efetivacao ? (
+            <div className="absolute right-2 top-2 flex items-center justify-center text-green-500">
+              <BsPatchCheckFill />
+            </div>
           ) : null}
           <div className="relative flex w-full items-center justify-between">
             <div className="flex flex-col">

@@ -117,9 +117,22 @@ const createClients: NextApiHandler<GetResponse> = async (req, res) => {
   // } else {
   //   res.status(200).json({ data: users });
   // }
-  // const db = await connectToDatabase(process.env.MONGODB_URI, "main");
-  // const kitsCollection = db.collection("kits");
-
+  const db = await connectToDatabase(process.env.MONGODB_URI, "main");
+  const projectsCollection = db.collection("projects");
+  const updatePipeline = [
+    {
+      $set: { "funis.$[elem].etapaId": 7 },
+    },
+    {
+      arrayFilters: [{ "elem.id": 1 }],
+    },
+  ];
+  const updateResponse = await projectsCollection.updateOne(
+    {
+      _id: new ObjectId("64a7f322dd3653cc70d8faed"),
+    },
+    ...updatePipeline
+  );
   // const formattedKits = Kits.map((kit) => {
   //   const formattedInvArr = kit.inversores.map((inverter) => {
   //     const invInfo = Inverters.find((inv) => inv.id == inverter.id);
@@ -133,7 +146,7 @@ const createClients: NextApiHandler<GetResponse> = async (req, res) => {
   //     inversores: formattedInvArr,
   //   };
   // });
-  res.json({ data: "DESATIVADA" });
+  res.json({ data: updateResponse });
   // const kits = await kitsCollection.find({}).toArray();
 };
 

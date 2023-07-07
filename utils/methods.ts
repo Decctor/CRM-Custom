@@ -271,10 +271,14 @@ export function getProposeObject(
         propose?.kit?.tipo
       ),
       garantiaInversores: propose.kit?.inversores
-        ? `${Math.max(...propose.kit.inversores.map((x) => x.garantia))} anos`
+        ? `${Math.max(
+            ...propose.kit.inversores.map((x) => (x.garantia ? x.garantia : 0))
+          )} anos`
         : "10 anos",
       garantiaModulos: propose.kit?.modulos
-        ? `${Math.max(...propose.kit.modulos.map((x) => x.garantia))} anos`
+        ? `${Math.max(
+            ...propose.kit.modulos.map((x) => (x.garantia ? x.garantia : 0))
+          )} anos`
         : "10 anos",
       modulos: getModulesStr(
         propose.kit?.modulos ? propose.kit?.modulos : [],

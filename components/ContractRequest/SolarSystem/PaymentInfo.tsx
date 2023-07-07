@@ -95,6 +95,7 @@ function PaymentInfo({
     }
     if (!requestInfo.necessidadeCodigoFiname) {
       toast.error("Por favor, preencha sobre a necessidade de Código FINAME");
+      return false;
     }
     return true;
   }

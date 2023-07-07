@@ -136,7 +136,7 @@ function Projeto() {
           </div>
 
           <div className="flex w-full flex-col items-start gap-6 py-4 lg:flex-row">
-            <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[40%]">
+            <div className="flex h-[300px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:h-[230px] lg:w-[40%]">
               <div className="flex h-[40px] items-center justify-between border-b border-gray-200 pb-2">
                 <h1 className="font-bold text-black">Dados do Cliente</h1>
                 <div
@@ -161,7 +161,7 @@ function Projeto() {
                   </div>
                   <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <MdEmail style={{ color: "#15599a", fontSize: "20px" }} />
-                    <p className="font-Poppins text-sm text-gray-500">
+                    <p className="break-all font-Poppins text-sm text-gray-500">
                       {project.cliente ? project.cliente.email : "-"}
                     </p>
                   </div>

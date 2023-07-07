@@ -74,9 +74,22 @@ const proposeSchema = z.union([
           100,
           "Por favor, preencha um valor de no máximo 100 para o fator de simultaneidade."
         ),
-      tipoEstrutura: z.string({
-        required_error: "Por favor, preencha o tipo de estrutura.",
-      }),
+      tipoEstrutura: z.union(
+        [
+          z.literal("Carport"),
+          z.literal("Cerâmico"),
+          z.literal("Fibrocimento"),
+          z.literal("Laje"),
+          z.literal("Metálico"),
+          z.literal("Zipado"),
+          z.literal("Solo"),
+          z.literal("Sem estrutura"),
+        ],
+        {
+          required_error: "Por favor, preencha o tipo de estrutura.",
+          invalid_type_error: "Tipo inválido de estrutura",
+        }
+      ),
       distancia: z.number({
         required_error:
           "Por favor, preencha a distância até da matriz (Ituiutaba) até o local de instalação do cliente.",
@@ -88,6 +101,12 @@ const proposeSchema = z.union([
       topologia: z.string({
         required_error: "Por favor, forneça a topologia do kit.",
       }),
+      tipo: z
+        .union([z.literal("TRADICIONAL"), z.literal("PROMOCIONAL")], {
+          required_error: "Por favor, preencha o tipo do kit.",
+          invalid_type_error: "Tipo inválido do kit.",
+        })
+        .optional(),
       modulos: z.array(
         z.object({
           id: z.union([z.string(), z.number()], {
@@ -109,6 +128,12 @@ const proposeSchema = z.union([
             required_error:
               "Potência de um dos módulos faltando, contate o Volts.",
           }),
+          garantia: z
+            .number({
+              required_error:
+                "Garantia de um dos módulos faltando, contate o Volts.",
+            })
+            .optional(),
         })
       ),
       inversores: z.array(
@@ -128,6 +153,16 @@ const proposeSchema = z.union([
           qtde: z.number({
             required_error:
               "Quantidade de um dos inversores faltando, contate o Volts.",
+          }),
+          garantia: z
+            .number({
+              required_error:
+                "Garantia de um dos inversores faltando, contate o Volts.",
+            })
+            .optional(),
+          potenciaNominal: z.number({
+            required_error:
+              "Potência nominal de um dos inversores faltando, contate o Volts.",
           }),
         })
       ),
@@ -171,6 +206,33 @@ const proposeSchema = z.union([
         })
         .optional(),
       venda: z
+        .object({
+          margemLucro: z.number(),
+          imposto: z.number(),
+          custo: z.number(),
+          vendaProposto: z.number(),
+          vendaFinal: z.number(),
+        })
+        .optional(),
+      padrao: z
+        .object({
+          margemLucro: z.number(),
+          imposto: z.number(),
+          custo: z.number(),
+          vendaProposto: z.number(),
+          vendaFinal: z.number(),
+        })
+        .optional(),
+      estrutura: z
+        .object({
+          margemLucro: z.number(),
+          imposto: z.number(),
+          custo: z.number(),
+          vendaProposto: z.number(),
+          vendaFinal: z.number(),
+        })
+        .optional(),
+      extra: z
         .object({
           margemLucro: z.number(),
           imposto: z.number(),
@@ -342,12 +404,17 @@ type PutResponse = {
   message: string;
 };
 const updatePropose: NextApiHandler<PutResponse> = async (req, res) => {
-  const session = await validateAuthorization(req, "propostas", "editar", true);
+  const session = await validateAuthorization(
+    req,
+    "projetos",
+    "serResponsavel",
+    true
+  );
   const { responsible, id } = req.query;
   const { changes } = req.body;
   console.log("CHANGES", changes);
   if (
-    !session.user.permissoes.clientes.editar &&
+    !session.user.permissoes.propostas.editar &&
     responsible != session.user.id
   ) {
     throw new createHttpError.Unauthorized(

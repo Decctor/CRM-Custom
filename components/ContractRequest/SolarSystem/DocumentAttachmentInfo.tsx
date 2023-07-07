@@ -3,8 +3,10 @@ import { fileTypes } from "@/utils/constants";
 import { isFile } from "@/utils/methods";
 import { IContractRequest, IProject, IProposeInfo } from "@/utils/models";
 import {
+  FullMetadata,
   UploadResult,
   getDownloadURL,
+  getMetadata,
   ref,
   uploadBytes,
 } from "firebase/storage";
@@ -26,6 +28,67 @@ function formatLongString(str: string) {
   } else {
     return str;
   }
+}
+async function getPreviouslyAttachedFiles(
+  links: { title: string; link: string; format: string }[],
+  attachments: IProject["anexos"],
+  proposeFileLink?: string
+) {
+  if (attachments) {
+    if (attachments.contaDeEnergia) {
+      let fileRef = ref(storage, attachments.contaDeEnergia);
+      const metadata = await getMetadata(fileRef);
+      const md = metadata as FullMetadata;
+      links.push({
+        title: "CONTA DE ENERGIA",
+        link: attachments.contaDeEnergia,
+        format:
+          metadata.contentType && fileTypes[metadata.contentType]
+            ? fileTypes[metadata.contentType].title
+            : "INDEFINIDO",
+      });
+    }
+    if (attachments.documentoComFoto) {
+      let fileRef = ref(storage, attachments.documentoComFoto);
+      const metadata = await getMetadata(fileRef);
+      const md = metadata as FullMetadata;
+      links.push({
+        title: "DOCUMENTO COM FOTO",
+        link: attachments.documentoComFoto,
+        format:
+          metadata.contentType && fileTypes[metadata.contentType]
+            ? fileTypes[metadata.contentType].title
+            : "INDEFINIDO",
+      });
+    }
+    if (attachments.iptu) {
+      let fileRef = ref(storage, attachments.iptu);
+      const metadata = await getMetadata(fileRef);
+      const md = metadata as FullMetadata;
+      links.push({
+        title: "IPTU",
+        link: attachments.iptu,
+        format:
+          metadata.contentType && fileTypes[metadata.contentType]
+            ? fileTypes[metadata.contentType].title
+            : "INDEFINIDO",
+      });
+    }
+    if (proposeFileLink) {
+      let fileRef = ref(storage, proposeFileLink);
+      const metadata = await getMetadata(fileRef);
+      const md = metadata as FullMetadata;
+      links.push({
+        title: "PROPOSTA COMERCIAL",
+        link: proposeFileLink,
+        format:
+          metadata.contentType && fileTypes[metadata.contentType]
+            ? fileTypes[metadata.contentType].title
+            : "INDEFINIDO",
+      });
+    }
+  }
+  return links;
 }
 function DocumentAttachmentInfo({
   projectInfo,
@@ -444,6 +507,11 @@ function DocumentAttachmentInfo({
       }
       if (holder === undefined) {
         setUploadOK(true);
+        links = await getPreviouslyAttachedFiles(
+          links,
+          projectInfo?.anexos,
+          proposeInfo.linkArquivo
+        );
         setRequestInfo((prev) => ({ ...prev, links: links }));
         toast.dismiss(toastID);
         toast.success("Arquivos enviados com sucesso !");

@@ -356,6 +356,7 @@ export default function Home() {
                               item.proposta && item.proposta?.length > 0
                                 ? item.proposta[0].potenciaPico
                                 : undefined,
+                            efetivacao: item.efetivacao,
                           };
                         }
                       )}

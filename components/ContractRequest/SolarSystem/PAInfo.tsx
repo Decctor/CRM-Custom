@@ -228,12 +228,12 @@ function PAInfo({
                     value: "CLIENTE PAGAR POR FORA",
                   },
                   {
-                    id: 2,
+                    id: 3,
                     label: "INCLUSO NO CONTRATO",
                     value: "INCLUSO NO CONTRATO",
                   },
                   {
-                    id: 3,
+                    id: 4,
                     label: "NÃO HAVERA TROCA PADRÃO",
                     value: "NÃO HAVERA TROCA PADRÃO",
                   },

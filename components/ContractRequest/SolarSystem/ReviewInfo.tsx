@@ -81,6 +81,36 @@ function ReviewInfo({
             },
           }
         );
+        // const { data: projectUpdate } = await axios.put(
+        //   `/api/projects?id=${proposeInfo?._id}&responsible=${proposeInfo?.infoProjeto?.responsavel.id}`,
+        //   {
+        //     changes: {
+        //       efetivacao: true,
+        //       dataEfetivacao: new Date().toISOString(),
+        //       idSolicitacaoContrato: data.data,
+        //     },
+        //   }
+        // );
+        const projectPipelineUpdate = [
+          {
+            $set: {
+              "funis.$[elem].etapaId": 8,
+              efetivacao: true,
+              dataEfetivacao: new Date().toISOString(),
+              idSolicitacaoContrato: data.data,
+            },
+          },
+          {
+            arrayFilters: [{ "elem.id": 1 }],
+          },
+        ];
+        const { data: projectUpdate } = await axios.put(
+          `/api/projects/personalizedUpdate?id=${proposeInfo?.infoProjeto?._id}&responsible=${proposeInfo?.infoProjeto?.responsavel.id}`,
+          {
+            pipeline: projectPipelineUpdate,
+          }
+        );
+        console.log("UPDATE", projectUpdate);
         await queryClient.invalidateQueries({
           queryKey: ["propose", proposeInfo?._id],
         });

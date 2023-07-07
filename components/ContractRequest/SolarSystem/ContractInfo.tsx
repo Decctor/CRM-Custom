@@ -12,6 +12,7 @@ import {
   formatToCEP,
   formatToCPForCNPJ,
   formatToPhone,
+  getCEPInfo,
 } from "@/utils/methods";
 import { IContractRequest } from "@/utils/models";
 import React from "react";
@@ -26,6 +27,30 @@ function ContractInfo({
   setRequestInfo,
   goToNextStage,
 }: ContractInfoProps) {
+  async function setAddressDataByCEP(cep: string) {
+    const addressInfo = await getCEPInfo(cep);
+    const toastID = toast.loading("Buscando informações sobre o CEP...", {
+      duration: 2000,
+    });
+    setTimeout(() => {
+      if (addressInfo) {
+        toast.dismiss(toastID);
+        toast.success("Dados do CEP buscados com sucesso.", {
+          duration: 1000,
+        });
+        setRequestInfo((prev) => ({
+          ...prev,
+          enderecoCobranca: addressInfo.logradouro,
+          bairro: addressInfo.bairro,
+          uf:
+            addressInfo.uf == "MG" || addressInfo.uf == "GO"
+              ? addressInfo.uf
+              : null,
+          cidade: addressInfo.localidade.toUpperCase(),
+        }));
+      }
+    }, 1000);
+  }
   function validateFields() {
     if (requestInfo.nomeVendedor == "NÃO DEFINIDO") {
       toast.error("Por favor, preencha o vendedor.");
@@ -146,12 +171,12 @@ function ContractInfo({
             editable={true}
             value={requestInfo.cpf_cnpj}
             placeholder="Digite aqui o CPF ou CNPJ para o contrato."
-            handleChange={(value) =>
+            handleChange={(value) => {
               setRequestInfo({
                 ...requestInfo,
                 cpf_cnpj: formatToCPForCNPJ(value),
-              })
-            }
+              });
+            }}
           />
         </div>
         <div className="flex items-center justify-center">
@@ -365,12 +390,15 @@ function ContractInfo({
             editable={true}
             placeholder="Preencha aqui o CEP do cliente."
             value={requestInfo.cep}
-            handleChange={(value) =>
+            handleChange={(value) => {
+              if (value.length == 9) {
+                setAddressDataByCEP(value);
+              }
               setRequestInfo({
                 ...requestInfo,
                 cep: formatToCEP(value),
-              })
-            }
+              });
+            }}
           />
           {/* <button
                     // onClick={() => findCPF("enderecoCobranca")}

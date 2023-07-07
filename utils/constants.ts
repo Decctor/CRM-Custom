@@ -94,7 +94,8 @@ export const funnels: Funnel[] = [
       { id: 5, nome: "Aprovação Técnica" },
       { id: 6, nome: "Liberação de Crédito" },
       { id: 7, nome: "Acompanhamento" },
-      { id: 8, nome: "Contrato Assinado" },
+      { id: 8, nome: "Contrato Solicitado" },
+      { id: 9, nome: "Contrato Assinado" },
     ],
   },
   {
