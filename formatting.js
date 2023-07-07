@@ -6,8 +6,8 @@ const formatted = Kits.map((kit) => {
   return {
     nome: kit.Nome,
     categoria: "ON-GRID",
-    tipo: "TRADICIONAL" | "PROMOCIONAL",
-    topologia: "INVERSOR" | "MICRO-INVERSOR",
+    tipo: "TRADICIONAL",
+    topologia: "MICRO-INVERSOR",
     potPico: Number(
       ((kit["M�dulo qtd"] * kit["M�dulo pot�ncia (W)"]) / 1000).toFixed(2)
     ),
