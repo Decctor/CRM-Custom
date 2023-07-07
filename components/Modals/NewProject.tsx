@@ -3,7 +3,12 @@ import { VscChromeClose } from "react-icons/vsc";
 import DropdownSelect from "../Inputs/DropdownSelect";
 import TextInput from "../Inputs/TextInput";
 import { ObjectId } from "mongodb";
-import { formatToCEP, formatToCPForCNPJ, formatToPhone } from "@/utils/methods";
+import {
+  formatToCEP,
+  formatToCPForCNPJ,
+  formatToPhone,
+  getCEPInfo,
+} from "@/utils/methods";
 import { stateCities } from "../../utils/estados_cidades";
 import { Funnel, IRepresentative, IResponsible } from "@/utils/models";
 import responsibles from "@/pages/api/responsibles";
@@ -120,7 +125,30 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
       }
     },
   });
-
+  async function setAddressDataByCEP(cep: string) {
+    const addressInfo = await getCEPInfo(cep);
+    const toastID = toast.loading("Buscando informações sobre o CEP...", {
+      duration: 2000,
+    });
+    setTimeout(() => {
+      if (addressInfo) {
+        toast.dismiss(toastID);
+        toast.success("Dados do CEP buscados com sucesso.", {
+          duration: 1000,
+        });
+        setClientInfo((prev) => ({
+          ...prev,
+          endereco: addressInfo.logradouro,
+          bairro: addressInfo.bairro,
+          uf:
+            addressInfo.uf == "MG" || addressInfo.uf == "GO"
+              ? addressInfo.uf
+              : null,
+          cidade: addressInfo.localidade.toUpperCase(),
+        }));
+      }
+    }, 1000);
+  }
   async function handleProjectCreation() {
     if (newProject.nome.trim().length < 5) {
       toast.error("Preencha um nome para o projeto de ao menos 5 letras.");
@@ -310,12 +338,15 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
                   label="CEP"
                   value={clientInfo.cep}
                   placeholder="Preencha aqui o CEP do cliente."
-                  handleChange={(value) =>
+                  handleChange={(value) => {
+                    if (value.length == 9) {
+                      setAddressDataByCEP(value);
+                    }
                     setClientInfo((prev) => ({
                       ...prev,
                       cep: formatToCEP(value),
-                    }))
-                  }
+                    }));
+                  }}
                   width="100%"
                 />
               </div>

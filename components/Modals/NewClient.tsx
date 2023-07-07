@@ -3,7 +3,12 @@ import { VscChromeClose } from "react-icons/vsc";
 import DropdownSelect from "../Inputs/DropdownSelect";
 import TextInput from "../Inputs/TextInput";
 import { ObjectId } from "mongodb";
-import { formatToCEP, formatToCPForCNPJ, formatToPhone } from "@/utils/methods";
+import {
+  formatToCEP,
+  formatToCPForCNPJ,
+  formatToPhone,
+  getCEPInfo,
+} from "@/utils/methods";
 import { stateCities } from "../../utils/estados_cidades";
 import { IRepresentative } from "@/utils/models";
 import representatives from "@/pages/api/representatives";
@@ -50,6 +55,30 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
     uf: null,
     cidade: "",
   });
+  async function setAddressDataByCEP(cep: string) {
+    const addressInfo = await getCEPInfo(cep);
+    const toastID = toast.loading("Buscando informações sobre o CEP...", {
+      duration: 2000,
+    });
+    setTimeout(() => {
+      if (addressInfo) {
+        toast.dismiss(toastID);
+        toast.success("Dados do CEP buscados com sucesso.", {
+          duration: 1000,
+        });
+        setClientInfo((prev) => ({
+          ...prev,
+          endereco: addressInfo.logradouro,
+          bairro: addressInfo.bairro,
+          uf:
+            addressInfo.uf == "MG" || addressInfo.uf == "GO"
+              ? addressInfo.uf
+              : null,
+          cidade: addressInfo.localidade.toUpperCase(),
+        }));
+      }
+    }, 1000);
+  }
   const { mutate } = useMutation({
     mutationKey: ["newClient"],
     mutationFn: async () => {
@@ -218,12 +247,15 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
                   label="CEP"
                   value={clientInfo.cep}
                   placeholder="Preencha aqui o CEP do cliente."
-                  handleChange={(value) =>
+                  handleChange={(value) => {
+                    if (value.length == 9) {
+                      setAddressDataByCEP(value);
+                    }
                     setClientInfo((prev) => ({
                       ...prev,
                       cep: formatToCEP(value),
-                    }))
-                  }
+                    }));
+                  }}
                   width="100%"
                 />
               </div>

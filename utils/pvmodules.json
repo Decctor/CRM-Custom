@@ -2035,6 +2035,17 @@
     "dataDisponibilidade": null
   },
   {
+    "id": "845",
+    "codigo": null,
+    "fabricante": "CANADIAN SOLAR",
+    "modelo": "CS6W-560TB-AG",
+    "potencia": 560,
+    "numeroCelulas": 144,
+    "eficiencia": 0.217,
+    "datasheets": null,
+    "dataDisponibilidade": null
+  },
+  {
     "id": "630",
     "codigo": null,
     "fabricante": "CANADIAN SOLAR",
