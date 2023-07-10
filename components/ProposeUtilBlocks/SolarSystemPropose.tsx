@@ -21,12 +21,15 @@ function SolarSystemPropose({ project }: SolarSystemProposeTypes) {
     },
     premissas: {
       consumoEnergiaMensal: 0,
+      distribuidora: "CEMIG D",
+      subgrupo: undefined,
       tarifaEnergia: 0,
       tarifaTUSD: 0,
       tensaoRede: "127/220V",
       fase: "Bifásico",
       fatorSimultaneidade: 0,
       tipoEstrutura: "Fibrocimento",
+      orientacao: "NORTE",
       distancia: 0,
     },
   });

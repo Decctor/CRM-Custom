@@ -28,6 +28,7 @@ import PeriodDropdownFilter from "@/components/Inputs/PeriodDropdownFilter";
 import { AiOutlinePlus } from "react-icons/ai";
 import NewProject from "@/components/Modals/NewProject";
 import dayjs from "dayjs";
+import Project from "@/components/Cards/Project";
 
 type Options = {
   activeResponsible: string | null;
@@ -321,7 +322,38 @@ export default function Home() {
             />
           </div>
         </div>
-        {session ? (
+        <div className="flex w-full grow flex-wrap justify-around gap-2 py-2">
+          {projects && projects.length > 0
+            ? projects.map((project) => (
+                <Project
+                  key={project._id}
+                  item={{
+                    id: project._id ? project._id : "",
+                    name: project.nome,
+                    responsavel: project.responsavel.nome,
+                    responsavel_avatar: responsibles?.filter(
+                      (resp) => resp.id == project.responsavel.id
+                    )[0].avatar_url,
+                    atividades: project.atividades,
+                    nomeProposta:
+                      project.proposta && project.proposta?.length > 0
+                        ? project.proposta[0].nome
+                        : undefined,
+                    valorProposta:
+                      project.proposta && project.proposta?.length > 0
+                        ? project.proposta[0].valorProposta
+                        : undefined,
+                    potenciaPicoProposta:
+                      project.proposta && project.proposta?.length > 0
+                        ? project.proposta[0].potenciaPico
+                        : undefined,
+                    efetivacao: project.efetivacao,
+                  }}
+                />
+              ))
+            : null}
+        </div>
+        {/* {session ? (
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="mt-2 flex w-full grow overflow-x-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
               {projectsLoading ? (
@@ -365,7 +397,7 @@ export default function Home() {
               ) : null}
             </div>
           </DragDropContext>
-        ) : null}
+        ) : null} */}
       </div>
       {newProjectModalIsOpen ? (
         <NewProject

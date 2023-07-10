@@ -2,25 +2,52 @@ import {
   PricesObj,
   PricesOeMObj,
   PricesPromoObj,
+  Pricing,
   getMarginValue,
 } from "@/utils/pricing/methods";
 import React, { useState } from "react";
 import { VscChromeClose } from "react-icons/vsc";
 import NumberInput from "../Inputs/NumberInput";
+import { toast } from "react-hot-toast";
 
 type EditPriceModalProps = {
   closeModal: React.Dispatch<React.SetStateAction<boolean>>;
   pricing: PricesObj | PricesOeMObj | PricesPromoObj;
   setPricing: React.Dispatch<React.SetStateAction<PricesObj | PricesPromoObj>>;
   finalProposePrice: number;
+  finalSuggestedPrice: number;
+  limit?: number;
 };
 function EditProposePrice({
   closeModal,
   pricing,
   setPricing,
   finalProposePrice,
+  finalSuggestedPrice,
+  limit,
 }: EditPriceModalProps) {
   const [finalPrice, setFinalPrice] = useState<number>(finalProposePrice);
+  function correctPrice(diff: number, value: number) {
+    var pricingObjCopy = { ...pricing } as Pricing;
+    Object.keys(pricingObjCopy).forEach((priceType) => {
+      const pricesObj = pricingObjCopy[priceType as keyof Pricing];
+      if (!pricesObj) return;
+      const currentSellingPrice = pricesObj.vendaFinal;
+      const correspondentPiece = currentSellingPrice / finalProposePrice;
+      const newSellingPrice = currentSellingPrice - correspondentPiece * diff;
+      const newMargin = getMarginValue(
+        pricesObj.custo,
+        newSellingPrice,
+        pricesObj.imposto
+      );
+
+      pricesObj.margemLucro = newMargin;
+      pricesObj.vendaFinal = newSellingPrice;
+    });
+    setPricing(pricingObjCopy);
+    setFinalPrice(value);
+  }
+  console.log(finalProposePrice, finalSuggestedPrice);
   return (
     <div
       id="defaultModal"
@@ -33,7 +60,25 @@ function EditProposePrice({
               ALTERAÇÃO DE PREÇO
             </h3>
             <button
-              onClick={() => closeModal(false)}
+              onClick={() => {
+                if (
+                  limit &&
+                  finalProposePrice < finalSuggestedPrice * (1 - limit)
+                ) {
+                  toast.error(
+                    "Desconto maior que o permitido. Alterando pro valor de desconto máximo..."
+                  );
+                  setTimeout(() => {
+                    correctPrice(
+                      finalPrice - finalSuggestedPrice * (1 - limit),
+                      finalSuggestedPrice * (1 - limit)
+                    );
+                    closeModal(false);
+                  }, 1000);
+                } else {
+                  closeModal(false);
+                }
+              }}
               type="button"
               className="flex items-center justify-center rounded-lg p-1 duration-300 ease-linear hover:scale-105 hover:bg-red-200"
             >
@@ -48,32 +93,48 @@ function EditProposePrice({
                 placeholder="Preencha aqui o valor final da proposta..."
                 handleChange={(value) => {
                   const diff = finalProposePrice - value;
-                  var pricingObjCopy = { ...pricing };
-                  Object.keys(pricingObjCopy).forEach((priceType) => {
-                    const currentSellingPrice =
-                      pricingObjCopy[priceType as keyof PricesObj].vendaFinal;
-                    const correspondentPiece =
-                      currentSellingPrice / finalProposePrice;
-                    console.log(correspondentPiece);
-                    const newSellingPrice =
-                      currentSellingPrice - correspondentPiece * diff;
-                    const newMargin = getMarginValue(
-                      pricingObjCopy[priceType as keyof PricesObj].custo,
-                      newSellingPrice,
-                      pricingObjCopy[priceType as keyof PricesObj].imposto
-                    );
+                  const comparativeChange =
+                    (finalSuggestedPrice - value) / finalSuggestedPrice;
+                  // console.log(
+                  //   "MUDANÇA COMPARATIVA",
+                  //   comparativeChange,
+                  //   comparativeChange > 0.02
+                  // );
+                  // var pricingObjCopy = { ...pricing } as Pricing;
+                  // Object.keys(pricingObjCopy).forEach((priceType) => {
+                  //   const pricesObj =
+                  //     pricingObjCopy[priceType as keyof Pricing];
+                  //   if (!pricesObj) return;
+                  //   const currentSellingPrice = pricesObj.vendaFinal;
+                  //   const correspondentPiece =
+                  //     currentSellingPrice / finalProposePrice;
+                  //   const newSellingPrice =
+                  //     currentSellingPrice - correspondentPiece * diff;
+                  //   const newMargin = getMarginValue(
+                  //     pricesObj.custo,
+                  //     newSellingPrice,
+                  //     pricesObj.imposto
+                  //   );
 
-                    pricingObjCopy[priceType as keyof PricesObj].margemLucro =
-                      newMargin;
-                    pricingObjCopy[priceType as keyof PricesObj].vendaFinal =
-                      newSellingPrice;
-                  });
-                  setPricing(pricingObjCopy);
-                  setFinalPrice(value);
+                  //   pricesObj.margemLucro = newMargin;
+                  //   pricesObj.vendaFinal = newSellingPrice;
+                  // });
+                  // setPricing(pricingObjCopy);
+                  // setFinalPrice(value);
+                  correctPrice(diff, value);
                 }}
                 width="100%"
               />
             </div>
+            {limit ? (
+              <p className="text-center text-sm italic text-gray-500">
+                Valor mínimo permitido de R${" "}
+                {(finalSuggestedPrice * (1 - limit)).toLocaleString("pt-br", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+            ) : null}
           </div>
         </div>
       </div>

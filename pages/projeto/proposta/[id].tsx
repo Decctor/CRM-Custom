@@ -16,6 +16,7 @@ import Sale from "@/components/ProposeStages/Sale";
 import Propose from "@/components/ProposeStages/Propose";
 import SolarSystemPropose from "@/components/ProposeUtilBlocks/SolarSystemPropose";
 import OeMPropose from "@/components/ProposeUtilBlocks/OeMPropose";
+import { energyTariffs } from "@/utils/constants";
 function checkQueryEnableStatus(session: ISession | null, queryId: any) {
   if (session?.user && typeof queryId === "string") {
     return true;
@@ -71,33 +72,7 @@ function PropostaPage() {
     typeof router.query.id === "string" ? router.query.id : "",
     checkQueryEnableStatus(session, router.query.id)
   );
-  const [proposeInfo, setProposeInfo] = useState<IProposeInfo>({
-    projeto: {
-      nome: project?.nome,
-      id: project?._id,
-    },
-    premissas: {
-      consumoEnergiaMensal: 0,
-      tarifaEnergia: 0,
-      tarifaTUSD: 0,
-      tensaoRede: "127/220V",
-      fase: "Bifásico",
-      fatorSimultaneidade: 0,
-      tipoEstrutura: "Fibrocimento",
-      distancia: 0,
-    },
-  });
 
-  useEffect(() => {
-    setProposeInfo((prev) => ({
-      ...prev,
-      projeto: {
-        id: project?._id,
-        nome: project?.nome,
-      },
-    }));
-  }, [project]);
-  console.log(proposeInfo);
   if (isLoading) return <LoadingPage />;
   if (error) {
     return (

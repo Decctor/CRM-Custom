@@ -3,13 +3,16 @@ import {
   creditors,
   customersAcquisitionChannels,
   customersNich,
+  distributorsOptions,
   maritalStatus,
+  orientations,
   phases,
   projectTypes,
   proposeTemplates,
   proposeVoltageOptions,
   signMethods,
   structureTypes,
+  subgroupsOptions,
 } from "./constants";
 import { PricesObj, PricesPromoObj } from "./pricing/methods";
 type Etiqueta = {
@@ -256,12 +259,15 @@ export interface IProposeInfo {
   };
   premissas: {
     consumoEnergiaMensal: number;
+    fatorSimultaneidade: number;
+    distribuidora: (typeof distributorsOptions)[number]["value"];
+    subgrupo?: (typeof subgroupsOptions)[number]["value"];
     tarifaEnergia: number;
     tarifaTUSD: number;
     tensaoRede: (typeof proposeVoltageOptions)[number]["value"] | string;
     fase: (typeof phases)[number]["value"] | string;
-    fatorSimultaneidade: number;
     tipoEstrutura: (typeof structureTypes)[number]["value"];
+    orientacao: (typeof orientations)[number];
     distancia: number;
   };
   kit?: {

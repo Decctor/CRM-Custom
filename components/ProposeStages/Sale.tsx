@@ -31,7 +31,7 @@ function Sale({
   const [editFinalPriceModalIsOpen, setEditFinalPriceModalIsOpen] =
     useState<boolean>(false);
   const [pricing, setPricing] = useState(getPrices(project, proposeInfo));
-  function getTotals() {
+  function getTotals(pricing: Pricing) {
     switch (proposeInfo.kit?.tipo) {
       case "PROMOCIONAL":
         var totalCosts = 0;
@@ -124,11 +124,10 @@ function Sale({
     setProposeInfo((prev) => ({
       ...prev,
       precificacao: pricing,
-      valorProposta: Number(getTotals().finalProposePrice.toFixed(2)),
+      valorProposta: Number(getTotals(pricing).finalProposePrice.toFixed(2)),
     }));
     moveToNextStage(null);
   }
-  console.log("PRICING", pricing);
   return (
     <>
       <div className="flex w-full flex-col gap-4 py-4">
@@ -154,7 +153,7 @@ function Sale({
         <div className="flex gap-2 rounded border border-gray-600 px-2 py-1 font-medium text-gray-600">
           <p>
             R$
-            {getTotals().finalProposePrice.toLocaleString("pt-br", {
+            {getTotals(pricing).finalProposePrice.toLocaleString("pt-br", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
@@ -166,7 +165,14 @@ function Sale({
             >
               <AiFillEdit />
             </button>
-          ) : null}
+          ) : (
+            <button
+              onClick={() => setEditFinalPriceModalIsOpen((prev) => !prev)}
+              className="text-md text-gray-400 hover:text-[#fead61]"
+            >
+              <AiFillEdit />
+            </button>
+          )}
         </div>
       </div>
       <div className="flex w-full items-center justify-between gap-2 px-1">
@@ -188,7 +194,11 @@ function Sale({
           pricing={pricing}
           setPricing={setPricing}
           closeModal={() => setEditFinalPriceModalIsOpen(false)}
-          finalProposePrice={getTotals().finalProposePrice}
+          finalProposePrice={getTotals(pricing).finalProposePrice}
+          finalSuggestedPrice={
+            getTotals(getPrices(project, proposeInfo)).finalProposePrice
+          }
+          limit={session?.user.permissoes.precos.editar ? undefined : 0.02}
         />
       ) : null}
     </>

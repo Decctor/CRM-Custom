@@ -415,6 +415,55 @@ export const proposeVoltageOptions = [
   { label: "220/380V", value: "220/380V" },
   { label: "277/480V", value: "277/480V" },
 ] as const;
+export const distributorsOptions = [
+  { label: "CEMIG D", value: "CEMIG D" },
+  { label: "EQUATORIAL GO", value: "EQUATORIAL GO" },
+] as const;
+export const subgroupsOptions = [
+  { label: "RESIDENCIAL", value: "RESIDENCIAL" },
+  { label: "COMERCIAL", value: "COMERCIAL" },
+  { label: "RURAL", value: "RURAL" },
+] as const;
+export const energyTariffs = {
+  "CEMIG D": {
+    RESIDENCIAL: {
+      tarifa: 0.95643,
+      tusd: 0.24038,
+    },
+    COMERCIAL: {
+      tarifa: 0.95643,
+      tusd: 0.24038,
+    },
+    RURAL: {
+      tarifa: 0.95643,
+      tusd: 0.24038,
+    },
+  },
+  "EQUATORIAL GO": {
+    RESIDENCIAL: {
+      tarifa: 0.83861,
+      tusd: 0.17457,
+    },
+    COMERCIAL: {
+      tarifa: 0.83861,
+      tusd: 0.17457,
+    },
+    RURAL: {
+      tarifa: 0.83861,
+      tusd: 0.17457,
+    },
+  },
+} as const;
+export const orientations = [
+  "LESTE",
+  "NORDESTE",
+  "NORTE",
+  "NOROESTE",
+  "OESTE",
+  "SUDOESTE",
+  "SUL",
+  "SUDESTE",
+] as const;
 export const projectTypes = [
   { label: "SISTEMA FOTOVOLTAICO", value: "SISTEMA FOTOVOLTAICO" },
   { label: "OPERAÇÃO E MANUTENÇÃO", value: "OPERAÇÃO E MANUTENÇÃO" },

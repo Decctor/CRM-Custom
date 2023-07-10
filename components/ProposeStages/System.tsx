@@ -15,6 +15,7 @@ import Suppliers from "../../utils/pvsuppliers.json";
 import TextInput from "../Inputs/TextInput";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSession } from "next-auth/react";
+import { orientations } from "@/utils/constants";
 type SystemProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -31,7 +32,8 @@ type QueryTypes = "KITS POR PREMISSA" | "TODOS OS KITS";
 function getIdealPowerInterval(
   consumption: number,
   city: string | undefined | null,
-  uf: string | undefined | null
+  uf: string | undefined | null,
+  orientation: (typeof orientations)[number]
 ): { max: number; min: number; ideal: number } {
   if (!city || !uf)
     return {
@@ -40,16 +42,19 @@ function getIdealPowerInterval(
       ideal: consumption / 127,
     };
   const cityFactors = genFactors[city as keyof typeof genFactors];
+
   if (!cityFactors)
     return {
       max: 400 + consumption / 127,
       min: -400 + consumption / 127,
       ideal: consumption / 127,
     };
+  const factor = cityFactors[orientation];
+  console.log("FATOR", factor);
   return {
-    max: 400 + (consumption / cityFactors.fatorGen) * 1000,
-    min: -400 + (consumption / cityFactors.fatorGen) * 1000,
-    ideal: consumption / cityFactors.fatorGen,
+    max: 400 + (consumption / cityFactors[orientation]) * 1000,
+    min: -400 + (consumption / cityFactors[orientation]) * 1000,
+    ideal: consumption / cityFactors[orientation],
   };
 }
 function System({
@@ -88,7 +93,8 @@ function System({
             getIdealPowerInterval(
               proposeInfo.premissas.consumoEnergiaMensal,
               project.cliente?.cidade,
-              project.cliente?.uf
+              project.cliente?.uf,
+              proposeInfo.premissas.orientacao
             )
           )
         );
@@ -98,7 +104,8 @@ function System({
             getIdealPowerInterval(
               proposeInfo.premissas.consumoEnergiaMensal,
               project.cliente?.cidade,
-              project.cliente?.uf
+              project.cliente?.uf,
+              proposeInfo.premissas.orientacao
             )
           ),
         });
@@ -194,7 +201,8 @@ function System({
           {getIdealPowerInterval(
             proposeInfo.premissas.consumoEnergiaMensal,
             project.cliente?.cidade,
-            project.cliente?.uf
+            project.cliente?.uf,
+            proposeInfo.premissas.orientacao
           ).ideal.toLocaleString("pt-br", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,

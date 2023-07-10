@@ -1,12 +1,16 @@
 import {
+  distributorsOptions,
+  energyTariffs,
+  orientations,
   phases,
   proposeVoltageOptions,
   structureTypes,
+  subgroupsOptions,
 } from "@/utils/constants";
 import { IProject, IProposeInfo } from "@/utils/models";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import React, { SetStateAction, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 type SizingProps = {
@@ -75,6 +79,25 @@ function Sizing({
     }
     moveToNextStage(2);
   }
+  // useEffect(() => {
+  //   if (project.cliente) {
+  //     const distributor =
+  //       project?.cliente?.uf == "MG" ? "CEMIG D" : "EQUATORIAL GO";
+  //     const subgroup = proposeInfo.premissas.subgrupo;
+  //     console.log(energyTariffs[distributor]);
+  //     console.log(subgroup);
+  //     setProposeInfo((prev) => ({
+  //       ...prev,
+  //       premissas: {
+  //         ...prev.premissas,
+  //         distribuidora: distributor,
+  //         tarifaEnergia: tariff,
+  //         tarifaTUSD: tusd,
+  //       },
+  //     }));
+  //   }
+  // }, [project]);
+  console.log("SIZING", proposeInfo);
   return (
     <>
       <div className="flex w-full flex-col gap-4 py-4">
@@ -86,7 +109,7 @@ function Sizing({
               técnicas do projeto.
             </h1>
           </div>
-          <div className="flex w-full items-center gap-2">
+          <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
             <div className="flex w-full flex-col gap-1 lg:w-[50%]">
               <p className="text-md font-light text-gray-500">
                 Consumo médio mensal (kWh)
@@ -100,44 +123,6 @@ function Sizing({
                     premissas: {
                       ...prev.premissas,
                       consumoEnergiaMensal: Number(e.target.value),
-                    },
-                  }))
-                }
-                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-              />
-            </div>
-            <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-              <p className="text-md font-light text-gray-500">Tarifa (R$)</p>
-              <input
-                type="number"
-                value={proposeInfo.premissas.tarifaEnergia.toString()}
-                onChange={(e) =>
-                  setProposeInfo((prev) => ({
-                    ...prev,
-                    premissas: {
-                      ...prev.premissas,
-                      tarifaEnergia: Number(e.target.value),
-                    },
-                  }))
-                }
-                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
-              />
-            </div>
-          </div>
-          <div className="flex w-full items-center gap-2">
-            <div className="flex w-full flex-col gap-1 lg:w-[50%]">
-              <p className="text-md font-light text-gray-500">
-                TUSD Fio B (R$/kWh)
-              </p>
-              <input
-                type="number"
-                value={proposeInfo.premissas.tarifaTUSD.toString()}
-                onChange={(e) =>
-                  setProposeInfo((prev) => ({
-                    ...prev,
-                    premissas: {
-                      ...prev.premissas,
-                      tarifaTUSD: Number(e.target.value),
                     },
                   }))
                 }
@@ -164,7 +149,136 @@ function Sizing({
               />
             </div>
           </div>
-          <div className="flex w-full items-center gap-2">
+          <h1 className="justify-center text-center text-sm font-bold text-[#15599a]">
+            TARIFAS
+          </h1>
+          <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
+            <div className="flex w-full grow flex-col gap-1">
+              <p className="text-md font-light text-gray-500">Concessionária</p>
+              <select
+                value={proposeInfo.premissas.distribuidora}
+                onChange={({ target }) => {
+                  var value = target.value as keyof typeof energyTariffs;
+                  const tariff = proposeInfo.premissas.subgrupo
+                    ? energyTariffs[value][proposeInfo.premissas.subgrupo]
+                        .tarifa
+                    : 0;
+                  const tusd = proposeInfo.premissas.subgrupo
+                    ? energyTariffs[value as keyof typeof energyTariffs][
+                        proposeInfo.premissas.subgrupo
+                      ].tusd
+                    : 0;
+                  setProposeInfo((prev) => ({
+                    ...prev,
+                    premissas: {
+                      ...prev.premissas,
+                      distribuidora: value,
+                      tarifaEnergia: tariff,
+                      tarifaTUSD: tusd,
+                    },
+                  }));
+                }}
+                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
+              >
+                {distributorsOptions.map((distOption, index) => (
+                  <option key={index} value={distOption.value}>
+                    {distOption.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex w-full grow flex-col gap-1">
+              <p className="text-md font-light text-gray-500">Subgrupo</p>
+              <select
+                value={
+                  proposeInfo.premissas.subgrupo
+                    ? proposeInfo.premissas.subgrupo
+                    : "NÃO DEFINIDO"
+                }
+                onChange={({ target }) => {
+                  if (target.value != "NÃO DEFINIDO") {
+                    const value =
+                      target.value as (typeof subgroupsOptions)[number]["value"];
+                    const tariff =
+                      energyTariffs[proposeInfo.premissas.distribuidora][value]
+                        .tarifa;
+                    const tusd =
+                      energyTariffs[proposeInfo.premissas.distribuidora][value]
+                        .tusd;
+                    setProposeInfo((prev) => ({
+                      ...prev,
+                      premissas: {
+                        ...prev.premissas,
+                        subgrupo: value,
+                        tarifaEnergia: tariff,
+                        tarifaTUSD: tusd,
+                      },
+                    }));
+                  } else {
+                    setProposeInfo((prev) => ({
+                      ...prev,
+                      premissas: {
+                        ...prev.premissas,
+                        subgrupo: undefined,
+                        tarifaEnergia: 0,
+                        tarifaTUSD: 0,
+                      },
+                    }));
+                  }
+                }}
+                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
+              >
+                {subgroupsOptions.map((subgroup, index) => (
+                  <option key={index} value={subgroup.value}>
+                    {subgroup.label}
+                  </option>
+                ))}
+                <option value={"NÃO DEFINIDO"}>NÃO DEFINIDO</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
+            <div className="flex w-full flex-col gap-1 lg:w-[50%]">
+              <p className="text-md font-light text-gray-500">Tarifa (R$)</p>
+              <input
+                type="number"
+                value={proposeInfo.premissas.tarifaEnergia.toString()}
+                onChange={(e) =>
+                  setProposeInfo((prev) => ({
+                    ...prev,
+                    premissas: {
+                      ...prev.premissas,
+                      tarifaEnergia: Number(e.target.value),
+                    },
+                  }))
+                }
+                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
+              />
+            </div>
+            <div className="flex w-full flex-col gap-1 lg:w-[50%]">
+              <p className="text-md font-light text-gray-500">
+                TUSD Fio B (R$/kWh)
+              </p>
+              <input
+                type="number"
+                value={proposeInfo.premissas.tarifaTUSD.toString()}
+                onChange={(e) =>
+                  setProposeInfo((prev) => ({
+                    ...prev,
+                    premissas: {
+                      ...prev.premissas,
+                      tarifaTUSD: Number(e.target.value),
+                    },
+                  }))
+                }
+                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
+              />
+            </div>
+          </div>
+          <h1 className="justify-center text-center text-sm font-bold text-[#15599a]">
+            ESPECIFICIDADES DA REDE
+          </h1>
+          <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
             <div className="flex w-full flex-col gap-1 lg:w-[50%]">
               <p className="text-md font-light text-gray-500">Tensão da Rede</p>
               <select
@@ -210,8 +324,11 @@ function Sizing({
               </select>
             </div>
           </div>
-          <div className="flex w-full items-center gap-2">
-            <div className="flex w-full flex-col lg:w-[50%] ">
+          <h1 className="justify-center text-center text-sm font-bold text-[#15599a]">
+            ESPECIFICIDADES DA INSTALAÇÃO
+          </h1>
+          <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
+            <div className="flex w-full flex-col lg:w-1/3">
               <p className="text-md font-light text-gray-500">
                 Tipo de estrutura
               </p>
@@ -235,7 +352,30 @@ function Sizing({
                 ))}
               </select>
             </div>
-            <div className="flex w-full flex-col gap-1 lg:w-[50%]">
+            <div className="flex w-full flex-col lg:w-1/3">
+              <p className="text-md font-light text-gray-500">Orientação</p>
+              <select
+                value={proposeInfo.premissas.orientacao}
+                onChange={(e) => {
+                  const value = e.target.value as (typeof orientations)[number];
+                  setProposeInfo((prev) => ({
+                    ...prev,
+                    premissas: {
+                      ...prev.premissas,
+                      orientacao: value,
+                    },
+                  }));
+                }}
+                className="w-full rounded-sm border border-gray-200 p-2 text-gray-500 outline-none"
+              >
+                {orientations.map((type, index) => (
+                  <option key={index} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex w-full flex-col gap-1 lg:w-1/3">
               <p className="text-md font-light text-gray-500">Distância (km)</p>
               <input
                 type="number"
