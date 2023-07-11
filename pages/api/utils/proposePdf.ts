@@ -65,3 +65,8 @@ const getPropose: NextApiHandler<PostResponse> = async (req, res) => {
 export default apiHandler({
   POST: getPropose,
 });
+export const config = {
+  api: {
+    responseLimit: false,
+  },
+};
