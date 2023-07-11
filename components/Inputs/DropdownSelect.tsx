@@ -35,9 +35,9 @@ function DropdownSelect<T extends {}>({
 
   function handleFilter(value: string) {
     setSearchFilter(value);
-    if (!items) return;
+    if (!options) return;
     if (value.trim().length > 0) {
-      let filteredItems = items.filter((item) =>
+      let filteredItems = options.filter((item) =>
         item.label.toUpperCase().includes(value.toUpperCase())
       );
       setItems(filteredItems);

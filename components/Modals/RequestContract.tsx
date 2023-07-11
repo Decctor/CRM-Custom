@@ -65,9 +65,9 @@ function getContractValueWithoutAdditionalCosts(
         if (sellingValue) totalSum = totalSum + sellingValue;
       }
     });
-    return totalSum;
+    return Number(totalSum.toFixed(2));
   } else {
-    return totalSum;
+    return Number(totalSum.toFixed(2));
   }
 }
 function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {

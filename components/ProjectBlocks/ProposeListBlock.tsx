@@ -39,7 +39,7 @@ function ProposeListBlock({
           </button>
         </Link>
       </div>
-      <div className="mt-3 flex h-full w-full flex-col gap-1">
+      <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
         <div className="flex h-[30px] min-h-[30px] w-full items-center rounded bg-black">
           <div className="flex w-full items-center justify-center lg:w-1/4">
             <h1 className="w-full text-center text-white">NOME</h1>
@@ -56,7 +56,7 @@ function ProposeListBlock({
             <h1 className="w-full text-center text-white">DATA INSERÇÃO</h1>
           </div>
         </div>
-        <div className="overscroll-y flex grow flex-col overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+        <div className=" flex grow flex-col">
           {projectProposesSuccess ? (
             projectProposes.length > 0 ? (
               projectProposes.map((propose, index) => (

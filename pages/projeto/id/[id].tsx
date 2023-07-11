@@ -48,6 +48,7 @@ function Projeto() {
   });
   const { query } = useRouter();
   const queryClient = useQueryClient();
+
   const [blockMode, setBlockMode] = useState<"PROPOSES" | "DOCUMENTS">(
     "PROPOSES"
   );
@@ -94,8 +95,6 @@ function Projeto() {
     },
     enabled: !!project,
   });
-  console.log(project);
-
   if (projectLoading) return <LoadingComponent />;
 
   if (projectError)
@@ -109,7 +108,6 @@ function Projeto() {
         </div>
       </div>
     );
-  console.log(project);
   if (projectSuccess)
     return (
       <div className="flex h-full">

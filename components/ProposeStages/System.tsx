@@ -165,6 +165,7 @@ function System({
     const inverters = kit.inversores;
     const price = kit.preco;
     const topology = kit.topologia;
+    const supplier = kit.fornecedor;
     setProposeInfo((prev) => ({
       ...prev,
       kit: {
@@ -174,6 +175,7 @@ function System({
         topologia: topology,
         modulos: modules,
         inversores: inverters,
+        fornecedor: supplier,
         preco: price,
       },
       potenciaPico: getPeakPotByModules(modules),

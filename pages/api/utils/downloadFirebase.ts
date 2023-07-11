@@ -21,3 +21,8 @@ const getDistance: NextApiHandler<GetResponse> = async (req, res) => {
 export default apiHandler({
   GET: getDistance,
 });
+export const config = {
+  api: {
+    responseLimit: false,
+  },
+};

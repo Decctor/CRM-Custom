@@ -1,3 +1,8 @@
+import {
+  getProposeBYDObject,
+  getProposeObject,
+  getProposeOeMObject,
+} from "./methods";
 import { Funnel } from "./models";
 export const opportunityReceivers = [
   {
@@ -479,12 +484,21 @@ export const proposeTemplates = [
     value: "TEMPLATE SIMPLES",
     templateId: "LPHl6ETXfSmY3QsHJqAW",
     applicableProjectTypes: ["SISTEMA FOTOVOLTAICO"],
+    createProposeObj: getProposeObject,
+  },
+  {
+    label: "TEMPLATE PARCEIRA BYD",
+    value: "TEMPLATE PARCEIRA BYD",
+    templateId: "QMIYo5Aw51DGlb1n8dUp",
+    applicableProjectTypes: ["SISTEMA FOTOVOLTAICO"],
+    createProposeObj: getProposeBYDObject,
   },
   {
     label: "TEMPLATE O&M",
     value: "TEMPLATE O&M",
     templateId: "Cf2vPPIkSi7XEpuXV8Xv",
     applicableProjectTypes: ["OPERAÇÃO E MANUTENÇÃO"],
+    createProposeObj: getProposeOeMObject,
   },
 ] as const;
 export const leadLoseJustification = {

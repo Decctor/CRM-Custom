@@ -265,7 +265,7 @@ export interface IProposeInfo {
     tarifaEnergia: number;
     tarifaTUSD: number;
     tensaoRede: (typeof proposeVoltageOptions)[number]["value"] | string;
-    fase: (typeof phases)[number]["value"] | string;
+    fase: (typeof phases)[number]["value"];
     tipoEstrutura: (typeof structureTypes)[number]["value"];
     orientacao: (typeof orientations)[number];
     distancia: number;
@@ -277,6 +277,7 @@ export interface IProposeInfo {
     topologia: string;
     modulos: ModuleType[];
     inversores: InverterType[];
+    fornecedor: string;
     preco: number;
   };
   precificacao?: PricesObj | PricesPromoObj;

@@ -210,7 +210,6 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
       updateProject(obj);
     }
   }
-  console.log("HOLDER", infoHolder);
   return (
     <div className="flex w-full flex-col gap-6 lg:flex-row">
       <div className="flex w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">

@@ -29,6 +29,9 @@ const proposeSchema = z.union([
       z.literal("TEMPLATE O&M", {
         required_error: "Por favor, forneça o template da proposta.",
       }),
+      z.literal("TEMPLATE PARCEIRA BYD", {
+        required_error: "Por favor, forneça o template da proposta.",
+      }),
     ]),
     projeto: z.object({
       nome: z.string({
@@ -41,6 +44,20 @@ const proposeSchema = z.union([
         required_error:
           "Por favor, forneça o valor de consumo mensal do cliente em kWh.",
       }),
+      distribuidora: z.union(
+        [z.literal("CEMIG D"), z.literal("EQUATORIAL GO")],
+        {
+          required_error: "Por favor, forneça a distribuidora do cliente.",
+          invalid_type_error: "Tipo inválido para distribuidora de rede.",
+        }
+      ),
+      subgrupo: z.union(
+        [z.literal("RESIDENCIAL"), z.literal("COMERCIAL"), z.literal("RURAL")],
+        {
+          required_error: "Por favor, forneça a distribuidora do cliente.",
+          invalid_type_error: "Tipo inválido para distribuidora de rede.",
+        }
+      ),
       tarifaEnergia: z.number({
         required_error: "Por favor, forneça o valor da tarifa de energia.",
       }),
@@ -93,6 +110,9 @@ const proposeSchema = z.union([
       distancia: z.number({
         required_error:
           "Por favor, preencha a distância até da matriz (Ituiutaba) até o local de instalação do cliente.",
+      }),
+      orientacao: z.string({
+        required_error: "Por favor, preencha a orientação..",
       }),
     }),
     kit: z.object({
@@ -166,6 +186,10 @@ const proposeSchema = z.union([
           }),
         })
       ),
+      fornecedor: z.string({
+        required_error:
+          "Fornecedor do kit faltando, por favor, contate o Volts.",
+      }),
       preco: z.number({
         required_error: "Preço do kit faltando, por favor, contate o Volts.",
       }),
@@ -260,6 +284,9 @@ const proposeSchema = z.union([
         required_error: "Por favor, forneça o template da proposta.",
       }),
       z.literal("TEMPLATE O&M", {
+        required_error: "Por favor, forneça o template da proposta.",
+      }),
+      z.literal("TEMPLATE PARCEIRA BYD", {
         required_error: "Por favor, forneça o template da proposta.",
       }),
     ]),

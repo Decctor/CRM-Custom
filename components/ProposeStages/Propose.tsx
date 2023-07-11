@@ -20,6 +20,7 @@ import {
 } from "firebase/storage";
 import { storage } from "@/services/firebase";
 import { FirebaseError } from "firebase/app";
+import { template } from "lodash";
 type ProposeProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -76,14 +77,29 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
     const { data } = await axios.get(
       `/api/responsibles?id=${project.responsavel.id}`
     );
-    const seller = data.data
-      ? `${data.data.nome?.toUpperCase()} ${data.data.telefone}`
-      : null;
+    const seller = {
+      name: data.data ? data.data.nome.toUpperCase() : null,
+      phone: data.data ? data.data.telefone : null,
+    };
     console.log("VENDEDOR", seller);
-    const obj = getProposeObject(project, proposeInfo, seller);
-    const response = await axios.post("/api/utils/proposePdf", obj, {
-      responseType: "blob",
-    });
+    const template = proposeTemplates.find(
+      (proposeTemplate) => proposeTemplate.value == proposeInfo.template
+    )
+      ? proposeTemplates.find(
+          (proposeTemplate) => proposeTemplate.value == proposeInfo.template
+        )
+      : proposeTemplates[0];
+    console.log("TEMPLATE", template);
+    // @ts-ignore
+    const obj = template?.createProposeObj(project, proposeInfo, seller);
+    const templateId = template?.templateId;
+    const response = await axios.post(
+      `/api/utils/proposePdf?templateId=${templateId}`,
+      obj,
+      {
+        responseType: "blob",
+      }
+    );
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;

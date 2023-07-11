@@ -11,7 +11,7 @@ const getPropose: NextApiHandler<PostResponse> = async (req, res) => {
   await validateAuthentication(req);
   const propose = req.body;
   const { templateId } = req.query;
-  console.log(templateId);
+  console.log("TEMPLATE", templateId);
   try {
     // Make the external request
     const response = await axios.post(

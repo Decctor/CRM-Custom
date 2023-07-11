@@ -15,6 +15,7 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import Modules from "../utils/pvmodules.json";
 import genFactors from "../utils/generationFactors.json";
+import { orientations, phases } from "./constants";
 type ViaCEPSuccessfulReturn = {
   cep: string;
   logradouro: string;
@@ -191,18 +192,31 @@ export function getModulesStr(
 
   return str;
 }
+function getIdealPowerGeneration(
+  peakPower: number,
+  city: string | undefined | null,
+  uf: string | undefined | null
+): number {
+  if (!city || !uf) return peakPower * 127;
+  const cityFactors = genFactors[city as keyof typeof genFactors];
+  if (!cityFactors) return peakPower * 127;
+  return cityFactors.fatorGen * peakPower;
+}
 export function getProposeObject(
   project: IProject,
   propose: IProposeInfo,
-  seller: string | null
+  seller?: {
+    name: string;
+    phone: string;
+  }
 ) {
   const obj = {
     title: propose.projeto.nome,
     fontSize: 10,
     textColor: "#333333",
     data: {
-      idProposta: `#${project._id}}`,
-      vendedor: seller,
+      idProposta: `#${project._id}`,
+      vendedor: seller?.name,
       nomeCliente: project.cliente?.nome,
       cpfCnpj: project.cliente?.cpfCnpj,
       cidade: `${project.cliente?.cidade} - ${project.cliente?.uf}`,
@@ -290,25 +304,146 @@ export function getProposeObject(
       })}`,
     },
   };
-  const arr = [
-    {
-      id: "727",
-      fabricante: "BYD",
-      modelo: "MLK-36-540",
-      qtde: 21,
-      potencia: 540,
-      garantia: 10,
+  return obj;
+}
+export function getProposeBYDObject(
+  project: IProject,
+  propose: IProposeInfo,
+  seller?: {
+    name: string;
+    phone: string;
+  }
+) {
+  const paybackTable = getBillAndPaybackProgression({
+    city: project.cliente?.cidade ? project.cliente?.cidade : "ITUIUTABA",
+    orientation: propose.premissas.orientacao,
+    avgConsumption: propose.premissas.consumoEnergiaMensal,
+    investment: propose.valorProposta ? propose.valorProposta : 0,
+    kwhPrice: propose.premissas.tarifaEnergia,
+    modulesPot: propose.kit?.modulos[0].potencia
+      ? propose.kit?.modulos[0].potencia
+      : 0,
+    modulesQty: propose.kit?.modulos[0].qtde ? propose.kit?.modulos[0].qtde : 0,
+    phase: propose.premissas.fase ? propose.premissas.fase : "Bifásico",
+    simultaneity: propose.premissas.fatorSimultaneidade,
+    startMonth: new Date().getMonth() + 2,
+    startYear: new Date().getFullYear(),
+    tusd: propose.premissas.tarifaTUSD,
+  });
+  const monthsTillNewPositivePayback = paybackTable.filter(
+    (obj) => obj["PAYBACK (NOVA LEI)"] < 0
+  ).length;
+  console.log(paybackTable);
+  const years = Math.floor(monthsTillNewPositivePayback / 12);
+  const months = monthsTillNewPositivePayback % 12;
+  const paybackText =
+    months > 0 ? `${years} anos e ${months} meses` : `${years} anos`;
+  const arrOfNewBillProgression = paybackTable.map(
+    (obj) => obj["VALOR FATURA (NOVA LEI)"]
+  );
+
+  const newBillAvgValue = getAverageValue(arrOfNewBillProgression);
+  console.log("MÉDIO", newBillAvgValue);
+  const obj = {
+    title: propose.projeto.nome,
+    fontSize: 10,
+    textColor: "#333333",
+    data: {
+      idProposta: `#${project._id}`,
+      vendedor: seller?.name,
+      telefoneVendedor: seller?.phone,
+      nomeCliente: project.cliente?.nome,
+      cpfCnpj: project.cliente?.cpfCnpj,
+      cidade: `${project.cliente?.cidade} - ${project.cliente?.uf}`,
+      enderecoCliente: `${project.cliente?.endereco}`,
+      potPico: `${propose.potenciaPico?.toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })} kWp`,
+      consumoMedio: `${propose.premissas.consumoEnergiaMensal} kWh/mês`,
+      gastoMensalAtual: `R$ ${(
+        propose.premissas.consumoEnergiaMensal * propose.premissas.tarifaEnergia
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      gastoAnualAtual: `R$ ${(
+        propose.premissas.consumoEnergiaMensal *
+        propose.premissas.tarifaEnergia *
+        12
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      gasto25AnosAtual: `R$ ${(
+        propose.premissas.consumoEnergiaMensal *
+        propose.premissas.tarifaEnergia *
+        12 *
+        25
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      geracaoEstimada: `${getEstimatedGen(
+        getPeakPotByModules(propose.kit?.modulos),
+        project.cliente?.cidade,
+        project.cliente?.uf
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })} kWh/mês`,
+      novoGastoMensal: `R$ ${Number(newBillAvgValue).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      payback: paybackText,
+      economiaEstimada: `R$ ${(
+        getEstimatedGen(
+          getPeakPotByModules(propose.kit?.modulos),
+          project.cliente?.cidade,
+          project.cliente?.uf
+        ) * propose.premissas.tarifaEnergia
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      economiaEstimada25anos: `R$ ${(
+        getEstimatedGen(
+          getPeakPotByModules(propose.kit?.modulos),
+          project.cliente?.cidade,
+          project.cliente?.uf
+        ) *
+        propose.premissas.tarifaEnergia *
+        25 *
+        12
+      ).toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      inversores: getInverterStr(
+        propose.kit?.inversores ? propose.kit?.inversores : [],
+        propose?.kit?.tipo
+      ),
+      garantiaInversores: propose.kit?.inversores
+        ? `${Math.max(
+            ...propose.kit.inversores.map((x) => (x.garantia ? x.garantia : 0))
+          )} ANOS`
+        : "10 ANOS",
+      garantiaModulos: propose.kit?.modulos
+        ? `${Math.max(
+            ...propose.kit.modulos.map((x) => (x.garantia ? x.garantia : 0))
+          )} ANOS`
+        : "10 ANOS",
+      modulos: getModulesStr(
+        propose.kit?.modulos ? propose.kit?.modulos : [],
+        propose.kit?.tipo
+      ),
+      valorProposta: `R$ ${propose.valorProposta?.toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
     },
-    {
-      id: "727",
-      fabricante: "BYD",
-      modelo: "MLK-36-540",
-      qtde: 21,
-      potencia: 540,
-      garantia: 15,
-    },
-  ];
-  // const obj = {
+  };
   //   title: propose.projeto.nome,
   //   fontSize: 10,
   //   textColor: "#333333",
@@ -364,20 +499,13 @@ export function getProposeObject(
   // };
   return obj;
 }
-function getIdealPowerGeneration(
-  peakPower: number,
-  city: string | undefined | null,
-  uf: string | undefined | null
-): number {
-  if (!city || !uf) return peakPower * 127;
-  const cityFactors = genFactors[city as keyof typeof genFactors];
-  if (!cityFactors) return peakPower * 127;
-  return cityFactors.fatorGen * peakPower;
-}
 export function getProposeOeMObject(
   project: IProject,
   propose: IProposeOeMInfo,
-  sellerPhone: string | null
+  seller?: {
+    name: string;
+    phone: string;
+  }
 ) {
   const obj = {
     title: propose.projeto.nome,
@@ -388,7 +516,7 @@ export function getProposeOeMObject(
       cidade: project.cliente?.cidade,
       dataProposta: new Date().toLocaleDateString("pt-br"),
       vendedor: project.responsavel.nome,
-      telefoneVendedor: sellerPhone,
+      telefoneVendedor: `${seller?.name} - ${seller?.phone}`,
       qtdepotModulos: `${propose.premissas.qtdeModulos} - ${propose.premissas.potModulos}W`,
       potPico: `${propose.potenciaPico?.toLocaleString("pt-br", {
         minimumFractionDigits: 2,
@@ -799,4 +927,238 @@ export function calculateStringSimilarity(
   const similarityPercentage = similarity * 100;
 
   return similarityPercentage;
+}
+type getBillAndPaybackProgressionParams = {
+  city: string;
+  orientation: (typeof orientations)[number];
+  avgConsumption: number;
+  modulesPot: number;
+  modulesQty: number;
+  simultaneity: number;
+  kwhPrice: number;
+  tusd: number;
+  startYear: number;
+  startMonth: number;
+  investment: number;
+  phase: (typeof phases)[number]["value"];
+};
+function getBillAndPaybackProgression({
+  city,
+  orientation,
+  avgConsumption,
+  modulesPot,
+  modulesQty,
+  simultaneity,
+  kwhPrice,
+  tusd,
+  startYear,
+  startMonth,
+  investment,
+  phase,
+}: getBillAndPaybackProgressionParams) {
+  const disponibilityByType = {
+    Monofásico: 30,
+    Bifásico: 50,
+    Trifásico: 100,
+  } as const;
+  const publicIlumination = 20;
+  const savingsRates = 0.0067;
+  const cityFactors = genFactors[city as keyof typeof genFactors];
+  const factor = cityFactors[orientation];
+  const consumption = [
+    { mes: 1, valor: avgConsumption },
+    { mes: 2, valor: avgConsumption },
+    { mes: 3, valor: avgConsumption },
+    { mes: 4, valor: avgConsumption },
+    { mes: 5, valor: avgConsumption },
+    { mes: 6, valor: avgConsumption },
+    { mes: 7, valor: avgConsumption },
+    { mes: 8, valor: avgConsumption },
+    { mes: 9, valor: avgConsumption },
+    { mes: 10, valor: avgConsumption },
+    { mes: 11, valor: avgConsumption },
+    { mes: 12, valor: avgConsumption },
+  ];
+  const generation = Array.from({ length: 12 }, () => 1).map((x) =>
+    Number(((factor * modulesPot * modulesQty) / 1000).toFixed(2))
+  );
+
+  const instantConsumption = consumption.map((obj, index) => {
+    let consumption =
+      generation[index] > obj.valor * (simultaneity / 100)
+        ? obj.valor * (simultaneity / 100)
+        : generation[index];
+    return consumption;
+  });
+  const netMonth = generation.map((geracao, index) =>
+    Number((geracao - consumption[index].valor).toFixed(2))
+  );
+  const progressaoKWH = {
+    2023: kwhPrice,
+    2024: kwhPrice * 1.05,
+    2025: kwhPrice * 1.05 ** 2,
+    2026: kwhPrice * 1.05 ** 3,
+    2027: kwhPrice * 1.05 ** 4,
+    2028: kwhPrice * 1.05 ** 5,
+    2029: kwhPrice * 1.05 ** 6,
+  } as const;
+  const progressaoFioB = {
+    2023: (tusd / kwhPrice) * 0.15 * progressaoKWH[2023],
+    2024: (tusd / kwhPrice) * 0.3 * progressaoKWH[2024],
+    2025: (tusd / kwhPrice) * 0.45 * progressaoKWH[2025],
+    2026: (tusd / kwhPrice) * 0.6 * progressaoKWH[2026],
+    2027: (tusd / kwhPrice) * 0.75 * progressaoKWH[2027],
+    2028: (tusd / kwhPrice) * 0.9 * progressaoKWH[2028],
+    2029: (tusd / kwhPrice) * 1 * progressaoKWH[2029],
+  } as const;
+  var meses;
+  meses =
+    (new Date(2029, 12, 31).getFullYear() -
+      new Date(startYear, startMonth, 1).getFullYear()) *
+    12;
+  meses -= new Date(startYear, startMonth, 1).getMonth();
+  meses += new Date(2029, 12, 31).getMonth();
+  console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+  var tabelaFinal = [];
+
+  var saldoCumulado = 0;
+  var saldoCumuladoDireitoAdquirido = 0;
+  var anoComparacao = startYear;
+  var mesComparacao = startMonth;
+  var saldoPassado = 0;
+  var saldoPassadoDireitoAdquirido = 0;
+  var poupanca = -investment;
+  var payback = -investment;
+  var paybackDireitoAdquirido = -investment;
+  for (let i = 0; i <= meses; i++) {
+    var saldoPassado = saldoCumulado;
+    var saldoPassadoDireitoAdquirido = saldoCumuladoDireitoAdquirido;
+
+    var liquidoMesComparacao = netMonth[mesComparacao - 1];
+    var injetadoMesComparacao =
+      generation[mesComparacao - 1] - instantConsumption[mesComparacao - 1];
+
+    var usoConcessionariaMesComparacao =
+      consumption[mesComparacao - 1].valor -
+      instantConsumption[mesComparacao - 1];
+
+    var saldoParaAdicionarDireitoAdquirido =
+      injetadoMesComparacao +
+      disponibilityByType[phase] -
+      usoConcessionariaMesComparacao;
+
+    saldoCumulado =
+      saldoCumulado + netMonth[mesComparacao - 1] > 0
+        ? saldoCumulado + netMonth[mesComparacao - 1]
+        : 0;
+
+    saldoCumuladoDireitoAdquirido =
+      saldoCumuladoDireitoAdquirido + saldoParaAdicionarDireitoAdquirido > 0
+        ? saldoCumuladoDireitoAdquirido + saldoParaAdicionarDireitoAdquirido
+        : 0;
+    var compensacaoSeComUsoDeSaldo =
+      saldoPassado <= 0
+        ? injetadoMesComparacao
+        : saldoPassado + injetadoMesComparacao < usoConcessionariaMesComparacao
+        ? saldoPassado + injetadoMesComparacao
+        : usoConcessionariaMesComparacao;
+    var compensacao =
+      liquidoMesComparacao >= 0
+        ? usoConcessionariaMesComparacao
+        : compensacaoSeComUsoDeSaldo > 0
+        ? compensacaoSeComUsoDeSaldo
+        : 0;
+
+    var fioB =
+      compensacao *
+      progressaoFioB[anoComparacao as keyof typeof progressaoFioB];
+    var outrosCustos =
+      compensacao >= usoConcessionariaMesComparacao
+        ? fioB
+        : fioB +
+          (usoConcessionariaMesComparacao - compensacao) *
+            progressaoKWH[anoComparacao as keyof typeof progressaoFioB];
+
+    var custoDisponibilidade =
+      disponibilityByType[phase] *
+      progressaoKWH[anoComparacao as keyof typeof progressaoFioB];
+
+    var valorFatura =
+      custoDisponibilidade > outrosCustos
+        ? custoDisponibilidade + publicIlumination
+        : outrosCustos + publicIlumination;
+    var valorFaturaDireitoAdquirido =
+      saldoParaAdicionarDireitoAdquirido > 0
+        ? custoDisponibilidade + publicIlumination
+        : saldoParaAdicionarDireitoAdquirido + saldoPassadoDireitoAdquirido >= 0
+        ? custoDisponibilidade + publicIlumination
+        : Math.abs(
+            saldoParaAdicionarDireitoAdquirido + saldoPassadoDireitoAdquirido
+          ) *
+            progressaoKWH[anoComparacao as keyof typeof progressaoFioB] +
+          publicIlumination +
+          custoDisponibilidade;
+
+    var economia =
+      consumption[mesComparacao - 1].valor *
+        progressaoKWH[anoComparacao as keyof typeof progressaoFioB] +
+      publicIlumination -
+      valorFatura;
+    var economiaDireitoAdquirido =
+      consumption[mesComparacao - 1].valor *
+        progressaoKWH[anoComparacao as keyof typeof progressaoFioB] +
+      publicIlumination -
+      valorFaturaDireitoAdquirido;
+
+    payback = payback + economia;
+    paybackDireitoAdquirido =
+      paybackDireitoAdquirido + economiaDireitoAdquirido;
+    if (i > 0) poupanca = poupanca + (savingsRates / 100) * -poupanca;
+    if (custoDisponibilidade > outrosCustos)
+      saldoCumulado = saldoCumulado + disponibilityByType[phase];
+
+    tabelaFinal.push({
+      ANO: anoComparacao,
+      MÊS: mesComparacao,
+      TAG:
+        mesComparacao >= 10
+          ? `${mesComparacao}/${anoComparacao}`
+          : `0${mesComparacao}/${anoComparacao}`,
+      "SALDO ACUMULADO (NOVA LEI)": Number(saldoCumulado.toFixed(2)),
+      "SALDO ACUMULADO (DIREITO ADQUIRIDO)": Number(
+        saldoCumuladoDireitoAdquirido.toFixed(2)
+      ),
+      "VALOR FATURA (NOVA LEI)": Number(valorFatura.toFixed(2)),
+      "VALOR FATURA (DIREITO ADQUIRIDO)": Number(
+        valorFaturaDireitoAdquirido.toFixed(2)
+      ),
+
+      "PAYBACK (NOVA LEI)": Number(payback.toFixed(2)),
+      "PAYBACK (DIREITO ADQUIRIDO)": Number(paybackDireitoAdquirido.toFixed(2)),
+      "INVESTIMENTO POUPANÇA": poupanca,
+    });
+
+    if (mesComparacao + 1 > 12) {
+      mesComparacao = 1;
+      anoComparacao = anoComparacao + 1;
+    } else {
+      mesComparacao = mesComparacao + 1;
+    }
+  }
+  return tabelaFinal;
+}
+export function getMostFrequent(arr: any[]) {
+  const hashmap = arr.reduce((acc, val) => {
+    acc[val] = (acc[val] || 0) + 1;
+    return acc;
+  }, {});
+  return Object.keys(hashmap).reduce((a, b) =>
+    hashmap[a] > hashmap[b] ? a : b
+  );
+}
+export function getAverageValue(arr: number[]) {
+  const sum = arr.reduce((a, b) => a + b, 0);
+  const avg = sum / arr.length || 0;
+  return avg;
 }

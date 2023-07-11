@@ -88,7 +88,10 @@ function ProposeOeM({
     const { data } = await axios.get(
       `/api/responsibles?id=${project.responsavel.id}`
     );
-    const seller = data.data ? `${data.data.telefone}` : null;
+    const seller = {
+      name: data.data ? data.data.nome.toUpperCase() : null,
+      phone: data.data ? data.data.telefone : null,
+    };
     console.log("TEMPLATE", proposeInfo);
     console.log(
       "TEMPLATE ID",
