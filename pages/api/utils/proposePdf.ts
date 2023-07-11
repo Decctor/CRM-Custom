@@ -2,6 +2,7 @@ import { apiHandler, validateAuthentication } from "@/utils/api";
 import { NextApiHandler } from "next";
 import query from "../kits/query";
 import axios from "axios";
+import AdmZip from "adm-zip";
 
 type PostResponse = {
   data: any;
@@ -28,17 +29,17 @@ const getPropose: NextApiHandler<PostResponse> = async (req, res) => {
       }
     );
 
-    // Extract the relevant headers from the external response
-    const {
-      "content-type": contentType,
-      "content-disposition": contentDisposition,
-    } = response.headers;
+    // Due to API size limits, gotta zip the pdf file to send it, and then unzip it in the front end
+    var zip = new AdmZip();
+    zip.addFile("proposta.pdf", response.data);
+    const zipContent = zip.toBuffer();
+    const fileName = "proposta.zip";
+    const fileType = "application/zip";
 
-    // Set the headers in the response to match the external response
-    res.setHeader("Content-Type", contentType);
-    res.setHeader("Content-Disposition", contentDisposition);
+    res.setHeader("Content-Type", fileType);
+    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
 
-    res.send(response.data);
+    res.end(zipContent);
   } catch (error) {
     console.error("Error making the external request:", error);
     res.status(500).end();

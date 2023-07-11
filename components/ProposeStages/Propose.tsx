@@ -21,6 +21,7 @@ import {
 import { storage } from "@/services/firebase";
 import { FirebaseError } from "firebase/app";
 import { template } from "lodash";
+import JSZip from "jszip";
 type ProposeProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -100,14 +101,22 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
         responseType: "blob",
       }
     );
-    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const zip = new JSZip();
+    const unzippedFiles = await zip.loadAsync(response.data);
+    const propose = await unzippedFiles
+      .file("proposta.pdf")
+      ?.async("arraybuffer");
+    if (!propose) throw "Erro ao descomprimir proposta.";
+    const url = window.URL.createObjectURL(new Blob([propose]));
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", `PROPOSTA-${project.nome}.pdf`);
     document.body.appendChild(link);
     link.click();
     link.remove();
-    return response.data;
+    return new Blob([propose], {
+      type: "application/pdf",
+    });
   }
   const {
     mutate: createPropose,
