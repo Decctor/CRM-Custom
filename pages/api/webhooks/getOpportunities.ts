@@ -236,7 +236,7 @@ const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
       tipoProjeto: "SISTEMA FOTOVOLTAICO",
       responsavel: respObj,
       representante: respObj,
-      clienteId: clientResponse.data._id,
+      clienteId: clientResponse.insertedId,
       descricao: "",
       funis: [
         {
