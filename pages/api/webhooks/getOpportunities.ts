@@ -206,11 +206,12 @@ const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
         },
       },
     ]);
+    const respObj = {
+      nome: responsible?.nome ? responsible?.nome : "Lucas Fernandes",
+      id: responsible._id ? responsible._id : "6463ccaa8c5e3e227af54d89",
+    };
     const insertClientObject = {
-      representante: {
-        nome: responsible.nome,
-        id: responsible._id,
-      },
+      representante: respObj,
       nome: leadObj.name,
       cpfCnpj: "",
       telefonePrimario: leadObj.personal_phone
@@ -233,14 +234,8 @@ const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
     const insertObj = {
       nome: leadObj.name,
       tipoProjeto: "SISTEMA FOTOVOLTAICO",
-      responsavel: {
-        nome: responsible.nome,
-        id: responsible._id,
-      },
-      representante: {
-        nome: responsible.nome,
-        id: responsible._id,
-      },
+      responsavel: respObj,
+      representante: respObj,
       clienteId: clientResponse.data._id,
       descricao: "",
       funis: [
