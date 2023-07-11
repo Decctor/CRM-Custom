@@ -1,5 +1,8 @@
 import connectToDatabase from "@/services/mongoclient";
 import { apiHandler } from "@/utils/api";
+import { stateCities } from "@/utils/estados_cidades";
+import { calculateStringSimilarity, formatToPhone } from "@/utils/methods";
+import axios from "axios";
 import createHttpError from "http-errors";
 import { NextApiHandler } from "next";
 
@@ -7,134 +10,253 @@ type PostResponse = {
   data: string;
   message: string;
 };
+function getCity(leadCity: string) {
+  var allCities: string[] = [];
+  Object.values(stateCities).map((arr) => {
+    allCities = allCities.concat(arr);
+  });
+  const matchingCity = allCities.find(
+    (city) => calculateStringSimilarity(leadCity.toUpperCase(), city) > 60
+  );
+  return matchingCity;
+}
+function getUF(city?: string | null, uf?: string | null) {
+  if (!city && !uf) return undefined;
+  if (city && !uf) {
+    var rightUF: string | undefined = undefined;
+    Object.keys(stateCities).map((state) => {
+      const foundOnCurrentState = stateCities[state as string].some(
+        (x) => calculateStringSimilarity(city.toUpperCase(), x) > 60
+      );
+      if (foundOnCurrentState) rightUF = state;
+    });
+    return rightUF;
+  }
+  if (!city && uf) {
+    const ufs = Object.keys(stateCities);
+    const matchingUF = ufs.find((iUf) =>
+      calculateStringSimilarity(uf.toUpperCase(), iUf)
+    );
+    return matchingUF;
+  }
+  if (city && uf) {
+    const ufs = Object.keys(stateCities);
+    const matchingUF = ufs.find((iUf) =>
+      calculateStringSimilarity(uf.toUpperCase(), iUf)
+    );
+    return matchingUF;
+  }
+}
 const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const testCollection = db.collection("test");
+  const usersCollection = db.collection("users");
+  const clientsCollection = db.collection("clients");
+  const projectsCollection = db.collection("projects");
   const { body } = req;
   if (body.leads) {
     const lead = body.leads[0];
     if (!lead) throw new createHttpError.BadRequest("Nenhum lead encontrado.");
     const leadObj = {
-      id: "2911004942",
-      email: "wesleyadm2019@gmail.com",
-      name: "WESLEY RODRIGUES DE MOURA",
+      id: "2967700569",
+      email: "lucasfernandes@email.com",
+      name: "NOVO TESTE ERP",
       company: null,
       job_title: null,
       bio: null,
       public_url:
-        "http://app.rdstation.com.br/leads/public/8b4d2932-6299-4cc3-8e3e-f07cdc087c05",
-      created_at: "2023-06-11T18:43:11.862-03:00",
-      opportunity: "true",
+        "http://app.rdstation.com.br/leads/public/79d87e7a-ecae-4945-96ec-91b42f42699f",
+      created_at: "2023-07-11T16:39:06.166-03:00",
+      opportunity: "false",
       number_conversions: "2",
-      user: null,
+      user: "amperemkt@gmail.com",
       first_conversion: {
         content: {
-          event_type: "CONVERSION",
-          event_identifier: "btn-whatsapp-home",
-          identificador: "btn-whatsapp-home",
-          event_timestamp: "2023-06-11T21:43:11Z",
-          conversion_url: "https://ampereenergias.com.br/lp/",
-          conversion_domain: "ampereenergias.com.br",
-          google_analytics_client_id: "614371553.1686519762",
-          conversion_identifier: "btn-whatsapp-home",
-          traffic_source:
-            "encoded_eyJmaXJzdF9zZXNzaW9uIjp7InZhbHVlIjoiZ2NsaWQ9RUFJYUlRb2JDaE1JbGZxTDRlaTdfd0lWUmVWY0NoMzJud3dBRUFBWUFTQUFFZ0sxRF9EX0J3RSIsImV4dHJhX3BhcmFtcyI6e319LCJjdXJyZW50X3Nlc3Npb24iOnsidmFsdWUiOiJnY2xpZD1FQUlhSVFvYkNoTUlsZnFMNGVpN193SVZSZVZjQ2gzMm53d0FFQUFZQVNBQUVnSzFEX0RfQndFIiwiZXh0cmFfcGFyYW1zIjp7fX0sImNyZWF0ZWRfYXQiOjE2ODY1MTk3NjIyNDV9",
-          email_lead: "wesleyadm2019@gmail.com",
-          user_agent:
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
-          device: "smartphone",
-          asset_id: 4530090,
-          conversion_payload:
-            '{"redirect_to":"https://wa.me/553437007001?text=Vim+pelo+site+e+gostaria+de+mais+informa%C3%A7%C3%B5es."}',
+          event_type: "TASK_CREATED",
+          event_identifier: "Tarefa criada no RD Station CRM",
+          identificador: "Tarefa criada no RD Station CRM",
+          event_timestamp: null,
+          task_owner: "Matheus Oliveira",
+          task_type: "call",
+          created_at: "2023-07-11T19:39:09Z",
+          due_date: "2023-07-12T07:39:00Z",
+          task_title: "Tarefa criada no RD Station CRM",
           __cdp__original_event: {
-            event_batch_uuid: "2cdf9eb8-ea79-44c0-a717-22f9719d9630",
+            event_batch_uuid: "44e6816f-6d6d-45fe-a070-bf455f4b04a9",
             event_batch_index: 0,
-            event_identifier: "btn-whatsapp-home",
-            event_uuid: "4956ffd0-438c-405f-b788-82ab1d1c483b",
+            event_identifier: "Tarefa criada no RD Station CRM",
+            event_uuid: "e680df2e-658e-4061-9f41-43660f11f1f2",
+            event_type: "TASK_CREATED",
             event_family: "CDP",
-            event_type: "CONVERSION",
+            event_timestamp: null,
             payload: {
-              client_tracking_id: "",
-              conversion_url: "https://ampereenergias.com.br/lp/",
-              conversion_domain: "ampereenergias.com.br",
-              google_analytics_client_id: "614371553.1686519762",
-              conversion_identifier: "btn-whatsapp-home",
-              internal_source: "12",
-              c_utmz: "",
-              traffic_source:
-                "encoded_eyJmaXJzdF9zZXNzaW9uIjp7InZhbHVlIjoiZ2NsaWQ9RUFJYUlRb2JDaE1JbGZxTDRlaTdfd0lWUmVWY0NoMzJud3dBRUFBWUFTQUFFZ0sxRF9EX0J3RSIsImV4dHJhX3BhcmFtcyI6e319LCJjdXJyZW50X3Nlc3Npb24iOnsidmFsdWUiOiJnY2xpZD1FQUlhSVFvYkNoTUlsZnFMNGVpN193SVZSZVZjQ2gzMm53d0FFQUFZQVNBQUVnSzFEX0RfQndFIiwiZXh0cmFfcGFyYW1zIjp7fX0sImNyZWF0ZWRfYXQiOjE2ODY1MTk3NjIyNDV9",
-              privacy_data: {
-                browser: "",
-              },
-              name: "WESLEY RODRIGUES DE MOURA",
-              email: "wesleyadm2019@gmail.com",
-              mobile_phone: "+55 (34) 99334-1711",
-              user_agent:
-                "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
-              device: "smartphone",
-              asset_id: 4530090,
-              conversion_payload:
-                '{"redirect_to":"https://wa.me/553437007001?text=Vim+pelo+site+e+gostaria+de+mais+informa%C3%A7%C3%B5es."}',
+              task_owner: "Matheus Oliveira",
+              task_type: "call",
+              created_at: "2023-07-11T19:39:09Z",
+              email: "lucasfernandes@email.com",
+              due_date: "2023-07-12T07:39:00Z",
+              name: "NOVO TESTE ERP",
+              task_title: "Tarefa criada no RD Station CRM",
             },
-            event_timestamp: "2023-06-11T21:43:11Z",
           },
-          Nome: "WESLEY RODRIGUES DE MOURA",
-          Celular: "+55 (34) 99334-1711",
+          email_lead: "lucasfernandes@email.com",
+          Nome: "NOVO TESTE ERP",
           UF: null,
         },
-        created_at: "2023-06-11T18:43:11.901-03:00",
+        created_at: "2023-07-11T16:39:09.000-03:00",
         cumulative_sum: "1",
-        source: "btn-whatsapp-home",
+        source: "Tarefa criada no RD Station CRM",
         conversion_origin: {
-          source: "Google",
-          medium: "cpc",
+          source: "unknown",
+          medium: "unknown",
           value: null,
-          campaign: "(not set)",
-          channel: "Paid Search",
+          campaign: "unknown",
+          channel: "Unknown",
         },
       },
       last_conversion: {
         content: {
-          identificador: "Formulário - LP",
-          traffic_source:
-            "encoded_eyJmaXJzdF9zZXNzaW9uIjp7InZhbHVlIjoiZ2NsaWQ9RUFJYUlRb2JDaE1JbGZxTDRlaTdfd0lWUmVWY0NoMzJud3dBRUFBWUFTQUFFZ0sxRF9EX0J3RSIsImV4dHJhX3BhcmFtcyI6e319LCJjdXJyZW50X3Nlc3Npb24iOnsidmFsdWUiOiJnY2xpZD1FQUlhSVFvYkNoTUlsZnFMNGVpN193SVZSZVZjQ2gzMm53d0FFQUFZQVNBQUVnSzFEX0RfQndFIiwiZXh0cmFfcGFyYW1zIjp7fX0sImNyZWF0ZWRfYXQiOjE2ODY1MTk3NjIyNDV9",
-          post_id: "9",
-          form_id: "450515f",
-          referer_title: "Orçamento – Ampère Energias",
-          queried_id: "9",
-          form_fields_nome: "WESLEY RODRIGUES DE MOURA",
-          form_fields_WhatsApp: "34993341711",
-          form_fields_cidade: "Itumbiara GO ",
-          form_fields_conta: "700",
-          form_url: "https://ampereenergias.com.br/lp/",
-          page_title: "Orçamento – Ampère Energias – Ampère Energias",
-          email_lead: "wesleyadm2019@gmail.com",
+          event_type: "OPPORTUNITY_UPDATED",
+          event_identifier: "Oportunidade atualizada no RD Station CRM",
+          identificador: "Oportunidade atualizada no RD Station CRM",
+          event_timestamp: null,
+          funnel: "VENDAS",
+          opportunity_title: "Oportunidade atualizada no RD Station CRM",
+          owner: "amperemkt@gmail.com",
+          opportunity_value: 0,
+          mark_opportunity: false,
+          funnel_stage: "Criação de Proposta",
+          opportunity_url:
+            "https://crm.rdstation.com/app/#/deals/64adafd6f7be470020761b33",
+          updated_at: "2023-07-11T19:39:06Z",
+          opportunity_origin: "Cliente Ativo",
+          opportunity_score: 1,
+          __cdp__original_event: {
+            event_batch_uuid: "6337c357-5b63-4ef6-abde-586dac1cf5c8",
+            event_batch_index: 0,
+            event_identifier: "Oportunidade atualizada no RD Station CRM",
+            event_uuid: "62aea966-be66-4e1c-ae10-e45d249c9ae0",
+            event_type: "OPPORTUNITY_UPDATED",
+            event_family: "CDP",
+            event_timestamp: null,
+            payload: {
+              funnel: "VENDAS",
+              name: "NOVO TESTE ERP",
+              email: "lucasfernandes@email.com",
+              opportunity_title: "Oportunidade atualizada no RD Station CRM",
+              contact_owner_email: "amperemkt@gmail.com",
+              opportunity_value: 0,
+              mark_opportunity: false,
+              funnel_stage: "Criação de Proposta",
+              opportunity_url:
+                "https://crm.rdstation.com/app/#/deals/64adafd6f7be470020761b33",
+              updated_at: "2023-07-11T19:39:06Z",
+              opportunity_origin: "Cliente Ativo",
+              opportunity_score: 1,
+            },
+          },
+          email_lead: "lucasfernandes@email.com",
+          Nome: "NOVO TESTE ERP",
           UF: null,
         },
-        created_at: "2023-06-11T18:44:10.437-03:00",
+        created_at: "2023-07-11T16:39:10.684-03:00",
         cumulative_sum: "2",
-        source: "Formulário - LP",
+        source: "Oportunidade atualizada no RD Station CRM",
         conversion_origin: {
-          source: "Google",
-          medium: "cpc",
+          source: "unknown",
+          medium: "unknown",
           value: null,
-          campaign: "(not set)",
-          channel: "Paid Search",
+          campaign: "unknown",
+          channel: "Unknown",
         },
       },
-      custom_fields: {},
+      custom_fields: {
+        "Origem da Oportunidade no CRM (última atualização)": "Cliente Ativo",
+        "Qualificação da Oportunidade no CRM (última atualização)": "1",
+        "Etapa do funil de vendas no CRM (última atualização)":
+          "Criação de Proposta",
+        "Valor total da Oportunidade no CRM (última atualização)": "0.0",
+        "Nome do responsável pela Oportunidade no CRM (última atualização)":
+          "Matheus Oliveira",
+        "Funil de vendas no CRM (última atualização)": "VENDAS",
+      },
       website: null,
-      personal_phone: null,
-      mobile_phone: "+55 (34) 99334-1711",
+      personal_phone: "3499312321",
+      mobile_phone: null,
       city: null,
       state: null,
-      tags: null,
+      tags: [],
       lead_stage: "Lead",
-      last_marked_opportunity_date: "2023-06-12T09:46:14.862-03:00",
-      uuid: "8b4d2932-6299-4cc3-8e3e-f07cdc087c05",
+      last_marked_opportunity_date: null,
+      uuid: "79d87e7a-ecae-4945-96ec-91b42f42699f",
       fit_score: "d",
       interest: 0,
     };
+
+    const responsible = await usersCollection.aggregate([
+      {
+        $match: {
+          email: leadObj.user,
+        },
+      },
+      {
+        $project: {
+          nome: 1,
+          email: 1,
+        },
+      },
+    ]);
+    const insertClientObject = {
+      representante: {
+        nome: responsible.nome,
+        id: responsible._id,
+      },
+      nome: leadObj.name,
+      cpfCnpj: "",
+      telefonePrimario: leadObj.personal_phone
+        ? formatToPhone(leadObj.personal_phone)
+        : "",
+      telefoneSecundario: "",
+      email: leadObj.email,
+      cep: "",
+      bairro: "",
+      endereco: "",
+      numeroOuIdentificador: "",
+      complemento: "",
+      uf: getUF(leadObj.city, undefined),
+      cidade: leadObj.city ? getCity(lead.city) : undefined,
+    };
+    const clientResponse = await clientsCollection.insertOne({
+      ...insertClientObject,
+    });
+    console.log("RESPOSTA CLIENTE", clientResponse);
+    const insertObj = {
+      nome: leadObj.name,
+      tipoProjeto: "SISTEMA FOTOVOLTAICO",
+      responsavel: {
+        nome: responsible.nome,
+        id: responsible._id,
+      },
+      representante: {
+        nome: responsible.nome,
+        id: responsible._id,
+      },
+      clienteId: clientResponse.data._id,
+      descricao: "",
+      funis: [
+        {
+          id: 1,
+          etapaId: 3,
+        },
+      ],
+      idOportunidade:
+        leadObj.last_conversion?.content?.opportunity_url.split("deals/")[1],
+      idLead: leadObj.id,
+    };
+    const projectsResponse = await projectsCollection.insertOne({
+      ...insertObj,
+    });
+    console.log("RESPOSTA PROJETO", projectsResponse);
     const formattedLeadObj = {
       nome: lead.name,
       telefone: lead.mobile_phone,
