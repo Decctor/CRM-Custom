@@ -25,6 +25,7 @@ import {
 } from "firebase/storage";
 import { storage } from "@/services/firebase";
 import { FirebaseError } from "firebase/app";
+import JSZip from "jszip";
 type ProposeProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeOeMInfo>>;
   proposeInfo: IProposeOeMInfo;
@@ -92,21 +93,18 @@ function ProposeOeM({
       name: data.data ? data.data.nome.toUpperCase() : null,
       phone: data.data ? data.data.telefone : null,
     };
-    console.log("TEMPLATE", proposeInfo);
-    console.log(
-      "TEMPLATE ID",
-      proposeTemplates.find(
-        (proposeTemplate) => proposeTemplate.value == proposeInfo.template
-      )
-    );
-    const templateId = proposeTemplates.find(
+    console.log("VENDEDOR", seller);
+    const template = proposeTemplates.find(
       (proposeTemplate) => proposeTemplate.value == proposeInfo.template
     )
       ? proposeTemplates.find(
           (proposeTemplate) => proposeTemplate.value == proposeInfo.template
-        )?.templateId
-      : "LPHl6ETXfSmY3QsHJqAW";
-    const obj = getProposeOeMObject(project, proposeInfo, seller);
+        )
+      : proposeTemplates[0];
+    console.log("TEMPLATE", template);
+    // @ts-ignore
+    const obj = template?.createProposeObj(project, proposeInfo, seller);
+    const templateId = template?.templateId;
     const response = await axios.post(
       `/api/utils/proposePdf?templateId=${templateId}`,
       obj,
@@ -114,14 +112,26 @@ function ProposeOeM({
         responseType: "blob",
       }
     );
-    const url = window.URL.createObjectURL(new Blob([response.data]));
+    // Given that the API now returns zipped files for reduced size, we gotta decompress
+    const zip = new JSZip();
+    const unzippedFiles = await zip.loadAsync(response.data);
+    const propose = await unzippedFiles
+      .file("proposta.pdf")
+      ?.async("arraybuffer");
+    if (!propose) {
+      toast.error("Erro ao descomprimir o arquivo da proposta.");
+      throw "Erro ao descomprimir proposta.";
+    }
+    const url = window.URL.createObjectURL(new Blob([propose]));
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", `PROPOSTA-${project.nome}.pdf`);
     document.body.appendChild(link);
     link.click();
     link.remove();
-    return response.data;
+    return new Blob([propose], {
+      type: "application/pdf",
+    });
   }
   const {
     mutate: createPropose,

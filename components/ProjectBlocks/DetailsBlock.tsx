@@ -277,7 +277,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
               />
             </button>
           </div>
-          <div className="flex w-full gap-2">
+          {/* <div className="flex w-full gap-2">
             <div className="flex grow flex-col items-start">
               <SelectInput
                 label="TIPO DO PROJETO"
@@ -324,7 +324,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
                 }}
               />
             </button>
-          </div>
+          </div> */}
           <div className="flex w-full flex-col gap-1">
             <label className="font-sans font-bold  text-[#353432]">FUNIS</label>
             {infoHolder.funis?.map((funnel, index) => (

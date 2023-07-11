@@ -28,7 +28,8 @@ import { getPrices } from "@/utils/pricing/methods";
 import Link from "next/link";
 import RequestContract from "../Modals/RequestContract";
 import { BsPatchCheckFill } from "react-icons/bs";
-
+import JSZip from "jszip";
+import { basename } from "path";
 function copyToClipboard(text: string | undefined) {
   if (text) {
     var dummy = document.createElement("textarea");
@@ -48,7 +49,7 @@ function copyToClipboard(text: string | undefined) {
 }
 async function handleDownload(url: string | undefined, proposeName: string) {
   if (!url) {
-    alert("Houve um erro com o link. Por favor, tente novamente.");
+    toast.error("Houve um erro com o link. Por favor, tente novamente.");
     return;
   }
   let fileRef = ref(storage, url);
@@ -66,7 +67,25 @@ async function handleDownload(url: string | undefined, proposeName: string) {
         responseType: "blob",
       }
     );
-    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    // const url = window.URL.createObjectURL(new Blob([response.data]));
+    // const link = document.createElement("a");
+    // link.href = url;
+    // link.setAttribute("download", `${proposeName}${extension}`);
+    // document.body.appendChild(link);
+    // link.click();
+    // link.remove();
+    // Given that the API now returns zipped files for reduced size, we gotta decompress
+    const zip = new JSZip();
+    const unzippedFiles = await zip.loadAsync(response.data);
+    const propose = await unzippedFiles
+      .file(basename(filePath))
+      ?.async("arraybuffer");
+    if (!propose) {
+      toast.error("Erro ao descomprimir o arquivo da proposta.");
+      throw "Erro ao descomprimir proposta.";
+    }
+    const url = window.URL.createObjectURL(new Blob([propose]));
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", `${proposeName}${extension}`);
@@ -74,7 +93,7 @@ async function handleDownload(url: string | undefined, proposeName: string) {
     link.click();
     link.remove();
   } catch (error) {
-    alert("Houve um erro no download do arquivo.");
+    toast.error("Houve um erro no download do arquivo.");
   }
 }
 type ProposeViewUFProps = {
