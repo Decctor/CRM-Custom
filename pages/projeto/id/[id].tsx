@@ -292,6 +292,8 @@ function Projeto() {
             </div> */}
             {blockMode == "PROPOSES" ? (
               <ProposeListBlock
+                city={project.cliente?.cidade}
+                uf={project.cliente?.uf}
                 projectId={project._id ? project._id : ""}
                 projectProposes={projectProposes ? projectProposes : []}
                 projectProposesSuccess={projectProposesSuccess}

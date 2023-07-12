@@ -61,6 +61,8 @@ const kitSchema = z.object({
         fabricante: z.string(),
         modelo: z.string(),
         qtde: z.number(),
+        garantia: z.number(),
+        potenciaNominal: z.number(),
       })
     )
     .min(1, "Por favor, adicione ao menos um inversor."),
@@ -72,6 +74,7 @@ const kitSchema = z.object({
         modelo: z.string(),
         qtde: z.number(),
         potencia: z.number(),
+        garantia: z.number(),
       })
     )
     .min(1, "Por favor, adicione ao menos um módulo."),
@@ -241,6 +244,8 @@ const updateKitSchema = z.object({
         fabricante: z.string(),
         modelo: z.string(),
         qtde: z.number(),
+        garantia: z.number(),
+        potenciaNominal: z.number(),
       })
     )
     .min(1, "Por favor, adicione ao menos um inversor.")
@@ -253,6 +258,7 @@ const updateKitSchema = z.object({
         modelo: z.string(),
         qtde: z.number(),
         potencia: z.number(),
+        garantia: z.number(),
       })
     )
     .min(1, "Por favor, adicione ao menos um módulo.")

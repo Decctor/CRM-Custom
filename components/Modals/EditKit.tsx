@@ -222,7 +222,7 @@ function EditKit({ isOpen, setModalIsOpen, info }: EditKitProps) {
       setKitInfo((prev) => ({ ...prev, modulos: modulesArr }));
     }
   }
-  console.log(moduleHolder);
+  console.log(kitInfo);
   return (
     <div
       id="defaultModal"
@@ -232,7 +232,7 @@ function EditKit({ isOpen, setModalIsOpen, info }: EditKitProps) {
         <div className="flex h-full flex-col">
           <div className="flex flex-col items-center justify-between border-b border-gray-200 px-2 pb-2 text-lg lg:flex-row">
             <h3 className="text-xl font-bold text-[#353432] dark:text-white ">
-              NOVO KIT
+              EDIÇÃO DE KIT
             </h3>
             <button
               onClick={() => setModalIsOpen(false)}

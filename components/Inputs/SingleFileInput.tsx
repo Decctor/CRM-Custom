@@ -1,11 +1,14 @@
 import { IProject } from "@/utils/models";
 import { storage } from "../../services/firebase";
-import { getMetadata, ref } from "firebase/storage";
+import { FullMetadata, getMetadata, ref } from "firebase/storage";
 import React, { useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import { TbDownload } from "react-icons/tb";
 import { fileTypes } from "@/utils/constants";
 import axios from "axios";
+import JSZip from "jszip";
+import { basename } from "path";
+import { toast } from "react-hot-toast";
 type SingleFileInputProps = {
   label: string;
   width?: string;
@@ -46,11 +49,12 @@ function SingleFileInput({
     }
     let fileRef = ref(storage, url);
     const metadata = await getMetadata(fileRef);
+    const md = metadata as FullMetadata;
 
     const filePath = fileRef.fullPath;
-
+    // @ts-ignore
     const extension = fileTypes[metadata.contentType]?.extension;
-
+    const toastID = toast.loading("Baixando arquivo...");
     try {
       const response = await axios.get(
         `/api/utils/downloadFirebase?filePath=${encodeURIComponent(filePath)}`,
@@ -58,15 +62,34 @@ function SingleFileInput({
           responseType: "blob",
         }
       );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // const url = window.URL.createObjectURL(new Blob([response.data]));
+      // const link = document.createElement("a");
+      // link.href = url;
+      // link.setAttribute("download", `${proposeName}${extension}`);
+      // document.body.appendChild(link);
+      // link.click();
+      // link.remove();
+      // Given that the API now returns zipped files for reduced size, we gotta decompress
+      const zip = new JSZip();
+      const unzippedFiles = await zip.loadAsync(response.data);
+      const propose = await unzippedFiles
+        .file(basename(filePath))
+        ?.async("arraybuffer");
+      if (!propose) {
+        toast.error("Erro ao descomprimir o arquivo da proposta.");
+        throw "Erro ao descomprimir proposta.";
+      }
+      const url = window.URL.createObjectURL(new Blob([propose]));
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", `${fixedFileName}${extension}`);
       document.body.appendChild(link);
       link.click();
+      toast.dismiss(toastID);
       link.remove();
     } catch (error) {
-      alert("Houve um erro no download do arquivo.");
+      toast.error("Houve um erro no download do arquivo.");
     }
   }
   return (

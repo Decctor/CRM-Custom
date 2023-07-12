@@ -79,14 +79,14 @@ export const Sidebar = () => {
               <MdDashboard style={{ fontSize: "20px", color: "#15599a" }} />
             }
           />
-          <SidebarItem
+          {/* <SidebarItem
             text="Dashboard"
             isOpen={sidebarExtended}
             url="/dashboard"
             icon={
               <BsGraphUpArrow style={{ fontSize: "20px", color: "#15599a" }} />
             }
-          />
+          /> */}
           {/* <div className="my-4 h-[1px] w-full bg-[#15599a]"></div> */}
           {sidebarExtended ? (
             <h2 className="mt-2 h-[18px] text-xs text-gray-500">CADASTROS</h2>

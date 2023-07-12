@@ -4,6 +4,7 @@ import { stateCities } from "@/utils/estados_cidades";
 import { calculateStringSimilarity, formatToPhone } from "@/utils/methods";
 import axios from "axios";
 import createHttpError from "http-errors";
+import { ObjectId } from "mongodb";
 import { NextApiHandler } from "next";
 
 type PostResponse = {
@@ -192,6 +193,12 @@ const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
       fit_score: "d",
       interest: 0,
     };
+    const existingLead = await projectsCollection.findOne({
+      idOportunidade:
+        lead.last_conversion?.content?.opportunity_url.split("deals/")[1],
+    });
+    if (existingLead)
+      throw new createHttpError.BadRequest("ID de oportunidade já cadastrado.");
     // Getting responsible based on Lead responsible email
     const responsible = await usersCollection.aggregate([
       {
@@ -261,7 +268,7 @@ const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
       tipoProjeto: "SISTEMA FOTOVOLTAICO",
       responsavel: respObj,
       representante: respObj,
-      clienteId: clientResponse.insertedId,
+      clienteId: clientResponse.insertedId.toString(),
       descricao: "",
       funis: [
         {

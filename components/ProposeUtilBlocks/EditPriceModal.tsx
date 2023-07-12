@@ -24,6 +24,7 @@ function EditPriceModal({
 }: EditPriceModalProps) {
   const tag = priceType as keyof Pricing;
   const pricesObj = pricing[priceType as keyof Pricing];
+  console.log("OBJETO DE PREÇO", pricesObj);
   const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
   return (
     <div
@@ -45,6 +46,30 @@ function EditPriceModal({
             </button>
           </div>
           <div className="flex grow flex-col gap-y-2 overflow-y-auto overscroll-y-auto py-1 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+            <div className="w-full self-center lg:w-[50%]">
+              <NumberInput
+                label="CUSTO"
+                value={custo ? Number(custo.toFixed(2)) : 0}
+                placeholder="Valor de custo..."
+                handleChange={(value) => {
+                  const newSellingPrice = getProposedPrice(
+                    value,
+                    imposto,
+                    margemLucro
+                  );
+
+                  setPricing((prev) => ({
+                    ...prev,
+                    [tag]: {
+                      ...prev[tag],
+                      custo: value,
+                      vendaFinal: newSellingPrice,
+                    },
+                  }));
+                }}
+                width="100%"
+              />
+            </div>
             <div className="w-full self-center lg:w-[50%]">
               <NumberInput
                 label="MARGEM DE LUCRO"

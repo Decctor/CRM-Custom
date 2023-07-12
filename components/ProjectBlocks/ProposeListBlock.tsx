@@ -6,7 +6,11 @@ import Link from "next/link";
 import { IProposeInfo } from "@/utils/models";
 import { MdAdd } from "react-icons/md";
 import { BsPatchCheckFill } from "react-icons/bs";
+import { useRouter } from "next/router";
+import { toast } from "react-hot-toast";
 type ProposeListBlock = {
+  city?: string | null;
+  uf?: string | null;
   projectId: string;
   projectProposes: IProposeInfo[];
   projectProposesSuccess: boolean;
@@ -15,6 +19,8 @@ type ProposeListBlock = {
   idActivePropose?: string;
 };
 function ProposeListBlock({
+  city,
+  uf,
   projectId,
   projectProposes,
   projectProposesSuccess,
@@ -22,6 +28,7 @@ function ProposeListBlock({
   projectProposesError,
   idActivePropose,
 }: ProposeListBlock) {
+  const router = useRouter();
   return (
     <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
       <div className="flex  h-[40px] items-center  justify-between border-b border-gray-200 pb-2">
@@ -30,14 +37,24 @@ function ProposeListBlock({
             Propostas
           </h1>
         </div>
-        <Link href={`/projeto/proposta/${projectId}`}>
-          <button className="hidden rounded bg-green-600 p-1 text-sm font-bold text-white lg:flex">
-            GERAR PROPOSTA
-          </button>
-          <button className="flex rounded bg-green-600 p-1 text-sm font-bold text-white lg:hidden">
-            <MdAdd />
-          </button>
-        </Link>
+
+        <button
+          onClick={() => {
+            if (!city || !uf) {
+              toast.error(
+                "Por favor, preecha a cidade e o estado do cliente antes de prosseguir para geração de propostas."
+              );
+            } else {
+              router.push(`/projeto/proposta/${projectId}`);
+            }
+          }}
+          className="hidden rounded bg-green-600 p-1 text-sm font-bold text-white lg:flex"
+        >
+          GERAR PROPOSTA
+        </button>
+        <button className="flex rounded bg-green-600 p-1 text-sm font-bold text-white lg:hidden">
+          <MdAdd />
+        </button>
       </div>
       <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
         <div className="flex h-[30px] min-h-[30px] w-full items-center rounded bg-black">
