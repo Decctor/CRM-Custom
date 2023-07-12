@@ -152,7 +152,7 @@ const getOpportunity: NextApiHandler<GetResponse> = async (req, res) => {
   const { data: contactInfo }: any = await axios.get(
     `https://crm.rdstation.com/api/v1/deals/${queryId}/contacts?token=${process.env.RD_TOKEN}`
   );
-  console.log("INFO OPORTUNIDADE", opportunityInfo);
+  console.log("INFO CONTATO", contactInfo);
   // console.log("INFO CONTATO", contactInfo);
   // const opportunityInfo = {
   //   _id: "64aeb81426f4f9000ccd8409",
@@ -391,7 +391,7 @@ const getOpportunity: NextApiHandler<GetResponse> = async (req, res) => {
     telefonePrimario: contactInfo.contacts[0]?.phones[0]?.phone
       ? formatToPhone(contactInfo.contacts[0]?.phones[0]?.phone)
       : null,
-    email: contactInfo?.contacts[0]?.emails[0].email,
+    email: contactInfo?.contacts[0]?.emails[0]?.email,
     cep: contactInfo?.contacts[0]?.contact_custom_fields.find(
       (customField: any) =>
         customField.custom_field_id == "64abf90af8614e00186721b3"
@@ -431,7 +431,7 @@ const getOpportunity: NextApiHandler<GetResponse> = async (req, res) => {
             ?.value.toUpperCase()
         )
       : undefined,
-    uf: contactInfo?.contacts[0]?.contact_custom_fields.find(
+    uf: contactInfo?.contacts[0]?.contact_custom_fields?.find(
       (customField: any) =>
         customField.custom_field_id == "64abf9b575f44e002340354b"
     )?.value

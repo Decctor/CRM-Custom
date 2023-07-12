@@ -26,19 +26,25 @@ const clientSchema = z.object({
     }
   ),
   nome: z
-    .string({ required_error: "Por favor, preencha o nome do cliente." })
+    .string({
+      required_error: "Por favor, preencha o nome do cliente.",
+      invalid_type_error: "Por favor, preencha o nome do cliente.",
+    })
     .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." }),
   cpfCnpj: z.string({
     required_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
+    invalid_type_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
   }),
   telefonePrimario: z
     .string({
       required_error: "Por favor, preencha o telefone do cliente.",
+      invalid_type_error: "Por favor, preencha o telefone do cliente.",
     })
     .min(11, "Por favor, preencha um um telefone válido."),
   telefoneSecundario: z.string().optional(),
   email: z.string({
     required_error: "Por favor, preencha o email do cliente.",
+    invalid_type_error: "Por favor, preencha o email do cliente.",
   }),
 
   cep: z.string({ required_error: "Por favor, preencha o CEP do cliente." }),
@@ -47,20 +53,25 @@ const clientSchema = z.object({
   }),
   endereco: z.string({
     required_error: "Por favor, preencha o endereço do cliente.",
+    invalid_type_error: "Por favor, preencha o endereço do cliente.",
   }),
   numeroOuIdentificador: z.string({
     required_error:
+      "Por favor, preencha o número ou código que identifique a residência.",
+    invalid_type_error:
       "Por favor, preencha o número ou código que identifique a residência.",
   }),
   complemento: z.string().optional(),
   uf: z.union([z.literal("MG"), z.literal("GO"), z.null()]),
   cidade: z.string({
     required_error: "Por favor, preencha a cidade do cliente.",
+    invalid_type_error: "Por favor, preencha a cidade do cliente.",
   }),
 });
 
 const createClient: NextApiHandler<PostResponse> = async (req, res) => {
   await validateAuthorization(req, "clientes", "serRepresentante", true);
+
   const client = clientSchema.parse(req.body);
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("clients");

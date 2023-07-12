@@ -95,6 +95,15 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
   const collection = db.collection("projects");
 
   const project = projectSchema.parse(req.body);
+  if (project.idOportunidade) {
+    const correspondingOpportunityInDb = await collection.findOne({
+      idOportunidade: project.idOportunidade,
+    });
+    if (!!correspondingOpportunityInDb)
+      throw new createHttpError.BadRequest(
+        "Projeto existente com a mesma oportunidade. Use um outro ID."
+      );
+  }
   console.log("PARSED", project);
   const lastInsertedIdentificator = await collection
     .aggregate([

@@ -194,8 +194,8 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
     }
   }
   async function getOpportunityInfo(queryId: string) {
+    const toastID = toast.loading("Buscando informações da oportunidade...");
     try {
-      const toastID = toast.loading("Buscando informações da oportunidade...");
       const { data: opportunityInfoResponse } = await axios.get(
         `/api/utils/updateOportunityRD?queryId=${queryId}`
       );
@@ -217,6 +217,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
       toast.success("Informações buscadas com sucesso !", { duration: 1500 });
       toast.dismiss(toastID);
     } catch (error) {
+      toast.dismiss(toastID);
       toast.error("Houve um erro na busca das informações da oportunidades.");
     }
   }
