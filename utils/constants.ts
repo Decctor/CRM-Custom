@@ -8,18 +8,22 @@ export const opportunityReceivers = [
   {
     id: "648b58b87eda10953a3df921",
     nome: "Leandro Viali",
+    alias: "LEANDRO VIALI",
   },
   {
     id: "649447fa518686bf3b32aeaf",
     nome: "Gabriel Emanuel",
+    alias: "GABRIEL EMANUEL",
   },
   {
     id: "6494484b518686bf3b32aeb0",
     nome: "Yasmim Araujo",
+    alias: "YASMIM ARAUJO",
   },
   {
     id: "6494484b518686bf3b32aeb0",
     nome: "Lucas Fernandes",
+    alias: "Lucas Fernandes",
   },
 ];
 export const companySignerKeys = [

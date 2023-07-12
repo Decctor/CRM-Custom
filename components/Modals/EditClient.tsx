@@ -103,6 +103,7 @@ function EditClient({
         nome: newProject.nome,
         responsavel: user,
         representante: client.representante,
+        tipoProjeto: newProject.tipoProjeto,
         clienteId: client._id,
         descricao: newProject.descricao,
         funis: newProject.funis,

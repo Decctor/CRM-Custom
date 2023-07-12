@@ -31,9 +31,11 @@ const clientSchema = z.object({
   cpfCnpj: z.string({
     required_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
   }),
-  telefonePrimario: z.string({
-    required_error: "Por favor, preencha o telefone do cliente.",
-  }),
+  telefonePrimario: z
+    .string({
+      required_error: "Por favor, preencha o telefone do cliente.",
+    })
+    .min(11, "Por favor, preencha um um telefone válido."),
   telefoneSecundario: z.string().optional(),
   email: z.string({
     required_error: "Por favor, preencha o email do cliente.",

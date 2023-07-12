@@ -28,6 +28,10 @@ type Funil = {
 };
 
 type NewProjectInfo = {
+  responsavel: {
+    nome: string;
+    id: string;
+  } | null;
   nome: string;
   tipoProjeto: (typeof projectTypes)[number]["value"];
   descricao?: string;
@@ -86,12 +90,13 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
     cidade: "",
   });
   const [newProject, setNewProject] = useState<NewProjectInfo>({
+    responsavel: null,
     nome: "",
     tipoProjeto: "SISTEMA FOTOVOLTAICO",
     descricao: undefined,
     funis: [],
   });
-  const [oportunityId, setOportunityId] = useState<string>("");
+  const [opportunityId, setOpportunityId] = useState<string>("");
 
   async function setAddressDataByCEP(cep: string) {
     const addressInfo = await getCEPInfo(cep);
@@ -122,6 +127,10 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
       toast.error("Preencha um nome para o projeto de ao menos 5 letras.");
       return;
     }
+    if (!newProject.responsavel) {
+      toast.error("Preencha o responsável.");
+      return;
+    }
     if (newProject.funis.length == 0) {
       toast.error("Preencha o funil para o projeto.");
       return;
@@ -137,14 +146,14 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
       let insertObj: IProject = {
         nome: newProject.nome,
         tipoProjeto: newProject.tipoProjeto,
-        responsavel: clientInfo.representante,
+        responsavel: newProject.responsavel,
         representante: clientInfo.representante,
         clienteId: clientResponse.data._id,
         descricao: newProject.descricao,
         funis: newProject.funis,
         idOportunidade: undefined,
       };
-      if (oportunityId) insertObj.idOportunidade = oportunityId;
+      if (opportunityId) insertObj.idOportunidade = opportunityId;
       console.log("CRIAÇÃO DE CLIENTE", clientResponse);
       const { data } = await axios.post("/api/projects", insertObj);
       setClientInfo({
@@ -163,6 +172,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
         cidade: "",
       });
       setNewProject({
+        responsavel: null,
         nome: "",
         tipoProjeto: "SISTEMA FOTOVOLTAICO",
         descricao: undefined,
@@ -182,6 +192,27 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
         return;
       }
     }
+  }
+  async function getOpportunityInfo(queryId: string) {
+    const toastID = toast.loading("Buscando informações da oportunidade...");
+    const { data: opportunityInfoResponse } = await axios.get(
+      `/api/utils/updateOportunityRD?queryId=${queryId}`
+    );
+    const opportunityInfo = opportunityInfoResponse.data;
+    setClientInfo((prev) => ({
+      ...prev,
+      representante: opportunityInfo.representante,
+      nome: opportunityInfo.nome,
+      email: opportunityInfo.email,
+      cpfCnpj: opportunityInfo.cpfCnpj,
+      telefonePrimario: opportunityInfo.telefonePrimario,
+      cep: opportunityInfo.cep,
+      uf: opportunityInfo.uf,
+      cidade: opportunityInfo.cidade,
+      endereco: opportunityInfo.logradouro,
+      bairro: opportunityInfo.bairro,
+    }));
+    toast.dismiss(toastID);
   }
   return (
     <div
@@ -210,13 +241,30 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
                   projeto ?
                 </h1>
                 <div className="flex w-full items-center justify-center self-center lg:w-[50%]">
-                  <TextInput
-                    label="ID DA OPORTUNIDADE"
-                    value={oportunityId}
-                    handleChange={(value) => setOportunityId(value)}
-                    placeholder="Digite aqui o ID da oportunidade."
-                    width="100%"
-                  />
+                  <div className={`flex w-full flex-col gap-1`}>
+                    <label
+                      htmlFor={"idOportunidade"}
+                      className="font-sans font-bold  text-[#353432]"
+                    >
+                      ID DA OPORTUNIDADE
+                    </label>
+                    <input
+                      value={opportunityId}
+                      onChange={(e) => setOpportunityId(e.target.value)}
+                      id={"idOportunidade"}
+                      onBlur={() => {
+                        if (opportunityId.length < 24)
+                          toast.error("ID inválido.", { duration: 1000 });
+                        if (opportunityId.length >= 24)
+                          getOpportunityInfo(opportunityId);
+                      }}
+                      type="text"
+                      placeholder={
+                        "Digite aqui o ID da Oportunidade, se houver."
+                      }
+                      className="w-full rounded-md border border-gray-200 p-3 text-sm outline-none placeholder:italic"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-1 px-2">
@@ -449,6 +497,47 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
                   }
                   width="100%"
                 />
+              </div>
+              <div className="grid w-full grid-cols-1">
+                <div className="flex w-full flex-col gap-1">
+                  <label
+                    htmlFor="representante"
+                    className="font-sans font-bold  text-[#353432]"
+                  >
+                    RESPONSÁVEL
+                  </label>
+                  <DropdownSelect
+                    selectedItemLabel="A SELECIONAR"
+                    categoryName="RESPONSÁVEL"
+                    value={
+                      newProject.responsavel ? newProject.responsavel.id : null
+                    }
+                    options={
+                      responsibles
+                        ? responsibles.map((responsible) => {
+                            return {
+                              id: responsible.id,
+                              value: responsible,
+                              label: responsible.nome,
+                            };
+                          })
+                        : null
+                    }
+                    onChange={(selectedItem) =>
+                      setNewProject((prev) => ({
+                        ...prev,
+                        responsavel: selectedItem.value,
+                      }))
+                    }
+                    onReset={() =>
+                      setNewProject((prev) => ({
+                        ...prev,
+                        responsavel: null,
+                      }))
+                    }
+                    width="%100"
+                  />
+                </div>
               </div>
               <div className="flex w-full flex-col gap-1">
                 <p className="font-Raleway font-bold text-gray-800">

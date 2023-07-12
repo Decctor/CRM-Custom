@@ -93,6 +93,7 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
 
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projects");
+
   const project = projectSchema.parse(req.body);
   console.log("PARSED", project);
   const lastInsertedIdentificator = await collection

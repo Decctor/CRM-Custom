@@ -17,7 +17,7 @@ function getCity(leadCity: string) {
     allCities = allCities.concat(arr);
   });
   const matchingCity = allCities.find(
-    (city) => calculateStringSimilarity(leadCity.toUpperCase(), city) > 60
+    (city) => calculateStringSimilarity(leadCity.toUpperCase(), city) > 80
   );
   return matchingCity;
 }
@@ -26,8 +26,9 @@ function getUF(city?: string | null, uf?: string | null) {
   if (city && !uf) {
     var rightUF: string | undefined = undefined;
     Object.keys(stateCities).map((state) => {
+      // @ts-ignore
       const foundOnCurrentState = stateCities[state as string].some(
-        (x) => calculateStringSimilarity(city.toUpperCase(), x) > 60
+        (x: any) => calculateStringSimilarity(city.toUpperCase(), x) > 80
       );
       if (foundOnCurrentState) rightUF = state;
     });
