@@ -21,6 +21,7 @@ type Filters = {
   suppliers: string[];
   topology: string[];
   search: string;
+  order: null | "ASC" | "DESC";
 };
 function Kits() {
   const { data: session, status } = useSession({ required: true });
@@ -31,6 +32,7 @@ function Kits() {
     suppliers: [],
     topology: [],
     search: "",
+    order: null,
   });
 
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -38,11 +40,33 @@ function Kits() {
 
   const [newKitModalIsOpen, setNewKitModalIsOpen] = useState(false);
 
+  function ordenateKits(param: string) {
+    if (!filteredKits) return;
+    var dumpyCopyOfKits = [...filteredKits];
+    var newArr;
+    console.log("PARAMETRO", param);
+    switch (param) {
+      case "ASC":
+        newArr = dumpyCopyOfKits.sort((a, b) => a.preco - b.preco);
+        setFilteredKits(newArr);
+        setFilters((prev) => ({ ...prev, order: "ASC" }));
+        break;
+      case "DESC":
+        newArr = dumpyCopyOfKits.sort((a, b) => b.preco - a.preco);
+        setFilteredKits(newArr);
+        setFilters((prev) => ({ ...prev, order: "DESC" }));
+        break;
+      default:
+        setFilters((prev) => ({ ...prev, order: null }));
+        setFilteredKits(dumpyCopyOfKits);
+        break;
+    }
+  }
   function handleSearchFilter(value: string) {
     setFilters((prev) => ({ ...prev, search: value }));
     if (value.trim().length > 0) {
       if (filters.search.trim().length > 0) {
-        let filtered = handleFilters();
+        let filtered = handleOptionFilters();
         let newArr = filtered?.filter((x) =>
           x.nome.toUpperCase().includes(value.toUpperCase())
         );
@@ -52,7 +76,7 @@ function Kits() {
       setFilteredKits(kits);
     }
   }
-  function handleFilters() {
+  function handleOptionFilters() {
     var newArr;
     if (filters.suppliers.length > 0) {
       if (!newArr) newArr = kits;
@@ -74,7 +98,7 @@ function Kits() {
   useEffect(() => {
     setFilteredKits(kits);
   }, [kits]);
-
+  console.log(filters);
   if (status == "loading") return <LoadingPage />;
   if (session.user.permissoes.kits.visualizar)
     return (
@@ -111,6 +135,26 @@ function Kits() {
                 placeholder="Pesquisa aqui o nome do kit..."
               />
               <div className="flex flex-wrap items-end gap-1">
+                <div
+                  onClick={() => ordenateKits("ASC")}
+                  className={`flex h-[46px] cursor-pointer items-center justify-center rounded-md border border-blue-400 p-1 text-center ${
+                    filters.order == "ASC"
+                      ? "bg-[#15599a] text-white"
+                      : "bg-transparent text-[#15599a]"
+                  }`}
+                >
+                  PREÇO CRESCENTE
+                </div>
+                <div
+                  onClick={() => ordenateKits("DESC")}
+                  className={`flex h-[46px] cursor-pointer items-center justify-center rounded-md border border-[#15599a] p-1 text-center ${
+                    filters.order == "DESC"
+                      ? "bg-[#15599a] text-white"
+                      : "bg-transparent text-[#15599a]"
+                  }`}
+                >
+                  PREÇO DECRESCENTE
+                </div>
                 <MultipleSelectInput
                   label="FORNECEDORES"
                   selected={
@@ -169,7 +213,7 @@ function Kits() {
                   }}
                 />
                 <button
-                  onClick={() => handleFilters()}
+                  onClick={() => handleOptionFilters()}
                   className="flex h-[46px] w-full items-center justify-center rounded border border-[#fead61] p-3 text-[#fead61] hover:bg-[#fead61] hover:text-black lg:w-fit"
                 >
                   <AiOutlineSearch />

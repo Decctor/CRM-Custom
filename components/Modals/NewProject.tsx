@@ -194,25 +194,31 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
     }
   }
   async function getOpportunityInfo(queryId: string) {
-    const toastID = toast.loading("Buscando informações da oportunidade...");
-    const { data: opportunityInfoResponse } = await axios.get(
-      `/api/utils/updateOportunityRD?queryId=${queryId}`
-    );
-    const opportunityInfo = opportunityInfoResponse.data;
-    setClientInfo((prev) => ({
-      ...prev,
-      representante: opportunityInfo.representante,
-      nome: opportunityInfo.nome,
-      email: opportunityInfo.email,
-      cpfCnpj: opportunityInfo.cpfCnpj,
-      telefonePrimario: opportunityInfo.telefonePrimario,
-      cep: opportunityInfo.cep,
-      uf: opportunityInfo.uf,
-      cidade: opportunityInfo.cidade,
-      endereco: opportunityInfo.logradouro,
-      bairro: opportunityInfo.bairro,
-    }));
-    toast.dismiss(toastID);
+    try {
+      const toastID = toast.loading("Buscando informações da oportunidade...");
+      const { data: opportunityInfoResponse } = await axios.get(
+        `/api/utils/updateOportunityRD?queryId=${queryId}`
+      );
+      const opportunityInfo = opportunityInfoResponse.data;
+      if (!opportunityInfo) return;
+      setClientInfo((prev) => ({
+        ...prev,
+        representante: opportunityInfo.representante,
+        nome: opportunityInfo.nome,
+        email: opportunityInfo.email,
+        cpfCnpj: opportunityInfo.cpfCnpj,
+        telefonePrimario: opportunityInfo.telefonePrimario,
+        cep: opportunityInfo.cep,
+        uf: opportunityInfo.uf,
+        cidade: opportunityInfo.cidade,
+        endereco: opportunityInfo.logradouro,
+        bairro: opportunityInfo.bairro,
+      }));
+      toast.success("Informações buscadas com sucesso !", { duration: 1500 });
+      toast.dismiss(toastID);
+    } catch (error) {
+      toast.error("Houve um erro na busca das informações da oportunidades.");
+    }
   }
   return (
     <div

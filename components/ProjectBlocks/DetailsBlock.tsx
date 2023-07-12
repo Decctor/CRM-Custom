@@ -98,7 +98,10 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
         }
       }
     },
-    onSuccess: async (data, variables, context) => {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["project", projectId] });
+    },
+    onSettled: async (data, variables, context) => {
       await queryClient.invalidateQueries({ queryKey: ["project", projectId] });
       // await queryClient.refetchQueries({ queryKey: ["project"] });
       if (data.message) toast.success(data.message);
@@ -131,7 +134,10 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
         }
       }
     },
-    onSuccess: async (data, variables, context) => {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["project", projectId] });
+    },
+    onSettled: async (data, variables, context) => {
       await queryClient.invalidateQueries({ queryKey: ["project", projectId] });
       // await queryClient.refetchQueries({ queryKey: ["project"] });
       if (data.message) toast.success(data.message);
