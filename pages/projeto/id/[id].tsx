@@ -108,7 +108,8 @@ function Projeto() {
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col items-center justify-center overflow-x-hidden bg-[#f8f9fa] p-6">
           <p className="text-lg italic text-gray-700">
-            Oops, houve um erro no carregamento das informações do projeto.
+            Oops, houve um erro no carregamento das informações do projeto em
+            questão.
           </p>
         </div>
       </div>
