@@ -3,14 +3,20 @@ import { useSession } from "next-auth/react";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { IClient, IRepresentative } from "@/utils/models";
+import { IClient, IRepresentative, ISession } from "@/utils/models";
 import NewClientModal from "@/components/Modals/NewClient";
 import { Sidebar } from "@/components/Sidebar";
 import LoadingPage from "@/components/utils/LoadingPage";
 import EditClient from "@/components/Modals/EditClient";
 import { useClients, useRepresentatives } from "@/utils/methods";
 import LoadingComponent from "@/components/utils/LoadingComponent";
-
+function checkQueryEnableStatus(session: ISession | null) {
+  if (session?.user.visibilidade) {
+    return true;
+  } else {
+    return false;
+  }
+}
 function Clientes() {
   // Session
   const { data: session, status } = useSession({ required: true });
@@ -27,7 +33,8 @@ function Clientes() {
     isLoading: clientsLoading,
     isSuccess: clientsSuccess,
   } = useClients(
-    session?.user.visibilidade != "GERAL" ? session?.user.id : null
+    session?.user.visibilidade != "GERAL" ? session?.user.id : null,
+    checkQueryEnableStatus(session)
   );
   const { data: editClient, refetch }: UseQueryResult<IClient, Error> =
     useQuery({
@@ -67,7 +74,7 @@ function Clientes() {
                     handleOpenEditClientModal(client._id ? client._id : "");
                   }}
                   key={client._id}
-                  className="flex h-[100px] w-[450px] cursor-pointer flex-col border border-gray-300 bg-[#fff] p-2 shadow-sm duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100"
+                  className="flex h-[125px] w-[450px] cursor-pointer flex-col border border-gray-300 bg-[#fff] p-2 shadow-sm duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100"
                 >
                   <div className="flex w-full items-center justify-between">
                     <h1 className="font-medium text-gray-600">{client.nome}</h1>

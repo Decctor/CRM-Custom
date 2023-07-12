@@ -838,12 +838,14 @@ export function useKits(onlyActive?: boolean): UseQueryResult<IKit[], Error> {
   });
 }
 export function useClients(
-  representative: string | null | undefined
+  representative: string | null | undefined,
+  enabled: boolean
 ): UseQueryResult<IClient[], Error> {
   return useQuery({
     queryKey: ["clients"],
     queryFn: async (): Promise<IClient[]> => {
       try {
+        console.log("REPRESENTANTE QUERY", representative);
         const { data } = await axios.get(
           `/api/clients?representative=${representative}`
         );
@@ -861,6 +863,7 @@ export function useClients(
       }
     },
     refetchOnWindowFocus: false,
+    enabled: enabled,
   });
 }
 
