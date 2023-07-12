@@ -59,51 +59,53 @@ function Clientes() {
           </h1>
         </div>
         <div className="mt-4  flex flex-wrap justify-around gap-3">
-          {clientsSuccess && clients.length > 0 ? (
-            clients.map((client) => (
-              <div
-                onClick={() => {
-                  handleOpenEditClientModal(client._id ? client._id : "");
-                }}
-                key={client._id}
-                className="flex h-[100px] w-[450px] cursor-pointer flex-col border border-gray-300 bg-[#fff] p-2 shadow-sm duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100"
-              >
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium text-gray-600">{client.nome}</h1>
-                  <h1 className="font-medium text-[#15599a]">
-                    {client.cidade}
-                  </h1>
-                </div>
-                <div className="mt-2 flex w-full items-center justify-between">
-                  <div className="flex flex-col items-start">
-                    <p className="text-xs text-gray-500">REPRESENTANTE</p>
-                    <h1 className="text-sm font-medium text-[#fead61]">
-                      {client.representante?.nome}
+          {clientsSuccess ? (
+            clients.length > 0 ? (
+              clients.map((client) => (
+                <div
+                  onClick={() => {
+                    handleOpenEditClientModal(client._id ? client._id : "");
+                  }}
+                  key={client._id}
+                  className="flex h-[100px] w-[450px] cursor-pointer flex-col border border-gray-300 bg-[#fff] p-2 shadow-sm duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100"
+                >
+                  <div className="flex w-full items-center justify-between">
+                    <h1 className="font-medium text-gray-600">{client.nome}</h1>
+                    <h1 className="font-medium text-[#15599a]">
+                      {client.cidade}
                     </h1>
                   </div>
-                  <div className="flex flex-col items-start">
-                    <p className="w-full text-end text-xs text-gray-500">
-                      CONTATO
-                    </p>
-                    <h1 className="text-sm font-medium text-[#fead61]">
-                      {client.telefonePrimario}
-                    </h1>
+                  <div className="mt-2 flex w-full items-center justify-between">
+                    <div className="flex flex-col items-start">
+                      <p className="text-xs text-gray-500">REPRESENTANTE</p>
+                      <h1 className="text-sm font-medium text-[#fead61]">
+                        {client.representante?.nome}
+                      </h1>
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <p className="w-full text-end text-xs text-gray-500">
+                        CONTATO
+                      </p>
+                      <h1 className="text-sm font-medium text-[#fead61]">
+                        {client.telefonePrimario}
+                      </h1>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="flex grow flex-col items-center justify-center">
+                <p className="text-lg italic text-gray-500">
+                  Oops, parece que não há clientes cadastrados pelo seu usuário.
+                </p>
+                <p className="text-lg italic text-gray-500">
+                  Clique em{" "}
+                  <strong className="text-[#15599a]">NOVO CLIENTE</strong> para
+                  criar um !
+                </p>
               </div>
-            ))
-          ) : (
-            <div className="flex grow flex-col items-center justify-center">
-              <p className="text-lg italic text-gray-500">
-                Oops, parece que não há clientes cadastrados pelo seu usuário.
-              </p>
-              <p className="text-lg italic text-gray-500">
-                Clique em{" "}
-                <strong className="text-[#15599a]">NOVO CLIENTE</strong> para
-                criar um !
-              </p>
-            </div>
-          )}
+            )
+          ) : null}
           {clientsLoading ? <LoadingComponent /> : null}
         </div>
         <button

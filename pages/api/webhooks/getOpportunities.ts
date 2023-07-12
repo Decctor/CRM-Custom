@@ -192,11 +192,11 @@ const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
       fit_score: "d",
       interest: 0,
     };
-
+    // Getting responsible based on Lead responsible email
     const responsible = await usersCollection.aggregate([
       {
         $match: {
-          email: leadObj.user,
+          email: lead.user,
         },
       },
       {
@@ -210,29 +210,54 @@ const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
       nome: responsible?.nome ? responsible?.nome : "Lucas Fernandes",
       id: responsible._id ? responsible._id : "6463ccaa8c5e3e227af54d89",
     };
+    // Extracting info into a insertable client object
     const insertClientObject = {
       representante: respObj,
-      nome: leadObj.name,
+      nome: lead.name,
       cpfCnpj: "",
-      telefonePrimario: leadObj.personal_phone
-        ? formatToPhone(leadObj.personal_phone)
+      telefonePrimario: lead.personal_phone
+        ? formatToPhone(lead.personal_phone)
         : "",
       telefoneSecundario: "",
-      email: leadObj.email,
+      email: lead.email,
       cep: "",
       bairro: "",
       endereco: "",
       numeroOuIdentificador: "",
       complemento: "",
-      uf: getUF(leadObj.city, undefined),
-      cidade: leadObj.city ? getCity(lead.city) : undefined,
+      uf: getUF(lead.city, undefined),
+      cidade: lead.city ? getCity(lead.city) : undefined,
     };
     const clientResponse = await clientsCollection.insertOne({
       ...insertClientObject,
     });
-    console.log("RESPOSTA CLIENTE", clientResponse);
+    // Getting last inserted object identificator
+    const lastInsertedIdentificator = await projectsCollection
+      .aggregate([
+        {
+          $project: {
+            identificador: 1,
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+        {
+          $limit: 1,
+        },
+      ])
+      .toArray();
+    const lastIdentifierNumber = lastInsertedIdentificator[0]
+      ? Number(lastInsertedIdentificator[0].identificador.split("-")[1])
+      : 0;
+    const newIdentifierNumber = lastIdentifierNumber + 1;
+    const identifier = `CRM-${newIdentifierNumber}`;
+    // Extracting info into a insertable project object
     const insertObj = {
-      nome: leadObj.name,
+      nome: lead.name,
+      identificador: identifier,
       tipoProjeto: "SISTEMA FOTOVOLTAICO",
       responsavel: respObj,
       representante: respObj,
@@ -244,9 +269,10 @@ const collectLead: NextApiHandler<PostResponse> = async (req, res) => {
           etapaId: 3,
         },
       ],
+      dataInsercao: new Date().toISOString(),
       idOportunidade:
-        leadObj.last_conversion?.content?.opportunity_url.split("deals/")[1],
-      idLead: leadObj.id,
+        lead.last_conversion?.content?.opportunity_url.split("deals/")[1],
+      idLead: lead.id,
     };
     const projectsResponse = await projectsCollection.insertOne({
       ...insertObj,

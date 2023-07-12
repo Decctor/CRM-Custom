@@ -317,12 +317,12 @@ export default function Home() {
               value={funnel}
               options={getOptions(session, responsibles).funnelOptions}
               onChange={(selected) => setFunnel(selected.value)}
-              onReset={() => setFunnel(null)}
+              onReset={() => setFunnel(1)}
               width="350px"
             />
           </div>
         </div>
-        <div className="flex w-full grow flex-wrap justify-around gap-2 py-2">
+        <div className="flex w-full grow flex-wrap justify-between gap-2 py-2">
           {projects && projects.length > 0
             ? projects.map((project) => (
                 <Project

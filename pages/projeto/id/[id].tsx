@@ -12,7 +12,12 @@ import { GoKebabVertical } from "react-icons/go";
 import { Sidebar } from "@/components/Sidebar";
 import LoadingComponent from "@/components/utils/LoadingComponent";
 import { IClient, IProject, IProposeInfo } from "@/utils/models";
-import { AiFillEdit, AiOutlineStar, AiOutlineUser } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiFillEdit,
+  AiOutlineStar,
+  AiOutlineUser,
+} from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
 import { BsClipboardCheck, BsTelephoneFill } from "react-icons/bs";
 import { FaCity } from "react-icons/fa";
@@ -130,6 +135,12 @@ function Projeto() {
                   projectId={project._id ? project._id : ""}
                 />
               )}
+              {project.dataPerda ? (
+                <div className="flex items-center gap-2 rounded bg-red-500 p-2 text-sm font-medium italic text-white">
+                  PERDIDO
+                  <AiFillCloseCircle />
+                </div>
+              ) : null}
             </div>
           </div>
 

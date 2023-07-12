@@ -10,7 +10,12 @@ import {
   getCEPInfo,
 } from "@/utils/methods";
 import { stateCities } from "../../utils/estados_cidades";
-import { Funnel, IRepresentative, IResponsible } from "@/utils/models";
+import {
+  Funnel,
+  IProject,
+  IRepresentative,
+  IResponsible,
+} from "@/utils/models";
 import responsibles from "@/pages/api/responsibles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -86,45 +91,8 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
     descricao: undefined,
     funis: [],
   });
-  const { mutate: createClient } = useMutation({
-    mutationKey: ["newClient"],
-    mutationFn: async () => {
-      try {
-        let { data } = await axios.post("/api/clients", {
-          ...clientInfo,
-        });
-        queryClient.invalidateQueries({ queryKey: ["clients"] });
-        if (data.message) toast.success(data.message);
-        setClientInfo({
-          representante: null,
-          nome: "",
-          cpfCnpj: "",
-          telefonePrimario: "",
-          telefoneSecundario: "",
-          email: "",
-          cep: "",
-          bairro: "",
-          endereco: "",
-          numeroOuIdentificador: "",
-          complemento: "",
-          uf: null,
-          cidade: "",
-        });
-        return data.data;
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          let errorMsg = error.response?.data.error.message;
-          toast.error(errorMsg);
-          return;
-        }
-        if (error instanceof Error) {
-          let errorMsg = error.message;
-          toast.error(errorMsg);
-          return;
-        }
-      }
-    },
-  });
+  const [oportunityId, setOportunityId] = useState<string>("");
+
   async function setAddressDataByCEP(cep: string) {
     const addressInfo = await getCEPInfo(cep);
     const toastID = toast.loading("Buscando informações sobre o CEP...", {
@@ -158,11 +126,15 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
       toast.error("Preencha o funil para o projeto.");
       return;
     }
+    if (!clientInfo.representante) {
+      toast.error("Preencha o representante.");
+      return;
+    }
     try {
       const { data: clientResponse } = await axios.post("/api/clients", {
         ...clientInfo,
       });
-      let insertObj = {
+      let insertObj: IProject = {
         nome: newProject.nome,
         tipoProjeto: newProject.tipoProjeto,
         responsavel: clientInfo.representante,
@@ -170,7 +142,9 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
         clienteId: clientResponse.data._id,
         descricao: newProject.descricao,
         funis: newProject.funis,
+        idOportunidade: undefined,
       };
+      if (oportunityId) insertObj.idOportunidade = oportunityId;
       console.log("CRIAÇÃO DE CLIENTE", clientResponse);
       const { data } = await axios.post("/api/projects", insertObj);
       setClientInfo({
@@ -230,6 +204,21 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
           </div>
           <div className="flex h-full flex-col gap-y-2 overflow-y-auto overscroll-y-auto border-b border-gray-200 py-2 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 lg:flex-row">
             <div className="flex w-full flex-col gap-2 px-2 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 lg:h-full lg:max-h-full lg:w-[60%] lg:overflow-y-auto">
+              <div className="flex w-full flex-col py-1">
+                <h1 className="pb-1 text-center text-gray-500">
+                  Gostaria de vincular uma oportunidade do RD Station CRM à esse
+                  projeto ?
+                </h1>
+                <div className="flex w-full items-center justify-center self-center lg:w-[50%]">
+                  <TextInput
+                    label="ID DA OPORTUNIDADE"
+                    value={oportunityId}
+                    handleChange={(value) => setOportunityId(value)}
+                    placeholder="Digite aqui o ID da oportunidade."
+                    width="100%"
+                  />
+                </div>
+              </div>
               <div className="grid grid-cols-1 px-2">
                 <div className="flex w-full flex-col gap-1">
                   <label

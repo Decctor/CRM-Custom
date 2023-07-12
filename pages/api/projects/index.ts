@@ -85,6 +85,7 @@ const projectSchema = z.object({
   funis: z.array(z.object({ id: z.number(), etapaId: z.number() }), {
     required_error: "Por favor, vincule um funil a esse projeto.",
   }),
+  idOportunidade: z.string().optional(),
 });
 
 const createProject: NextApiHandler<PostResponse> = async (req, res) => {
@@ -137,7 +138,12 @@ type GetResponse = {
 };
 
 const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
-  await validateAuthentication(req);
+  const session = await validateAuthorization(
+    req,
+    "projetos",
+    "serResponsavel",
+    true
+  );
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("projects");
   const eventsCollection = db.collection("projectsEvents");
@@ -266,12 +272,24 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         },
       ])
       .toArray();
+
+    // Getting activities
+    var activitiesQueryResponsibleParam;
+    if (session.user.visibilidade == "GERAL") {
+      activitiesQueryResponsibleParam = {
+        $ne: null,
+      };
+    } else {
+      activitiesQueryResponsibleParam = session.user.id;
+    }
     const openActivities = await eventsCollection
       .find({
+        responsavelId: activitiesQueryResponsibleParam,
         categoria: "ATIVIDADE",
         dataConclusao: null,
       })
       .toArray();
+
     const formatted = projects.map((project: IProject) => {
       const correpondentActivities = openActivities.filter(
         (act: ProjectActivity) => act.projetoId == project._id

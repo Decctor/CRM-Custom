@@ -59,7 +59,7 @@ async function handleDownload(url: string | undefined, proposeName: string) {
   const filePath = fileRef.fullPath;
   // @ts-ignore
   const extension = fileTypes[metadata.contentType]?.extension;
-
+  const toastID = toast.loading("Baixando arquivo...");
   try {
     const response = await axios.get(
       `/api/utils/downloadFirebase?filePath=${encodeURIComponent(filePath)}`,
@@ -91,6 +91,7 @@ async function handleDownload(url: string | undefined, proposeName: string) {
     link.setAttribute("download", `${proposeName}${extension}`);
     document.body.appendChild(link);
     link.click();
+    toast.dismiss(toastID);
     link.remove();
   } catch (error) {
     toast.error("Houve um erro no download do arquivo.");

@@ -179,7 +179,7 @@ export interface IProject {
   _id?: string;
   nome: string;
   tipoProjeto: (typeof projectTypes)[number]["value"];
-  identificador: string;
+  identificador?: string;
   idOportunidade?: string;
   responsavel: {
     nome: string;

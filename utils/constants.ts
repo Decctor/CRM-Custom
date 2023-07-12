@@ -515,7 +515,7 @@ export const leadLoseJustification = {
     deal_lost_reason: {
       id: "63ce9e5fce5a15002506d8fc",
       _id: "63ce9e5fce5a15002506d8fc",
-      name: "Cliente optou por não realizar o projeto",
+      name: "Não gosto do produto/serviço",
       // created_at: "2023-01-23T11:49:03.889-03:00",
       // updated_at: "2023-01-23T11:49:03.889-03:00",
     },

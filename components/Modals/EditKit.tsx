@@ -25,7 +25,7 @@ type InverterInfo = {
   fabricante: string;
   modelo: string;
   qtde: number;
-  garantia: number;
+  garantia?: number;
   potenciaNominal: number;
 };
 type ModuleInfo = {
@@ -34,7 +34,7 @@ type ModuleInfo = {
   modelo: string;
   qtde: number;
   potencia: number;
-  garantia: number;
+  garantia?: number;
 };
 type PersonalizedItem = {
   nome: string;
@@ -500,7 +500,9 @@ function EditKit({ isOpen, setModalIsOpen, info }: EditKitProps) {
                   <div className="w-[25%]">
                     <NumberInput
                       label="GARANTIA"
-                      value={inverterHolder.garantia}
+                      value={
+                        inverterHolder.garantia ? inverterHolder.garantia : null
+                      }
                       handleChange={(value) =>
                         setInverterHolder((prev) => ({
                           ...prev,
@@ -581,7 +583,9 @@ function EditKit({ isOpen, setModalIsOpen, info }: EditKitProps) {
                   <div className="w-[25%]">
                     <NumberInput
                       label="GARANTIA"
-                      value={moduleHolder.garantia}
+                      value={
+                        moduleHolder.garantia ? moduleHolder.garantia : null
+                      }
                       handleChange={(value) =>
                         setModuleHolder((prev) => ({
                           ...prev,
