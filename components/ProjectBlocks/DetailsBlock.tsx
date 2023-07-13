@@ -1356,6 +1356,16 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
               infoHolder={infoHolder}
             />
           </div>
+          <div className="w-full">
+            <SingleFileInput
+              label="LAUDO TÉCNICO"
+              fileKey={"laudo"}
+              handleAttachment={handleAttachment}
+              currentFileUrl={infoHolder?.anexos?.laudo}
+              info={info}
+              infoHolder={infoHolder}
+            />
+          </div>
         </div>
       </div>
     </div>

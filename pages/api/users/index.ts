@@ -109,7 +109,15 @@ const getUsers: NextApiHandler<GetResponse> = async (req, res) => {
     const user = await collection.findOne({ _id: new ObjectId(id) });
     res.status(200).json({ data: user });
   } else {
-    const users = await collection.find({}).toArray();
+    const users = await collection
+      .aggregate([
+        {
+          $project: {
+            senha: 0,
+          },
+        },
+      ])
+      .toArray();
     res.status(200).json({ data: users });
   }
 };

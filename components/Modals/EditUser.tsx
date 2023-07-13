@@ -69,7 +69,7 @@ function EditUser({ user, closeModal }: EditUserProps) {
   const queryClient = useQueryClient();
   const [image, setImage] = useState<File | null>();
   const [userInfo, setUserInfo] = useState<IUserInfo>(user);
-
+  const [changePasswordMenu, setChangePasswordMenu] = useState<boolean>();
   async function uploadImage() {
     var splitNome = user.nome.toLowerCase().split(" ");
     var fixedNome = splitNome.join("_");
@@ -245,10 +245,32 @@ function EditUser({ user, closeModal }: EditUserProps) {
                 width="100%"
               />
               <div className="flex w-full flex-col gap-1">
-                <label className="font-sans font-bold  text-[#353432]">
-                  SENHA
-                </label>
-                {userInfo.senha != "123456" ? (
+                {changePasswordMenu ? (
+                  <div className="flex w-full items-center justify-center">
+                    <TextInput
+                      label="ALTERAÇÃO DE SENHA"
+                      placeholder="Preencha aqui a nova senha"
+                      value={userInfo.senha}
+                      width="100%"
+                      handleChange={(value) =>
+                        setUserInfo((prev) => ({ ...prev, senha: value }))
+                      }
+                    />
+                  </div>
+                ) : (
+                  <div className="flex w-full flex-col gap-1">
+                    <label className="font-sans font-bold  text-[#353432]">
+                      SENHA
+                    </label>
+                    <button
+                      onClick={() => setChangePasswordMenu(true)}
+                      className={`mt-1 flex w-fit gap-1 self-center rounded-md bg-[#fead41] p-2 text-sm font-medium text-black`}
+                    >
+                      RESETAR SENHA
+                    </button>
+                  </div>
+                )}
+                {/* {userInfo.senha != "123456" ? (
                   <div className="flex items-center justify-center">
                     <button
                       onClick={() =>
@@ -270,7 +292,7 @@ function EditUser({ user, closeModal }: EditUserProps) {
                       Senha padrão (123456)
                     </p>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
             <div className="flex w-full flex-col gap-1">

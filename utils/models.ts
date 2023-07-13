@@ -204,6 +204,7 @@ export interface IProject {
     documentoComFoto?: string;
     iptu?: string;
     contaDeEnergia?: string;
+    laudo?: string;
   };
   descricao?: string;
   etiquetasIds?: number[];

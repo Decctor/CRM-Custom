@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Logo from "../utils/noTextLogo.png";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 export const Sidebar = () => {
   const { data: session } = useSession();
@@ -32,7 +33,7 @@ export const Sidebar = () => {
       >
         <div className="flex h-[70px] w-full items-start justify-center">
           <div className="relative h-[37px] w-[37px]">
-            <Image src={Logo} alt="USUÁRIO" title="CONFIGURAÇÕES" fill={true} />
+            <Image src={Logo} alt="LOGO" title="LOGO" fill={true} />
           </div>
         </div>
         <div className="flex w-full grow flex-col">
@@ -110,15 +111,17 @@ export const Sidebar = () => {
         </div>
         {session?.user.image ? (
           <div className="flex w-full items-center justify-center">
-            <div className="relative h-[37px] w-[37px]">
-              <Image
-                src={session?.user.image}
-                alt="USUÁRIO"
-                title="CONFIGURAÇÕES"
-                fill={true}
-                style={{ borderRadius: "100%" }}
-              />
-            </div>
+            <Link href={`/auth/profile?id=${session.user.id}`}>
+              <div className="relative h-[37px] w-[37px]">
+                <Image
+                  src={session?.user.image}
+                  alt="USUÁRIO"
+                  title="CONFIGURAÇÕES"
+                  fill={true}
+                  style={{ borderRadius: "100%" }}
+                />
+              </div>
+            </Link>
           </div>
         ) : null}
 
