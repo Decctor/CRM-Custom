@@ -121,9 +121,15 @@ function Projeto() {
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
           <div className="flex w-full items-center justify-between border-b border-[#fead61] pb-2">
             <div className="flex w-full flex-col items-start">
-              <h1 className="flex font-['Roboto'] text-2xl font-bold text-blue-900">
-                {project.nome}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="flex font-Raleway text-2xl font-bold text-[#fead41]">
+                  {project.identificador}
+                </h1>
+                <h1 className="flex font-Raleway text-2xl font-bold text-blue-900">
+                  {project.nome}
+                </h1>
+              </div>
+
               <p className="w-full text-start text-xs italic text-gray-500">
                 {project.descricao}
               </p>

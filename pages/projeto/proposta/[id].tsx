@@ -96,7 +96,9 @@ function PropostaPage() {
             </div>
             <div className="hidden flex-col items-center lg:flex">
               <h1 className="text-sm text-gray-400">CÓD. DO PROJETO</h1>
-              <h1 className="font-bold text-white">#{project._id}</h1>
+              <h1 className="font-bold text-white">
+                # {project.identificador}
+              </h1>
             </div>
             {/* <div className="flex flex-col items-center">
               <h1 className="text-sm text-gray-400">CÓD.PROPOSTA</h1>

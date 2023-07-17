@@ -307,7 +307,7 @@ export default function Home() {
               onReset={() => setFunnel(1)}
               width="350px"
             />
-            {/* <SeachProjects /> */}
+            <SeachProjects />
           </div>
         </div>
         <div className="flex w-full grow flex-wrap justify-between gap-2 py-2">

@@ -137,7 +137,7 @@ function Kits() {
               <div className="flex flex-wrap items-end gap-1">
                 <div
                   onClick={() => ordenateKits("ASC")}
-                  className={`flex h-[46px] cursor-pointer items-center justify-center rounded-md border border-blue-400 p-1 text-center ${
+                  className={`flex h-[46px] cursor-pointer items-center justify-center rounded-md border border-[#15599a] p-1 text-center ${
                     filters.order == "ASC"
                       ? "bg-[#15599a] text-white"
                       : "bg-transparent text-[#15599a]"

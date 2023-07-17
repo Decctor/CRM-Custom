@@ -20,15 +20,16 @@ const getProjects: NextApiHandler<GetResponse> = async (req, res) => {
         {
           $match: {
             $or: [
-              { nome: { $regex: searchParam } },
-              { nome: { $regex: searchParam.toUpperCase() } },
-              { identificador: { $regex: searchParam } },
+              { nome: { $regex: searchParam, $options: "i" } },
+              // { nome: { $regex: searchParam.toUpperCase() } },
+              { identificador: { $regex: searchParam, $options: "i" } },
             ],
           },
         },
         {
           $project: {
             nome: 1,
+            identificador: 1,
             responsavel: 1,
           },
         },
