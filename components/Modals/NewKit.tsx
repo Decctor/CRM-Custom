@@ -64,7 +64,7 @@ function ModalNewKit({ isOpen, setModalIsOpen }: ModalNewKitProps) {
     categoria: null,
     topologia: "INVERSOR",
     preco: 0,
-    ativo: false,
+    ativo: true,
     fornecedor: null,
     estruturasCompativeis: [],
     incluiEstrutura: false,

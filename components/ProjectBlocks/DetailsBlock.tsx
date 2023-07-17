@@ -224,6 +224,46 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
         </div>
         <div className="mt-3 flex w-full flex-col gap-2">
           <div className="flex w-full gap-2">
+            <div className="grow">
+              <TextInput
+                label="NOME DO PROJETO"
+                value={
+                  infoHolder?.cliente && infoHolder?.nome
+                    ? infoHolder?.nome
+                    : ""
+                }
+                editable={
+                  session?.user.id == infoHolder?.responsavel?.id ||
+                  session?.user.permissoes.projetos.editar
+                }
+                handleChange={(value) => {
+                  if (infoHolder)
+                    setInfoHolder((prev: any) => ({
+                      ...prev,
+                      nome: value,
+                    }));
+                }}
+                placeholder="Preencha aqui o profissão do cliente."
+                width="100%"
+              />
+            </div>
+            <button
+              disabled={infoHolder?.nome == info.nome}
+              onClick={() => updateData("PROJETO", "nome", infoHolder?.nome)}
+              className="flex items-end justify-center pb-4 text-green-200"
+            >
+              <AiOutlineCheck
+                style={{
+                  fontSize: "18px",
+                  color:
+                    infoHolder?.nome != info.nome
+                      ? "rgb(34,197,94)"
+                      : "rgb(156,163,175)",
+                }}
+              />
+            </button>
+          </div>
+          <div className="flex w-full gap-2">
             <div className="flex grow flex-col items-start">
               <label className="font-sans font-bold  text-[#353432]">
                 RESPONSÁVEL

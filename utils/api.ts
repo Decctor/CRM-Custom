@@ -54,7 +54,7 @@ export async function validateAuthorization<
 }
 // Criando o handler de erros
 function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {
-  // console.log("ERRO", err);
+  console.log("ERRO", err);
   if (createHttpError.isHttpError(err) && err.expose) {
     // Lidar com os erros lançados pelo módulo http-errors
     return res.status(err.statusCode).json({ error: { message: err.message } });

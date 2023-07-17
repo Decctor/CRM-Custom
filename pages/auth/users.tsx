@@ -4,7 +4,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { IUsuario } from "@/utils/models";
 import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import { useQuery } from "@tanstack/react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import EditUser from "@/components/Modals/EditUser";
@@ -22,7 +22,10 @@ function Users() {
     data: users,
     isLoading,
     isSuccess,
-  } = useQuery({
+  }: UseQueryResult<IUsuario[], Error | AxiosError> = useQuery<
+    IUsuario[],
+    Error | AxiosError
+  >({
     queryKey: ["users"],
     queryFn: async () => {
       try {
@@ -110,12 +113,16 @@ function Users() {
         </div>
         {activeUserModal.isOpen && activeUserModal.user != null ? (
           <EditUser
+            users={users}
             user={activeUserModal.user}
             closeModal={() => setActiveUserModal({ user: null, isOpen: false })}
           />
         ) : null}
         {newUserModalIsOpen ? (
-          <NewUserModal closeModal={() => setUserModalIsOpen(false)} />
+          <NewUserModal
+            closeModal={() => setUserModalIsOpen(false)}
+            users={users}
+          />
         ) : null}
       </div>
     );

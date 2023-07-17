@@ -93,9 +93,25 @@ function getOptions(
         value: resp.id,
       };
     });
-  } else {
+  }
+  if (session.user.visibilidade == "PRÓPRIA") {
     var filteredResponsibles = responsibles.filter(
       (responsible) => responsible.id == session.user.id
+    );
+    options.activeResponsible = session.user.id;
+    options.responsibleOptions = filteredResponsibles.map((resp) => {
+      return {
+        id: resp.id,
+        label: resp.nome,
+        value: resp.id,
+      };
+    });
+  }
+  if (typeof session.user.visibilidade == "object") {
+    var filteredResponsibles = responsibles.filter(
+      (responsible) =>
+        session.user.visibilidade.includes(responsible.id) ||
+        responsible.id == session.user.id
     );
     options.activeResponsible = session.user.id;
     options.responsibleOptions = filteredResponsibles.map((resp) => {

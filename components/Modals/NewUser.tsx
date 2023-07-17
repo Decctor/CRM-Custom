@@ -10,9 +10,11 @@ import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { Comissao } from "@/utils/models";
+import { Comissao, IUsuario } from "@/utils/models";
 import NumberInput from "../Inputs/NumberInput";
+import MultipleSelectInput from "../Inputs/MultipleSelectInput";
 type NewUserModalProps = {
+  users?: IUsuario[];
   closeModal: () => void;
 };
 interface IUserInfo {
@@ -57,7 +59,7 @@ interface IUserInfo {
       }
     | any;
 }
-function NewUserModal({ closeModal }: NewUserModalProps) {
+function NewUserModal({ closeModal, users }: NewUserModalProps) {
   const queryClient = useQueryClient();
   const [userInfo, setUserInfo] = useState<IUserInfo>({
     nome: "",
@@ -285,11 +287,55 @@ function NewUserModal({ closeModal }: NewUserModalProps) {
                     userInfo.visibilidade == "GERAL"
                       ? "opacity-100"
                       : "opacity-30"
-                  } cursor-pointer border border-[#15599a] p-2 font-bold text-[#15599a]`}
+                  } cursor-pointer border border-green-500 p-2 font-bold text-green-500`}
                 >
                   GERAL
                 </div>
+                <div
+                  onClick={() =>
+                    setUserInfo((prev) => ({
+                      ...prev,
+                      visibilidade: [],
+                    }))
+                  }
+                  className={`rounded ${
+                    typeof userInfo.visibilidade == "object"
+                      ? "opacity-100"
+                      : "opacity-30"
+                  } cursor-pointer border border-[#15599a] p-2 font-bold text-[#15599a]`}
+                >
+                  PERSONALIZADA
+                </div>
               </div>
+              {typeof userInfo.visibilidade == "object" ? (
+                <div className="my-2 flex w-full flex-col items-center">
+                  <h1 className="w-full text-center text-sm font-medium text-gray-500">
+                    ADICIONAR USUÁRIOS A VISIBILIDADE DESSE USUÁRIO
+                  </h1>
+                  <MultipleSelectInput
+                    label="USUÁRIOS"
+                    options={
+                      users
+                        ? users.map((user, index) => {
+                            return {
+                              id: index + 1,
+                              label: user.nome,
+                              value: user._id,
+                            };
+                          })
+                        : null
+                    }
+                    handleChange={(value: string[]) =>
+                      setUserInfo((prev) => ({ ...prev, visibilidade: value }))
+                    }
+                    selected={userInfo.visibilidade}
+                    selectedItemLabel="NÃO DEFINIDO"
+                    onReset={() => {
+                      setUserInfo((prev) => ({ ...prev, visibilidade: [] }));
+                    }}
+                  />
+                </div>
+              ) : null}
             </div>
 
             <div className="mt-4 flex w-full flex-col items-center gap-1">

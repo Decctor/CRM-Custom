@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
 import TextInput from "../Inputs/TextInput";
 import DropdownSelect from "../Inputs/DropdownSelect";
 import { comissionTable, funnels, roles } from "@/utils/constants";
-import { Comissao } from "../../utils/models";
+import { Comissao, IUsuario } from "../../utils/models";
 import { formatToPhone } from "@/utils/methods";
 import { VscChromeClose } from "react-icons/vsc";
 import { MdRemoveCircle } from "react-icons/md";
@@ -17,6 +17,7 @@ import { BsCheckLg } from "react-icons/bs";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../services/firebase";
 import NumberInput from "../Inputs/NumberInput";
+import MultipleSelectInput from "../Inputs/MultipleSelectInput";
 interface IUserInfo {
   _id?: ObjectId | string;
   nome: string;
@@ -63,9 +64,10 @@ interface IUserInfo {
 }
 type EditUserProps = {
   user: IUserInfo;
+  users?: IUsuario[];
   closeModal: () => void;
 };
-function EditUser({ user, closeModal }: EditUserProps) {
+function EditUser({ user, closeModal, users }: EditUserProps) {
   const queryClient = useQueryClient();
   const [image, setImage] = useState<File | null>();
   const [userInfo, setUserInfo] = useState<IUserInfo>(user);
@@ -113,6 +115,7 @@ function EditUser({ user, closeModal }: EditUserProps) {
       }
     },
   });
+  console.log(userInfo);
   return (
     <div
       id="defaultModal"
@@ -409,11 +412,55 @@ function EditUser({ user, closeModal }: EditUserProps) {
                     userInfo.visibilidade == "GERAL"
                       ? "opacity-100"
                       : "opacity-30"
-                  } cursor-pointer border border-[#15599a] p-2 font-bold text-[#15599a]`}
+                  } cursor-pointer border border-green-500 p-2 font-bold text-green-500`}
                 >
                   GERAL
                 </div>
+                <div
+                  onClick={() =>
+                    setUserInfo((prev) => ({
+                      ...prev,
+                      visibilidade: [],
+                    }))
+                  }
+                  className={`rounded ${
+                    typeof userInfo.visibilidade == "object"
+                      ? "opacity-100"
+                      : "opacity-30"
+                  } cursor-pointer border border-[#15599a] p-2 font-bold text-[#15599a]`}
+                >
+                  PERSONALIZADA
+                </div>
               </div>
+              {typeof userInfo.visibilidade == "object" ? (
+                <div className="my-2 flex w-full flex-col items-center">
+                  <h1 className="w-full text-center text-sm font-medium text-gray-500">
+                    ADICIONAR USUÁRIOS A VISIBILIDADE DESSE USUÁRIO
+                  </h1>
+                  <MultipleSelectInput
+                    label="USUÁRIOS"
+                    options={
+                      users
+                        ? users.map((user, index) => {
+                            return {
+                              id: index + 1,
+                              label: user.nome,
+                              value: user._id,
+                            };
+                          })
+                        : null
+                    }
+                    handleChange={(value: string[]) =>
+                      setUserInfo((prev) => ({ ...prev, visibilidade: value }))
+                    }
+                    selected={userInfo.visibilidade}
+                    selectedItemLabel="NÃO DEFINIDO"
+                    onReset={() => {
+                      setUserInfo((prev) => ({ ...prev, visibilidade: [] }));
+                    }}
+                  />
+                </div>
+              ) : null}
             </div>
             <div className="mt-4 flex w-full flex-col items-center gap-1">
               <label className="text-center font-sans font-bold text-[#353432]">

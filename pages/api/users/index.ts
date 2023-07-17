@@ -143,7 +143,7 @@ const editUserSchema = z.object({
       required_error: "Por favor, preencha a senha do usuário.",
     })
     .optional(),
-  avatar_url: z.string().optional(),
+  avatar_url: z.string().optional().nullable(),
   visibilidade: z
     .union([z.literal("PRÓPRIA"), z.literal("GERAL"), z.array(z.string())])
     .optional(), // z.string().or(z.string().array())
@@ -221,6 +221,7 @@ const editUser: NextApiHandler<PutResponse> = async (req, res) => {
     throw new createHttpError.BadRequest(
       "Mudanças não especificadas na requisição."
     );
+  console.log(req.body.changes);
   const user = editUserSchema.parse(req.body.changes);
   const db = await connectToDatabase(process.env.MONGODB_URI, "main");
   const collection = db.collection("users");
