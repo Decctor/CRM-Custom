@@ -10,6 +10,7 @@ type ProjectCardProps = {
   item: {
     id: number | string;
     name: string;
+    identificador?: string;
     responsavel: string;
     responsavel_avatar?: string;
     atividades?: ProjectActivity[];
@@ -30,7 +31,7 @@ function Project({ item }: ProjectCardProps) {
   const [openActivitiesModal, setOpenActivitiesModal] =
     useState<boolean>(false);
   return (
-    <div className="relative flex h-[130px] min-h-[110px] w-[350px] flex-col justify-between rounded border border-gray-200 bg-[#fff] p-2 shadow-sm">
+    <div className="relative flex h-[140px] min-h-[110px] w-[350px] flex-col justify-between rounded border border-gray-200 bg-[#fff] p-2 shadow-sm">
       {openActivitiesModal && item.atividades ? (
         <ProjectOpenActivities
           projectName={item.name}
@@ -38,56 +39,66 @@ function Project({ item }: ProjectCardProps) {
           setOpenActivitiesModal={setOpenActivitiesModal}
         />
       ) : null}
-      {item.efetivacao ? (
-        <div className="absolute right-2 top-2 flex items-center justify-center text-green-500">
+      {/* {item.efetivacao ? (
+        <div className="absolute right-2 top-3 z-10 flex items-center justify-center text-green-500">
           <BsPatchCheckFill />
         </div>
+      ) : null} */}
+      {item.atividades && item.atividades.length > 0 ? (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpenActivitiesModal((prev) => !prev);
+          }}
+          className={`absolute right-2 top-4 flex h-[15px] w-[15px] cursor-pointer items-center justify-center rounded-full text-white  ${getTagColor(
+            item.atividades
+          )}`}
+        >
+          <AiOutlineRight style={{ fontSize: "10px" }} />
+        </div>
       ) : null}
-      <div className="relative flex w-full items-center justify-between">
-        <div className="flex flex-col">
-          <div className="h-1 w-full rounded-sm bg-blue-400"></div>
+      <div className="flex w-full flex-col">
+        <div
+          className={`h-1 w-full rounded-sm ${
+            item.efetivacao ? "bg-green-500" : "bg-blue-400"
+          } `}
+        ></div>
+        <h1 className="text-xs font-bold text-[#fead41]">
+          {item.identificador}
+        </h1>
+        <div className="flex w-full flex-col">
           <Link href={`/projeto/id/${item.id}`}>
             <h1 className="font-medium text-[#353432] hover:text-blue-400">
               {item.name}
             </h1>
           </Link>
         </div>
-        {item.atividades && item.atividades.length > 0 ? (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpenActivitiesModal((prev) => !prev);
-            }}
-            className={`flex h-[15px] w-[15px] cursor-pointer items-center justify-center rounded-full text-white  ${getTagColor(
-              item.atividades
-            )}`}
-          >
-            <AiOutlineRight style={{ fontSize: "10px" }} />
-          </div>
-        ) : null}
       </div>
+
       {(item.valorProposta || item.potenciaPicoProposta) &&
       item.nomeProposta ? (
         <div className="flex w-full grow flex-col">
           <h1 className="text-xxs font-thin text-gray-500">PROPOSTA ATIVA</h1>
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full flex-col">
             <p className="text-xs text-green-500">{item.nomeProposta}</p>
-            <p className="text-xs text-green-500">
-              {item.potenciaPicoProposta?.toLocaleString("pt-br", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}{" "}
-              kWp
-            </p>
-            <p className="text-xs text-green-500">
-              R${" "}
-              {item.valorProposta
-                ? item.valorProposta.toLocaleString("pt-br", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })
-                : 0.0}
-            </p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs text-green-500">
+                {item.potenciaPicoProposta?.toLocaleString("pt-br", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{" "}
+                kWp
+              </p>
+              <p className="text-xs text-green-500">
+                R${" "}
+                {item.valorProposta
+                  ? item.valorProposta.toLocaleString("pt-br", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : 0.0}
+              </p>
+            </div>
           </div>
         </div>
       ) : null}

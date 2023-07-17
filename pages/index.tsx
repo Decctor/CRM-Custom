@@ -318,6 +318,7 @@ export default function Home() {
                   item={{
                     id: project._id ? project._id : "",
                     name: project.nome,
+                    identificador: project.identificador,
                     responsavel: project.responsavel.nome,
                     responsavel_avatar: responsibles?.filter(
                       (resp) => resp.id == project.responsavel.id
