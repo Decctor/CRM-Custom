@@ -1,4 +1,10 @@
-import { IKit, IProject, IProposeInfo } from "@/utils/models";
+import {
+  IKit,
+  IProject,
+  IProposeInfo,
+  InverterType,
+  ModuleType,
+} from "@/utils/models";
 import React, { useEffect, useState } from "react";
 import genFactors from "../../utils/generationFactors.json";
 import { useQuery } from "@tanstack/react-query";
@@ -16,6 +22,7 @@ import TextInput from "../Inputs/TextInput";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSession } from "next-auth/react";
 import { orientations } from "@/utils/constants";
+import { IoMdRemoveCircle } from "react-icons/io";
 type SystemProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -29,6 +36,16 @@ type Filters = {
   search: string;
 };
 type QueryTypes = "KITS POR PREMISSA" | "TODOS OS KITS";
+type SelectedKitsState = {
+  kitId: string | string[];
+  tipo?: "TRADICIONAL" | "PROMOCIONAL";
+  nome: string;
+  topologia: string;
+  modulos: ModuleType[];
+  inversores: InverterType[];
+  fornecedor: string;
+  preco: number;
+}[];
 function getIdealPowerInterval(
   consumption: number,
   city: string | undefined | null,
@@ -56,6 +73,94 @@ function getIdealPowerInterval(
     min: -400 + (consumption / cityFactors[orientation]) * 1000,
     ideal: consumption / cityFactors[orientation],
   };
+}
+function getSelectedKitsPowerPeak(selectedKits: SelectedKitsState) {
+  var totalSum = 0;
+  selectedKits.forEach((kit) => {
+    const kitPeakPower = getPeakPotByModules(kit.modulos);
+    totalSum = totalSum + kitPeakPower;
+  });
+  return totalSum;
+}
+function combineModules(
+  modulosArray: {
+    modelo: string;
+    potencia: number;
+    qtde: number;
+    id: string;
+    fabricante: string;
+    garantia: number;
+  }[]
+): {
+  modelo: string;
+  potencia: number;
+  qtde: number;
+  id: string;
+  fabricante: string;
+  garantia: number;
+}[] {
+  const combinedModulos: { [key: string]: { qtde: number } } = {};
+
+  for (const modulo of modulosArray) {
+    const key = `${modulo.modelo}==${modulo.potencia}==${modulo.id}==${modulo.fabricante}==${modulo.garantia}`;
+    if (combinedModulos[key]) {
+      combinedModulos[key].qtde += modulo.qtde;
+    } else {
+      combinedModulos[key] = { qtde: modulo.qtde };
+    }
+  }
+
+  return Object.entries(combinedModulos).map(([key, value]) => {
+    const [modelo, potencia, id, fabricante, garantia] = key.split("==");
+    return {
+      modelo,
+      potencia: Number(potencia),
+      qtde: value.qtde,
+      id: id,
+      fabricante: fabricante,
+      garantia: Number(garantia),
+    };
+  });
+}
+function combineInverters(
+  invertersArray: {
+    modelo: string;
+    potenciaNominal: number;
+    qtde: number;
+    id: string;
+    fabricante: string;
+    garantia: number;
+  }[]
+): {
+  modelo: string;
+  potenciaNominal: number;
+  qtde: number;
+  id: string;
+  fabricante: string;
+  garantia: number;
+}[] {
+  const combinedInverters: { [key: string]: { qtde: number } } = {};
+
+  for (const modulo of invertersArray) {
+    const key = `${modulo.modelo}==${modulo.potenciaNominal}==${modulo.id}==${modulo.fabricante}==${modulo.garantia}`;
+    if (combinedInverters[key]) {
+      combinedInverters[key].qtde += modulo.qtde;
+    } else {
+      combinedInverters[key] = { qtde: modulo.qtde };
+    }
+  }
+
+  return Object.entries(combinedInverters).map(([key, value]) => {
+    const [modelo, potenciaNominal, id, fabricante, garantia] = key.split("==");
+    return {
+      modelo,
+      potenciaNominal: Number(potenciaNominal),
+      qtde: value.qtde,
+      id: id,
+      fabricante: fabricante,
+      garantia: Number(garantia),
+    };
+  });
 }
 function System({
   proposeInfo,
@@ -128,6 +233,8 @@ function System({
     refetchOnWindowFocus: false,
   });
   const [filteredKits, setFilteredKits] = useState<IKit[] | undefined>(kits);
+
+  const [selectedKits, setSelectedKits] = useState<SelectedKitsState>([]);
   function handleFilters() {
     var newArr;
     if (filters.suppliers.length > 0) {
@@ -166,26 +273,135 @@ function System({
     const price = kit.preco;
     const topology = kit.topologia;
     const supplier = kit.fornecedor;
+    if (selectedKits.some((prevKit) => prevKit.topologia != topology)) {
+      toast.error("Não é possível selecionar kits de topologia diferente.");
+      return;
+    }
+    if (selectedKits.some((prevKit) => prevKit.tipo != kit.tipo)) {
+      toast.error(
+        "Não é possível selecionar kits tradicionais e promocionais numa única proposta."
+      );
+      return;
+    }
+    if (selectedKits.some((prevKit) => prevKit.fornecedor != kit.fornecedor)) {
+      toast.error(
+        "Não é possível selecionar kits de diferentes fornecedores numa única proposta."
+      );
+      return;
+    }
+    var currentSelectedKitsCopy = [...selectedKits];
+    currentSelectedKitsCopy.push({
+      kitId: kit._id ? kit._id : "",
+      tipo: kit.tipo,
+      nome: kit.nome,
+      topologia: topology,
+      modulos: modules,
+      inversores: inverters,
+      fornecedor: supplier,
+      preco: price,
+    });
+    toast.success("Kit adicionado !");
+    setSelectedKits(currentSelectedKitsCopy);
+    // setProposeInfo((prev) => ({
+    //   ...prev,
+    //   kit: {
+    //     kitId: kit._id ? kit._id : "",
+    //     tipo: kit.tipo,
+    //     nome: kit.nome,
+    //     topologia: topology,
+    //     modulos: modules,
+    //     inversores: inverters,
+    //     fornecedor: supplier,
+    //     preco: price,
+    //   },
+    //   potenciaPico: getPeakPotByModules(modules),
+    // }));
+    // moveToNextStage(null);
+  }
+  function handleProceed() {
+    var proposeKitObject: any;
+    var peakPower: any;
+    if (selectedKits.length == 0) {
+      toast.error("Por favor, selecione ao menos um kit para prosseguir.");
+      return;
+    }
+    if (selectedKits.length > 1) {
+      const kitIds = selectedKits.map((selectedKit) => {
+        if (typeof selectedKit.kitId == "string") return selectedKit.kitId;
+        else return selectedKit.kitId[0];
+      });
+      const kitType = selectedKits[0].tipo;
+      const kitName = selectedKits
+        .map((selectedKit) => selectedKit.nome)
+        .join(" + ");
+      const kitTopology = selectedKits[0].topologia;
+
+      const concatenatedModules = selectedKits.reduce(
+        // @ts-ignore
+        (accumulator, currentKit) => {
+          return [...accumulator.modulos, ...currentKit.modulos];
+        }
+      );
+      // @ts-ignore
+      const kitModules = combineModules(concatenatedModules);
+
+      const concatenatedInverters = selectedKits.reduce(
+        // @ts-ignore
+        (accumulator, currentKit) => {
+          return [...accumulator.inversores, ...currentKit.inversores];
+        }
+      );
+      // @ts-ignore
+      const kitInverters = combineInverters(concatenatedInverters);
+      const kitSupplier = selectedKits[0].fornecedor;
+      // @ts-ignore
+      const kitPrice = selectedKits.reduce((accumulator, currentKit) => {
+        return accumulator.preco + currentKit.preco;
+      });
+      // @ts-ignore
+      peakPower = selectedKits.reduce((accumulator, currentKit) => {
+        return (
+          getPeakPotByModules(accumulator.modulos) +
+          getPeakPotByModules(currentKit.modulos)
+        );
+      });
+      proposeKitObject = {
+        kitId: kitIds,
+        tipo: kitType,
+        nome: kitName,
+        topologia: kitTopology,
+        modulos: kitModules,
+        inversores: kitInverters,
+        fornecedor: kitSupplier,
+        preco: kitPrice,
+      };
+    } else {
+      proposeKitObject = {
+        kitId: selectedKits[0].kitId,
+        tipo: selectedKits[0].tipo,
+        nome: selectedKits[0].nome,
+        topologia: selectedKits[0].topologia,
+        modulos: selectedKits[0].modulos,
+        inversores: selectedKits[0].inversores,
+        fornecedor: selectedKits[0].fornecedor,
+        preco: selectedKits[0].preco,
+      };
+      peakPower = getPeakPotByModules(selectedKits[0].modulos);
+    }
+    console.log(selectedKits, peakPower);
+    console.log(proposeKitObject);
+    // @ts-ignore
     setProposeInfo((prev) => ({
       ...prev,
-      kit: {
-        kitId: kit._id ? kit._id : "",
-        tipo: kit.tipo,
-        nome: kit.nome,
-        topologia: topology,
-        modulos: modules,
-        inversores: inverters,
-        fornecedor: supplier,
-        preco: price,
-      },
-      potenciaPico: getPeakPotByModules(modules),
+      kit: proposeKitObject,
+      potenciaPico: peakPower,
     }));
     moveToNextStage(null);
   }
   useEffect(() => {
     setFilteredKits(kits);
   }, [kits]);
-  console.log(filteredKits);
+
   return (
     <div className="flex min-h-[400px] w-full flex-col gap-2 py-4">
       <div className="flex w-full items-center justify-center">
@@ -374,6 +590,49 @@ function System({
           )
         ) : null}
       </div>
+      <div className="flex w-full flex-col items-center justify-between gap-2 px-1">
+        <h1 className="w-full text-start font-bold">KITS SELECIONADOS</h1>
+        {selectedKits.length > 0 ? (
+          <>
+            {selectedKits.map((kit, index) => (
+              <div
+                key={index}
+                className="flex w-full items-center justify-between pb-1"
+              >
+                <p className="italic text-gray-500">{kit.nome}</p>
+                <button
+                  onClick={() => {
+                    var currentSelectedKitsCopy = [...selectedKits];
+                    currentSelectedKitsCopy.splice(index, 1);
+                    setSelectedKits(currentSelectedKitsCopy);
+                  }}
+                  className="text-gray-500 hover:text-red-500"
+                >
+                  <IoMdRemoveCircle />
+                </button>
+              </div>
+            ))}
+            <div className="flex w-full items-center justify-center">
+              <div className="flex flex-col rounded border border-[#15599a] p-2 text-[#15599a]">
+                <h1 className="text-center">POTÊNCIA PICO TOTAL</h1>
+                <h1 className="text-center font-medium">
+                  {getSelectedKitsPowerPeak(selectedKits).toLocaleString(
+                    "pt-br",
+                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                  )}{" "}
+                  kWp{" "}
+                </h1>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="flex h-[80px] w-full items-center justify-center">
+            <p className="text-sm italic text-gray-500">
+              Sem kits selecionados...
+            </p>
+          </div>
+        )}
+      </div>
       <div className="flex w-full items-center justify-between gap-2 px-1">
         <button
           onClick={() => moveToPreviousStage(null)}
@@ -381,12 +640,12 @@ function System({
         >
           Voltar
         </button>
-        {/* <button
-          onClick={() => console.log("TEXT")}
+        <button
+          onClick={() => handleProceed()}
           className="rounded p-2 font-bold hover:bg-black hover:text-white"
         >
           Prosseguir
-        </button> */}
+        </button>
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import { PricesObj, Pricing, getPrices } from "@/utils/pricing/methods";
 import { MdAttachMoney } from "react-icons/md";
 import { BsFillCalendarCheckFill } from "react-icons/bs";
 import dayjs from "dayjs";
+import { IoMdAdd } from "react-icons/io";
 type KitCardProps = {
   kit: IKit;
   project: IProject;
@@ -35,6 +36,7 @@ function ProposeKit({ kit, project, propose, handleSelect }: KitCardProps) {
         kitId: kit._id ? kit._id : "",
         tipo: kit.tipo,
         nome: kit.nome,
+        fornecedor: kit.fornecedor,
         topologia: kit.topologia,
         modulos: kit.modulos,
         inversores: kit.inversores,
@@ -172,7 +174,7 @@ function ProposeKit({ kit, project, propose, handleSelect }: KitCardProps) {
           onClick={() => handleSelect(kit)}
           className="flex h-[30px] w-[30px] items-center justify-center rounded-full border border-[#15599a] p-1 text-[#15599a] hover:bg-[#15599a] hover:text-white"
         >
-          <HiOutlineChevronRight />
+          <IoMdAdd />
         </button>
       </div>
     </div>

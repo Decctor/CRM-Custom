@@ -28,6 +28,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Link from "next/link";
 import JSZip from "jszip";
 import { basename } from "path";
+import { FaUser } from "react-icons/fa";
 function copyToClipboard(text: string | undefined) {
   if (text) {
     var dummy = document.createElement("textarea");
@@ -202,6 +203,10 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                 <p className="text-xs">{propose?.infoProjeto?.nome}</p>
               </div>
             </Link>
+            <div className="flex items-center gap-2">
+              <FaUser style={{ color: "#15599a", fontSize: "15px" }} />
+              <p className="text-xs">{propose?.autor?.nome}</p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">

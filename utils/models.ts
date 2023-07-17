@@ -272,7 +272,7 @@ export interface IProposeInfo {
     distancia: number;
   };
   kit?: {
-    kitId: string;
+    kitId: string | string[];
     tipo?: "TRADICIONAL" | "PROMOCIONAL";
     nome: string;
     topologia: string;

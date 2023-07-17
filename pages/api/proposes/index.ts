@@ -116,7 +116,12 @@ const proposeSchema = z.union([
       }),
     }),
     kit: z.object({
-      kitId: z.string({ required_error: "Por favor, forneça o ID do kit." }),
+      kitId: z.union([
+        z.string({ required_error: "Por favor, forneça o ID do kit." }),
+        z.array(
+          z.string({ required_error: "Por favor, forneça o ID do kit." })
+        ),
+      ]),
       nome: z.string({ required_error: "Por favor, forneça o nome do kit." }),
       topologia: z.string({
         required_error: "Por favor, forneça a topologia do kit.",
