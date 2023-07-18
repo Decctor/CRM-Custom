@@ -1,33 +1,34 @@
-// const Kits = require("./utils/kits.json");
-const Kits = [];
+const Kits = require("./kits.json");
+// const Kits = [];
 const Inverters = require("./utils/pvinverters.json");
 const Modules = require("./utils/pvmodules.json");
 const fs = require("fs");
 function formatSVB() {
   const formatted = Kits.map((kit) => {
     return {
-      nome: kit.Nome,
+      nome: kit.Nome + "(SOLO)",
       categoria: "ON-GRID",
       tipo: "TRADICIONAL",
-      topologia: "MICRO-INVERSOR",
+      topologia: "INVERSOR",
       potPico: Number(
         ((kit["M�dulo qtd"] * kit["M�dulo pot�ncia (W)"]) / 1000).toFixed(2)
       ),
       preco: Number(Number(kit["Custo (R$)"]).toFixed(2)),
       ativo: true,
-      fornecedor: "GENYX",
-      estruturasCompativeis: ["Fibrocimento"],
+      fornecedor: "BYD",
+      estruturasCompativeis: ["Solo"],
       incluiEstrutura: true,
       incluiTransformador: false,
       inversores: [
         {
-          id: Inverters.find((inv) => inv.modelo == kit["Inversor 1 modelo"])
-            .id,
+          id: Inverters.find(
+            (inv) => inv.modelo == kit["Inversor 1 modelo"].split("BYD-")[1]
+          ).id,
           fabricante: Inverters.find(
-            (inv) => inv.modelo == kit["Inversor 1 modelo"]
+            (inv) => inv.modelo == kit["Inversor 1 modelo"].split("BYD-")[1]
           ).fabricante,
           modelo: Inverters.find(
-            (inv) => inv.modelo == kit["Inversor 1 modelo"]
+            (inv) => inv.modelo == kit["Inversor 1 modelo"].split("BYD-")[1]
           ).modelo,
           qtde: Number(kit["Inversor 1 qtd"]),
           garantia: 12,
@@ -36,11 +37,15 @@ function formatSVB() {
       ],
       modulos: [
         {
-          id: Modules.find((mod) => mod.modelo == kit["M�dulo modelo"]).id,
-          fabricante: Modules.find((mod) => mod.modelo == kit["M�dulo modelo"])
-            .fabricante,
-          modelo: Modules.find((mod) => mod.modelo == kit["M�dulo modelo"])
-            .modelo,
+          id: Modules.find(
+            (mod) => mod.modelo == kit["M�dulo modelo"].split("BYD-")[1]
+          ).id,
+          fabricante: Modules.find(
+            (mod) => mod.modelo == kit["M�dulo modelo"].split("BYD-")[1]
+          ).fabricante,
+          modelo: Modules.find(
+            (mod) => mod.modelo == kit["M�dulo modelo"].split("BYD-")[1]
+          ).modelo,
           qtde: Number(kit["M�dulo qtd"]),
           potencia: Number(kit["M�dulo pot�ncia (W)"]),
           garantia: 12,
@@ -120,7 +125,7 @@ function formatBYD() {
   });
   return formatted;
 }
-const formatted = formatBYD();
+const formatted = formatSVB();
 const json = JSON.stringify(formatted);
 fs.writeFile("./formattedKits.json", json, "utf8", function (err) {
   if (err) {

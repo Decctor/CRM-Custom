@@ -162,8 +162,10 @@ export function getTaxValue(
   salePrice: number,
   margin = fixedMargin
 ): number {
+  if (salePrice == 0) return 0;
   const costBySale = cost / salePrice;
   const taxValue = 1 - margin - costBySale;
+
   return taxValue;
 }
 export function getMarginValue(
@@ -171,6 +173,7 @@ export function getMarginValue(
   salePrice: number,
   tax = fixedTaxAliquot
 ): number {
+  if (salePrice == 0) return 0;
   const costBySale = cost / salePrice;
   const marginValue = 1 - tax - costBySale;
   return marginValue;

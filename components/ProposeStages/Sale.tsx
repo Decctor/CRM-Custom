@@ -47,6 +47,7 @@ function Sale({
 
           const taxValue =
             getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+          console.log("SOMATORIA", priceType, taxValue);
           const marginValue =
             getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
 
@@ -128,6 +129,7 @@ function Sale({
     }));
     moveToNextStage(null);
   }
+  console.log("PREÇOS", pricing);
   return (
     <>
       <div className="flex w-full flex-col gap-4 py-4">

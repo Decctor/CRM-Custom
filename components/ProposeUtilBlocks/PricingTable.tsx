@@ -48,6 +48,7 @@ function PricingTable({
 
           const taxValue =
             getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+          console.log("SOMATORIA", priceType, taxValue);
           const marginValue =
             getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
 
@@ -75,6 +76,7 @@ function PricingTable({
 
           const taxValue =
             getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+          // console.log("SOMATORIA", priceType, taxValue);
           const marginValue =
             getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
 

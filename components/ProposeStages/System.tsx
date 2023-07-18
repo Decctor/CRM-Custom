@@ -335,28 +335,39 @@ function System({
         .map((selectedKit) => selectedKit.nome)
         .join(" + ");
       const kitTopology = selectedKits[0].topologia;
-
+      console.log("KITS", selectedKits);
       const concatenatedModules = selectedKits.reduce(
         // @ts-ignore
         (accumulator, currentKit) => {
-          return [...accumulator.modulos, ...currentKit.modulos];
+          const iterator = accumulator.modulos
+            ? accumulator.modulos
+            : accumulator;
+          return [...iterator, ...currentKit.modulos];
         }
       );
+
       // @ts-ignore
       const kitModules = combineModules(concatenatedModules);
 
       const concatenatedInverters = selectedKits.reduce(
         // @ts-ignore
         (accumulator, currentKit) => {
-          return [...accumulator.inversores, ...currentKit.inversores];
+          const iterator = accumulator.inversores
+            ? accumulator.inversores
+            : accumulator;
+          return [...iterator, ...currentKit.inversores];
         }
       );
+
       // @ts-ignore
       const kitInverters = combineInverters(concatenatedInverters);
+
       const kitSupplier = selectedKits[0].fornecedor;
       // @ts-ignore
       const kitPrice = selectedKits.reduce((accumulator, currentKit) => {
-        return accumulator.preco + currentKit.preco;
+        console.log("ACCUMULUDADOR", accumulator);
+        const iterator = accumulator.preco ? accumulator.preco : accumulator;
+        return iterator + currentKit.preco;
       });
       // @ts-ignore
       peakPower = selectedKits.reduce((accumulator, currentKit) => {
@@ -401,7 +412,7 @@ function System({
   useEffect(() => {
     setFilteredKits(kits);
   }, [kits]);
-
+  console.log(selectedKits);
   return (
     <div className="flex min-h-[400px] w-full flex-col gap-2 py-4">
       <div className="flex w-full items-center justify-center">
