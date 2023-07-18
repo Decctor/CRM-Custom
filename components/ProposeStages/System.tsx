@@ -342,6 +342,7 @@ function System({
           const iterator = accumulator.modulos
             ? accumulator.modulos
             : accumulator;
+          // @ts-ignore
           return [...iterator, ...currentKit.modulos];
         }
       );
@@ -355,6 +356,7 @@ function System({
           const iterator = accumulator.inversores
             ? accumulator.inversores
             : accumulator;
+          // @ts-ignore
           return [...iterator, ...currentKit.inversores];
         }
       );
@@ -367,6 +369,7 @@ function System({
       const kitPrice = selectedKits.reduce((accumulator, currentKit) => {
         console.log("ACCUMULUDADOR", accumulator);
         const iterator = accumulator.preco ? accumulator.preco : accumulator;
+        // @ts-ignore
         return iterator + currentKit.preco;
       });
       // @ts-ignore

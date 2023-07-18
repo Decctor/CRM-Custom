@@ -31,10 +31,12 @@ const clientSchema = z.object({
       invalid_type_error: "Por favor, preencha o nome do cliente.",
     })
     .min(5, { message: "Por favor, preencha um nome com ao menos 5 letras." }),
-  cpfCnpj: z.string({
-    required_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
-    invalid_type_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
-  }),
+  cpfCnpj: z
+    .string({
+      required_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
+      invalid_type_error: "Por favor, preencha o CPF ou CNPJ do cliente.",
+    })
+    .optional(),
   telefonePrimario: z
     .string({
       required_error: "Por favor, preencha o telefone do cliente.",
@@ -42,25 +44,35 @@ const clientSchema = z.object({
     })
     .min(11, "Por favor, preencha um um telefone válido."),
   telefoneSecundario: z.string().optional(),
-  email: z.string({
-    required_error: "Por favor, preencha o email do cliente.",
-    invalid_type_error: "Por favor, preencha o email do cliente.",
-  }),
+  email: z
+    .string({
+      required_error: "Por favor, preencha o email do cliente.",
+      invalid_type_error: "Por favor, preencha o email do cliente.",
+    })
+    .optional(),
 
-  cep: z.string({ required_error: "Por favor, preencha o CEP do cliente." }),
-  bairro: z.string({
-    required_error: "Por favor, preencha o bairro do cliente.",
-  }),
-  endereco: z.string({
-    required_error: "Por favor, preencha o endereço do cliente.",
-    invalid_type_error: "Por favor, preencha o endereço do cliente.",
-  }),
-  numeroOuIdentificador: z.string({
-    required_error:
-      "Por favor, preencha o número ou código que identifique a residência.",
-    invalid_type_error:
-      "Por favor, preencha o número ou código que identifique a residência.",
-  }),
+  cep: z
+    .string({ required_error: "Por favor, preencha o CEP do cliente." })
+    .optional(),
+  bairro: z
+    .string({
+      required_error: "Por favor, preencha o bairro do cliente.",
+    })
+    .optional(),
+  endereco: z
+    .string({
+      required_error: "Por favor, preencha o endereço do cliente.",
+      invalid_type_error: "Por favor, preencha o endereço do cliente.",
+    })
+    .optional(),
+  numeroOuIdentificador: z
+    .string({
+      required_error:
+        "Por favor, preencha o número ou código que identifique a residência.",
+      invalid_type_error:
+        "Por favor, preencha o número ou código que identifique a residência.",
+    })
+    .optional(),
   complemento: z.string().optional(),
   uf: z.union([z.literal("MG"), z.literal("GO"), z.null()]),
   cidade: z.string({
