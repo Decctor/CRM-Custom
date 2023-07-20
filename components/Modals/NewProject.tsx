@@ -22,6 +22,7 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { funnels, projectTypes } from "@/utils/constants";
 import SelectInput from "../Inputs/SelectInput";
+import Link from "next/link";
 type Funil = {
   id: number;
   etapaId: number;
@@ -97,7 +98,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
     funis: [],
   });
   const [opportunityId, setOpportunityId] = useState<string>("");
-
+  const [createdProjectId, setCreateProjectId] = useState<string | null>(null);
   async function setAddressDataByCEP(cep: string) {
     const addressInfo = await getCEPInfo(cep);
     const toastID = toast.loading("Buscando informações sobre o CEP...", {
@@ -178,6 +179,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
         descricao: undefined,
         funis: [],
       });
+      setCreateProjectId(data.data);
       toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["projects"] });
     } catch (error) {
@@ -203,16 +205,20 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
       if (!opportunityInfo) return;
       setClientInfo((prev) => ({
         ...prev,
-        representante: opportunityInfo.representante,
-        nome: opportunityInfo.nome,
-        email: opportunityInfo.email,
-        cpfCnpj: opportunityInfo.cpfCnpj,
-        telefonePrimario: opportunityInfo.telefonePrimario,
-        cep: opportunityInfo.cep,
-        uf: opportunityInfo.uf,
-        cidade: opportunityInfo.cidade,
-        endereco: opportunityInfo.logradouro,
-        bairro: opportunityInfo.bairro,
+        representante: opportunityInfo.representante
+          ? opportunityInfo.representante
+          : null,
+        nome: opportunityInfo.nome ? opportunityInfo.nome : "",
+        email: opportunityInfo.email ? opportunityInfo.email : "",
+        cpfCnpj: opportunityInfo.cpfCnpj ? opportunityInfo.cpfCnpj : "",
+        telefonePrimario: opportunityInfo.telefonePrimario
+          ? opportunityInfo.telefonePrimario
+          : "",
+        cep: opportunityInfo.cep ? opportunityInfo.cep : "",
+        uf: opportunityInfo.uf ? opportunityInfo.uf : null,
+        cidade: opportunityInfo.cidade ? opportunityInfo.cidade : "",
+        endereco: opportunityInfo.logradouro ? opportunityInfo.logradouro : "",
+        bairro: opportunityInfo.bairro ? opportunityInfo.bairro : "",
       }));
       toast.success("Informações buscadas com sucesso !", { duration: 1500 });
       toast.dismiss(toastID);
@@ -668,7 +674,14 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
               </div>
             </div>
           </div>
-          <div className="my-2 flex w-full items-center justify-end px-4">
+          <div className="my-2 flex w-full items-center justify-end gap-4 px-4">
+            {createdProjectId ? (
+              <Link href={`/projeto/id/${createdProjectId}`}>
+                <button className="font-medium text-green-500 duration-300 ease-in-out hover:scale-110">
+                  IR PARA O PROJETO CRIADO
+                </button>
+              </Link>
+            ) : null}
             <button
               onClick={() => handleProjectCreation()}
               className="font-medium text-[#15599a] duration-300 ease-in-out hover:scale-110"

@@ -59,7 +59,7 @@ function ReviewInfo({
   const {
     mutate: createContractRequest,
     isLoading,
-    isSuccess,
+    isSuccess, //64adb93249f94d9354becb64
   } = useMutation({
     mutationKey: ["createContractRequest"],
     mutationFn: async () => {
@@ -69,6 +69,7 @@ function ReviewInfo({
           {
             ...requestInfo,
             idProjetoCRM: projectId,
+            idPropostaCRM: proposeInfo?._id,
           }
         );
         const { data: proposeUpdate } = await axios.put(
@@ -97,6 +98,7 @@ function ReviewInfo({
               "funis.$[elem].etapaId": 8,
               efetivacao: true,
               dataEfetivacao: new Date().toISOString(),
+              propostaAtiva: proposeInfo?._id,
               idSolicitacaoContrato: data.data,
             },
           },

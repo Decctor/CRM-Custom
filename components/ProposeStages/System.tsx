@@ -12,7 +12,11 @@ import axios, { AxiosError } from "axios";
 import LoadingComponent from "../utils/LoadingComponent";
 import Kit from "../Cards/Kit";
 import { ImSad } from "react-icons/im";
-import { getPeakPotByModules, useKitQueryPipelines } from "@/utils/methods";
+import {
+  getEstimatedGen,
+  getPeakPotByModules,
+  useKitQueryPipelines,
+} from "@/utils/methods";
 import { toast } from "react-hot-toast";
 import ProposeKit from "../Cards/ProposeKit";
 import { VscFilter, VscFilterFilled } from "react-icons/vsc";
@@ -23,6 +27,10 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { useSession } from "next-auth/react";
 import { orientations } from "@/utils/constants";
 import { IoMdRemoveCircle } from "react-icons/io";
+import {
+  MdOutlineKeyboardArrowDown,
+  MdOutlineKeyboardArrowUp,
+} from "react-icons/md";
 type SystemProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -626,7 +634,7 @@ function System({
                 </button>
               </div>
             ))}
-            <div className="flex w-full items-center justify-center">
+            <div className="flex w-full items-center justify-center gap-2">
               <div className="flex flex-col rounded border border-[#15599a] p-2 text-[#15599a]">
                 <h1 className="text-center">POTÊNCIA PICO TOTAL</h1>
                 <h1 className="text-center font-medium">
@@ -635,6 +643,72 @@ function System({
                     { minimumFractionDigits: 2, maximumFractionDigits: 2 }
                   )}{" "}
                   kWp{" "}
+                </h1>
+              </div>
+              <div
+                className={`flex flex-col rounded border p-2 ${
+                  getSelectedKitsPowerPeak(selectedKits) /
+                    getIdealPowerInterval(
+                      proposeInfo.premissas.consumoEnergiaMensal,
+                      project.cliente?.cidade,
+                      project.cliente?.uf,
+                      proposeInfo.premissas.orientacao
+                    ).ideal >
+                  0.99
+                    ? "border-green-500 text-green-500"
+                    : "border-red-500 text-red-500"
+                } `}
+              >
+                <div className="flex items-center gap-2">
+                  <h1 className="text-center">GERAÇÃO PREVISTA</h1>
+                  <div className="flex items-center self-end">
+                    {getSelectedKitsPowerPeak(selectedKits) /
+                      getIdealPowerInterval(
+                        proposeInfo.premissas.consumoEnergiaMensal,
+                        project.cliente?.cidade,
+                        project.cliente?.uf,
+                        proposeInfo.premissas.orientacao
+                      ).ideal >
+                    0.99 ? (
+                      <MdOutlineKeyboardArrowUp style={{ fontSize: "20px" }} />
+                    ) : (
+                      <MdOutlineKeyboardArrowDown
+                        style={{ fontSize: "20px" }}
+                      />
+                    )}
+                    <p className="self-end">
+                      {(
+                        (getSelectedKitsPowerPeak(selectedKits) /
+                          getIdealPowerInterval(
+                            proposeInfo.premissas.consumoEnergiaMensal,
+                            project.cliente?.cidade,
+                            project.cliente?.uf,
+                            proposeInfo.premissas.orientacao
+                          ).ideal) *
+                        100
+                      ).toLocaleString("pt-br", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0,
+                      })}
+                      %
+                    </p>
+                  </div>
+                </div>
+
+                <h1 className="text-center font-medium">
+                  {(
+                    getSelectedKitsPowerPeak(selectedKits) *
+                    getEstimatedGen(
+                      getSelectedKitsPowerPeak(selectedKits),
+                      project.cliente?.cidade,
+                      project.cliente?.uf,
+                      proposeInfo.premissas.orientacao
+                    )
+                  ).toLocaleString("pt-br", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  kWh{" "}
                 </h1>
               </div>
             </div>

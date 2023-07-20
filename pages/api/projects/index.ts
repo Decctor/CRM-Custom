@@ -46,7 +46,7 @@ function formatActivitiesWithStatus(activities: ProjectActivity[]) {
 }
 
 type PostResponse = {
-  data: IProject;
+  data: string;
   message: string;
 };
 
@@ -134,11 +134,7 @@ const createProject: NextApiHandler<PostResponse> = async (req, res) => {
     dataInsercao: new Date().toISOString(),
   });
   res.status(201).json({
-    data: {
-      ...project,
-      identificador: identifier,
-      dataInsercao: new Date().toISOString(),
-    },
+    data: dbRes.insertedId,
     message: "Projeto criado com sucesso.",
   });
 };
@@ -387,6 +383,7 @@ const editProjectSchema = z.object({
       documentoComFoto: z.string().optional().nullable(),
       iptu: z.string().optional().nullable(),
       contaDeEnergia: z.string().optional().nullable(),
+      laudo: z.string().optional().nullable(),
     })
     .optional(),
   descricao: z.string().optional(),

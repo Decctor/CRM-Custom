@@ -1,4 +1,4 @@
-import { IProject, IProposeInfo } from "@/utils/models";
+import { IProject, IProposeInfo, ITechnicalAnalysis } from "@/utils/models";
 import {
   PricesObj,
   PricesPromoObj,
@@ -19,6 +19,7 @@ type SaleProps = {
   project: IProject;
   moveToNextStage: React.Dispatch<React.SetStateAction<null>>;
   moveToPreviousStage: React.Dispatch<React.SetStateAction<null>>;
+  selectedAnalysis: ITechnicalAnalysis | null;
 };
 function Sale({
   proposeInfo,
@@ -26,11 +27,15 @@ function Sale({
   project,
   moveToNextStage,
   moveToPreviousStage,
+  selectedAnalysis,
 }: SaleProps) {
   const { data: session } = useSession({ required: true });
   const [editFinalPriceModalIsOpen, setEditFinalPriceModalIsOpen] =
     useState<boolean>(false);
-  const [pricing, setPricing] = useState(getPrices(project, proposeInfo));
+  const [pricing, setPricing] = useState(
+    getPrices(project, proposeInfo, selectedAnalysis)
+  );
+  console.log(selectedAnalysis);
   function getTotals(pricing: Pricing) {
     switch (proposeInfo.kit?.tipo) {
       case "PROMOCIONAL":
@@ -198,7 +203,8 @@ function Sale({
           closeModal={() => setEditFinalPriceModalIsOpen(false)}
           finalProposePrice={getTotals(pricing).finalProposePrice}
           finalSuggestedPrice={
-            getTotals(getPrices(project, proposeInfo)).finalProposePrice
+            getTotals(getPrices(project, proposeInfo, selectedAnalysis))
+              .finalProposePrice
           }
           limit={session?.user.permissoes.precos.editar ? undefined : 0.02}
         />

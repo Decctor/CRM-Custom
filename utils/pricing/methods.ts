@@ -1,6 +1,7 @@
 import {
   IProject,
   IProposeInfo,
+  ITechnicalAnalysis,
   ModuleType,
   aditionalServicesType,
 } from "../models";
@@ -80,6 +81,13 @@ export interface PricesObj {
 }
 export interface PricesPromoObj {
   kit: {
+    margemLucro: number;
+    imposto: number;
+    custo: number;
+    vendaProposto: number;
+    vendaFinal: number;
+  };
+  instalacao?: {
     margemLucro: number;
     imposto: number;
     custo: number;
@@ -294,9 +302,49 @@ function getSalePrice({
     0.05
   );
 }
+type TechnicalAnalysisCostReturnObj = {
+  installationCosts: number;
+  structureCosts: number;
+  paCosts: number;
+  otherCosts: number;
+};
+export function extractTechnicalAnalysisCosts(
+  technicalAnalysis: ITechnicalAnalysis | null
+) {
+  var installationCosts = 0;
+  var structureCosts = 0;
+  var paCosts = 0;
+  var otherCosts = 0;
+  var returnObj: TechnicalAnalysisCostReturnObj = {
+    installationCosts,
+    structureCosts,
+    paCosts,
+    otherCosts,
+  };
+  if (!technicalAnalysis) return returnObj;
+  const costArray = technicalAnalysis.custosAdicionais;
+  if (costArray) {
+    returnObj = costArray.reduce((acc, current) => {
+      var type;
+      console.log("ACCUMULADOR", acc);
+      if (current.categoria == "PADRÃO") type = "paCosts";
+      if (current.categoria == "ESTRUTURA") type = "structureCosts";
+      if (current.categoria == "INSTALAÇÃO") type = "installationCosts";
+      if (current.categoria == "OUTROS") type = "otherCosts";
+      if (!type) return acc;
+      acc[type as keyof TechnicalAnalysisCostReturnObj] =
+        acc[type as keyof TechnicalAnalysisCostReturnObj] + current.valor;
+      return acc;
+    }, returnObj);
+
+    return returnObj;
+  }
+  return returnObj;
+}
 export function getPrices(
   project: IProject | undefined,
-  propose: IProposeInfo
+  propose: IProposeInfo,
+  technicalAnalysis: ITechnicalAnalysis | null
 ): PricesObj | PricesPromoObj {
   if (propose.kit?.tipo == "PROMOCIONAL") {
     // Extracting premisses and other info from project/propose
@@ -305,22 +353,19 @@ export function getPrices(
     const peakPower = getPeakPotByModules(propose.kit?.modulos);
     const moduleQty = getModulesQty(propose.kit?.modulos);
     const distance = propose.premissas.distancia;
-
+    const extractedCostsFromTechnicalAnalysis =
+      extractTechnicalAnalysisCosts(technicalAnalysis);
     // Extracting and defining prices
     const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
-    const paPrice = project?.servicosAdicionais?.padrao
-      ? project.servicosAdicionais.padrao
-      : 0; // to be defined
+    const paPrice = extractedCostsFromTechnicalAnalysis.paCosts;
     const structurePrice = getStructureCost({
-      structurePrice: project?.servicosAdicionais?.estrutura,
+      structurePrice: extractedCostsFromTechnicalAnalysis.structureCosts,
       structureType: structureType,
       moduleQty: moduleQty,
       peakPower: peakPower,
       city: city,
     });
-    const extraServicesPrice = project?.servicosAdicionais?.outros
-      ? project?.servicosAdicionais?.outros
-      : 0; // to be defined
+    const extraServicesPrice = extractedCostsFromTechnicalAnalysis.otherCosts;
 
     // Defining price object
     var pricesPromo: PricesPromoObj = {
@@ -344,7 +389,20 @@ export function getPrices(
         vendaFinal: getProposedPrice(specialLaborPriceInaciolandia, 0, 0),
       };
     }
-    // Updating prices object in case of PA/structure costs
+    // Updating prices object in case of PA/structure/installation/extra costs
+    if (extractedCostsFromTechnicalAnalysis.installationCosts > 0) {
+      pricesPromo.instalacao = {
+        margemLucro: fixedMargin,
+        imposto: fixedTaxAliquot,
+        custo: extractedCostsFromTechnicalAnalysis.installationCosts,
+        vendaProposto: getProposedPrice(
+          extractedCostsFromTechnicalAnalysis.installationCosts
+        ),
+        vendaFinal: getProposedPrice(
+          extractedCostsFromTechnicalAnalysis.installationCosts
+        ),
+      };
+    }
     if (paPrice > 0) {
       pricesPromo.padrao = {
         margemLucro: fixedMargin,
@@ -380,21 +438,20 @@ export function getPrices(
     const peakPower = getPeakPotByModules(propose.kit?.modulos); // extract from kit info
     const moduleQty = getModulesQty(propose.kit?.modulos); // extract from kit info
     const distance = propose.premissas.distancia; // get initially from API call
+    const extractedCostsFromTechnicalAnalysis =
+      extractTechnicalAnalysisCosts(technicalAnalysis);
+
     // Extracting and defining prices
     const kitPrice = propose.kit?.preco ? propose.kit?.preco : 0; // extract from kit info
-    const paPrice = project?.servicosAdicionais?.padrao
-      ? project.servicosAdicionais.padrao
-      : 0; // to be defined
+    const paPrice = extractedCostsFromTechnicalAnalysis.paCosts;
     const structurePrice = getStructureCost({
-      structurePrice: project?.servicosAdicionais?.estrutura,
+      structurePrice: extractedCostsFromTechnicalAnalysis.structureCosts,
       structureType: structureType,
       moduleQty: moduleQty,
       peakPower: peakPower,
       city: city,
     });
-    const extraServicesPrice = project?.servicosAdicionais?.outros
-      ? project?.servicosAdicionais?.outros
-      : 0; // to be defined
+    const extraServicesPrice = extractedCostsFromTechnicalAnalysis.otherCosts;
     const maintance = 1; // to be defined
     const delivery = 1; // to be defined
 
@@ -436,7 +493,10 @@ export function getPrices(
       },
     };
     // Costs
-    prices.instalacao.custo = getInstallationCost(peakPower, distance);
+    prices.instalacao.custo =
+      extractedCostsFromTechnicalAnalysis.installationCosts // Using installation cost provided by technical analysis
+        ? extractedCostsFromTechnicalAnalysis.installationCosts
+        : getInstallationCost(peakPower, distance);
     prices.maoDeObra.custo = getLaborPrice(
       project?.cliente?.cidade,
       moduleQty,

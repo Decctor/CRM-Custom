@@ -30,6 +30,7 @@ import NewProject from "@/components/Modals/NewProject";
 import dayjs from "dayjs";
 import Project from "@/components/Cards/Project";
 import SeachProjects from "@/components/ProjectBlocks/SeachProjects";
+import Link from "next/link";
 
 type Options = {
   activeResponsible: string | null;
@@ -403,6 +404,20 @@ export default function Home() {
             </div>
           </DragDropContext>
         ) : null} */}
+        <Link
+          href={
+            "https://forms.office.com/Pages/ResponsePage.aspx?id=8eMER-Xc8UymdamsboG6_zOKWJXTTFJBqfYnVlq8djNUOVA3MTdBNzYwQldIUlNFTFNZWTJBVk9LRS4u"
+          }
+        >
+          <div className="fixed bottom-10 right-[30px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]">
+            <p className="text-xs font-bold uppercase">Sugestões</p>
+          </div>
+        </Link>
+        {/* <Link href={"https://wa.me/55XXXXXXXXXXX"}>
+          <div className="fixed bottom-10 right-[140px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]">
+            <p className="text-xs font-bold uppercase">Suporte</p>
+          </div>
+        </Link> */}
       </div>
       {newProjectModalIsOpen ? (
         <NewProject

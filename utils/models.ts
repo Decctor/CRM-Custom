@@ -484,3 +484,209 @@ export interface INotification {
   dataLeitura?: string;
   dataInsercao?: string;
 }
+export interface ITechnicalAnalysis {
+  _id: string;
+  nomeVendedor: string;
+  nomeDoCliente: string;
+  codigoSVB: string;
+  cidade: string;
+  cep: string;
+  bairro: string;
+  logradouro: string;
+  numeroResidencia: string;
+  qtdeInversor: string;
+  potInversor: string;
+  marcaInversor: string;
+  qtdeModulos: string;
+  potModulos: string;
+  marcaModulos: string;
+  amperagem: string;
+  numeroMedidor: string;
+  distanciaInversorRoteador: string;
+  obsInstalacao: string;
+  adaptacaoQGBT:
+    | "NÃO SE APLICA"
+    | "CORTE E TRILHO"
+    | "NÃO"
+    | "TRILHO"
+    | "CORTE";
+  alambrado:
+    | "NÃO"
+    | "SIM - RESPONSABILIDADE CLIENTE"
+    | "SIM - RESPONSABILIDADE AMPÈRE"
+    | "NÃO DEFINIDO";
+  avaliarTelhado: "SIM" | "NÃO";
+  britagem:
+    | "NÃO"
+    | "SIM - RESPONSABILIDADE CLIENTE"
+    | "SIM - RESPONSABILIDADE AMPÈRE"
+    | "NÃO DEFINIDO";
+  casaDeMaquinas:
+    | "NÃO"
+    | "SIM - RESPONSABILIDADE CLIENTE"
+    | "SIM - RESPONSABILIDADE AMPÈRE"
+    | "NÃO DEFINIDO";
+  concessionaria: string;
+  construcaoBarracao:
+    | "NÃO"
+    | "SIM - RESPONSABILIDADE CLIENTE"
+    | "SIM - RESPONSABILIDADE AMPÈRE"
+    | "NÃO DEFINIDO";
+  custosAdicionais: {
+    categoria: "PADRÃO" | "ESTRUTURA" | "INSTALAÇÃO" | "OUTROS";
+    custo?: number;
+    descricao: string;
+    qtde: number;
+    valor: number;
+  }[];
+  dataDeAbertura: string;
+  dataDeConclusao?: string;
+  descricaoOrcamentacao: string;
+  descritivo: {
+    texto: string;
+    topíco: string;
+  };
+  descritivoInfraEletrica: string;
+  distanciaInversorPadrao: string;
+  distanciaItbaRural: string;
+  distanciaModulosInversores: string;
+  distanciaSistemaInversor: string;
+  distanciaSistemaQuadro: string;
+  dpsQGBT: "SIM" | "NÃO";
+  espacoQGBT: "SIM" | "NÃO" | "NÃO DEFINIDO";
+  estruturaMontagem:
+    | "NÃO DEFINIDO"
+    | "TELHADO CONVENCIONAL - TELHA BARRO"
+    | "BARRACÃO À CONSTRUIR"
+    | "ESTRUTURA DE SOLO"
+    | "BEZERREIRO";
+  fotoDroneDesenho: "SIM" | "NÃO";
+  fotoFaixada: "SIM" | "NÃO";
+  fotosDrone: string;
+  googleEarth: "SIM" | "NÃO";
+  infoPadraoConjugado?: string;
+  infraCabos: "NÃO DEFINIDO" | "KIT NORMAL" | "KIT+MANGUEIRA" | "PERSONALIZADO";
+  instalacaoRoteador:
+    | "NÃO DEFINIDO"
+    | "SIM - RESPONSABILIDADE AMPÈRE"
+    | "SIM - RESPONSABILIDADE CLIENTE"
+    | "NÃO";
+  limpezaLocalUsinaSolo:
+    | "NÃO DEFINIDO"
+    | "SIM - RESPONSABILIDADE AMPÈRE"
+    | "SIM - RESPONSABILIDADE CLIENTE"
+    | "NÃO";
+  links: {
+    format: string;
+    link: string;
+    title: string;
+  }[];
+  linkVisualizacaoProjeto: string;
+  localAterramento: string;
+  localInstalacaoInversor: string;
+  localizacaoInstalacao: string;
+  medidasLocal: "SIM" | "NÃO";
+  modeloCaixa: string;
+  modLeste?: number;
+  modNordeste?: number;
+  modNoroeste?: number;
+  modNorte?: number;
+  modOeste?: number;
+  modSudeste?: number;
+  modSudoeste?: number;
+  modSul?: number;
+  novaAmperagem?: string;
+  novaLigacaoPadrao?: string;
+  numeroPosteDerivacao?: string;
+  numeroPosteTrafo?: string;
+  numeroTrafo?: string;
+  obsDesenho: string;
+  obsObras: string;
+  obsProjetos: string;
+  obsSuprimentos: string;
+  obsVisita?: string;
+  orientacaoEstrutura?: string;
+  padraoTrafoAcoplados: "NÃO" | "SIM";
+  pendenciasProjetos?: string;
+  pendenciasTrafo?: string;
+  potTrafo?: string;
+  ramalEntrada?: "AÉREO" | "SUBTERRÂNEO" | "NÃO DEFINIDO";
+  ramalSaida?: "AÉREO" | "SUBTERRÂNEO" | "NÃO DEFINIDO";
+  realimentar: "SIM" | "NÃO";
+  redeReligacao:
+    | "NÃO DEFINIDO"
+    | "SIM - RESPONSABILIDADE AMPÈRE"
+    | "SIM - RESPONSABILIDADE CLIENTE"
+    | "NÃO";
+  respostaConclusao?: string;
+  respostaEspacoProjeto?: "SIM" | "NÃO" | "NÃO DEFINIDO";
+  respostaEstruturaInclinacao?: "SIM" | "NÃO" | "NÃO DEFINIDO";
+  respostaExplicacaoDetalhada?: "SIM" | "NÃO" | "NÃO DEFINIDO";
+  respostaMaderamento?:
+    | "NÃO DEFINIDO"
+    | "APTO"
+    | "CONDENADO"
+    | "REFORÇAR"
+    | "AVALIAR NA MONTAGEM";
+  respostaPadrao?: "NÃO DEFINIDO" | "APTO" | "REFORMA" | "TROCAR PADRÃO";
+  respostaPossuiSombra?: "NÃO DEFINIDO" | "SIM" | "NÃO";
+  solicitacaoContrato?: boolean;
+  status: string;
+  suprimentos?: {
+    insumo: string;
+    medida: string;
+    qtde: number;
+    tipo: string;
+  }[];
+  telefoneDoCliente: string;
+  telefoneVendedor: string;
+  telhasReservas?: "NÃO" | "SIM" | "NÃO DEFINIDO";
+  temEstudoDeCaso?: "NÃO" | "SIM" | "NÃO DEFINIDO";
+  terraplanagemUsinaSolo:
+    | "NÃO DEFINIDO"
+    | "SIM - RESPONSABILIDADE AMPÈRE"
+    | "SIM - RESPONSABILIDADE CLIENTE"
+    | "NÃO";
+  tipoDeLaudo?:
+    | "ESTUDO SIMPLES (36 HORAS)"
+    | "ESTUDO INTERMEDIÁRIO (48 HORAS)"
+    | "ESTUDO COMPLEXO (72 HORAS)";
+  tipoDesenho?:
+    | "SOLAR EDGE DESIGN"
+    | "REVIT 3D"
+    | "AUTOCAD 2D"
+    | "APENAS VIABILIDADE DE ESPAÇO"
+    | "NÃO DEFINIDO";
+  tipoDeSolicitacao?:
+    | "NÃO DEFINIDO"
+    | "VISITA TÉCNICA REMOTA - URBANA"
+    | "VISITA TÉCNICA REMOTA - RURAL"
+    | "VISITA TÉCNICA IN LOCO - URBANA"
+    | "VISITA TÉCNICA IN LOCO - RURAL"
+    | "ALTERAÇÃO DE PROJETO"
+    | "AUMENTO DE SISTEMA AMPÈRE"
+    | "DESENHO PERSONALIZADO"
+    | "ORÇAMENTAÇÃO";
+  tipoDisjuntor?: string;
+  tipoEstrutura?: "NÃO DEFINIDO" | "MADEIRA" | "FERRO";
+  tipoFixacaoInversores: string;
+  tipoInversor: "MICRO-INVERSOR" | "INVERSOR" | "NÃO DEFINIDO";
+  tipoOrcamentacao?: string;
+  tipoPadrao?:
+    | "NÃO DEFINIDO"
+    | "CONTRA À REDE - POSTE DO OUTRO LADO DA RUA"
+    | "À FAVOR DA REDE - POSTE DO MESMO LADO DA RUA";
+  tipoProjeto?: "NÃO DEFINIDO" | "MICRO GERAÇÃO" | "REDE MÉDIA" | "REDE BAIXA";
+  tipoTelha:
+    | "NÃO DEFINIDO"
+    | "PORTUGUESA"
+    | "FRANCESA"
+    | "ROMANA"
+    | "CIMENTO"
+    | "ETHERNIT"
+    | "SANDUÍCHE"
+    | "AMERICANA"
+    | "ZINCO"
+    | "CAPE E BICA"
+    | "LAJE";
+}

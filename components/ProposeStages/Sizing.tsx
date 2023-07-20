@@ -7,23 +7,33 @@ import {
   structureTypes,
   subgroupsOptions,
 } from "@/utils/constants";
-import { IProject, IProposeInfo } from "@/utils/models";
+import { IProject, IProposeInfo, ITechnicalAnalysis } from "@/utils/models";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import React, { SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { AiOutlineCheck } from "react-icons/ai";
+import { MdAssessment, MdAttachMoney, MdEngineering } from "react-icons/md";
 
 type SizingProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
   project: IProject;
   moveToNextStage: React.Dispatch<React.SetStateAction<number>>;
+  technicalAnalysis?: ITechnicalAnalysis[];
+  selectedAnalysis: ITechnicalAnalysis | null;
+  setSelectedAnalysis: React.Dispatch<
+    React.SetStateAction<ITechnicalAnalysis | null>
+  >;
 };
 function Sizing({
   proposeInfo,
   setProposeInfo,
   project,
   moveToNextStage,
+  technicalAnalysis,
+  selectedAnalysis,
+  setSelectedAnalysis,
 }: SizingProps) {
   const [validationMsg, setValidationMsg] = useState({ text: "", color: "" });
 
@@ -306,6 +316,7 @@ function Sizing({
               <select
                 value={proposeInfo.premissas.fase}
                 onChange={(e) =>
+                  // @ts-ignore
                   setProposeInfo((prev) => ({
                     ...prev,
                     premissas: {
@@ -335,6 +346,7 @@ function Sizing({
               <select
                 value={proposeInfo.premissas.tipoEstrutura}
                 onChange={(e) =>
+                  // @ts-ignore
                   setProposeInfo((prev) => ({
                     ...prev,
                     premissas: {
@@ -393,6 +405,74 @@ function Sizing({
               />
             </div>
           </div>
+          {technicalAnalysis ? (
+            <>
+              <h1 className="justify-center text-center text-sm font-bold text-[#15599a]">
+                AVALIAÇÕES TÉCNICAS VINCULADAS AO PROJETO
+              </h1>
+              <div className="flex w-full flex-wrap items-center justify-center gap-2">
+                {technicalAnalysis.map((analysis, index) => (
+                  <div
+                    onClick={() => {
+                      if (selectedAnalysis?._id == analysis._id)
+                        setSelectedAnalysis(null);
+                      else setSelectedAnalysis(analysis);
+                    }}
+                    key={index}
+                    className={`${
+                      selectedAnalysis?._id == analysis._id
+                        ? "bg-green-200"
+                        : " "
+                    } flex h-[300px] max-h-[300px] w-[400px] cursor-pointer flex-col items-center rounded border border-gray-200 p-2 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
+                  >
+                    <div className="flex w-full flex-col items-center">
+                      <MdAssessment
+                        style={{ color: "#fead61", fontSize: "35px" }}
+                      />
+                      <h1 className="text-center text-lg font-medium">
+                        {analysis.nomeDoCliente}
+                      </h1>
+                    </div>
+                    <div className="flex w-full grow flex-col items-center overflow-y-auto overscroll-y-auto py-1 scrollbar-thin scrollbar-thumb-gray-300">
+                      <h1 className="mb-1 mt-2 text-xs font-medium text-gray-500">
+                        CUSTOS PREVISTOS
+                      </h1>
+                      {analysis.custosAdicionais?.map((cost) => (
+                        <div className="flex flex-col items-center">
+                          <div className="flex items-center gap-2">
+                            <MdAttachMoney style={{ color: "green" }} />
+                            <h1 className="text-center text-sm font-medium text-blue-500">
+                              {cost.descricao}
+                            </h1>
+                          </div>
+                          <div className="flex items-center justify-between gap-2 ">
+                            <h1 className="text-sm text-gray-500">
+                              {cost.qtde}x
+                            </h1>
+                            <h1 className="text-sm font-medium text-green-500">
+                              R${" "}
+                              {cost.valor.toLocaleString("pt-br", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}
+                            </h1>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="flex w-full grow flex-col">
+                        <h1 className="mb-1 mt-2 text-center text-xs font-medium text-gray-500">
+                          CONCLUSÃO DA AVALIAÇÃO
+                        </h1>
+                        <h1 className="text-center text-xs font-medium italic text-gray-800">
+                          {analysis.respostaConclusao}
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
       <div className="flex w-full items-center justify-end gap-2 px-1">

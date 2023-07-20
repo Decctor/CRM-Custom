@@ -8,6 +8,7 @@ import {
   IRepresentative,
   IResponsible,
   ISession,
+  ITechnicalAnalysis,
   InverterType,
   ModuleType,
 } from "./models";
@@ -56,11 +57,14 @@ export function getModulesQty(modules: ModuleType[] | undefined) {
 export function getEstimatedGen(
   peakPower: number,
   city: string | undefined | null,
-  uf: string | undefined | null
+  uf: string | undefined | null,
+  orientation?: (typeof orientations)[number]
 ): number {
   if (!city || !uf) return 127 * peakPower;
   const cityFactors = genFactors[city as keyof typeof genFactors];
-  const genFactor = cityFactors.fatorGen;
+  var genFactor;
+  if (orientation) genFactor = cityFactors[orientation];
+  else genFactor = cityFactors.fatorGen;
   if (!genFactor) return 127 * peakPower;
   else return genFactor * peakPower;
 }
@@ -890,6 +894,27 @@ export function useProjects(
       }
     },
     enabled: !!session?.user,
+  });
+}
+export function useTechnicalAnalysis(
+  projectCode: string | null | undefined,
+  enabled: boolean
+): UseQueryResult<ITechnicalAnalysis[], Error> {
+  return useQuery({
+    queryKey: ["technicalAnalysis", projectCode],
+    queryFn: async (): Promise<ITechnicalAnalysis[]> => {
+      try {
+        const { data } = await axios.get(
+          `/api/ampereIntegration/technicalAnalysis?projectIdentifier=${projectCode}`
+        );
+        return data.data;
+      } catch (error) {
+        toast.error("Erro ao buscar análises técnicas desse projeto.");
+        return [];
+      }
+    },
+    enabled: enabled,
+    retry: false,
   });
 }
 

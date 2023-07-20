@@ -26,9 +26,15 @@ type ProposeProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
   project: IProject;
+  moveToPreviousStage: React.Dispatch<React.SetStateAction<null>>;
 };
 
-function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
+function Propose({
+  proposeInfo,
+  project,
+  setProposeInfo,
+  moveToPreviousStage,
+}: ProposeProps) {
   const [saveAsActive, setSaveAsActive] = useState<boolean>(false);
   async function handleProposeUpload(file: any) {
     const tag = `${proposeInfo.nome}${(Math.random() * 1000).toFixed(0)}`;
@@ -191,7 +197,7 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
       {/* <div className="flex w-full items-center justify-center">
         <h1 className="text-center font-bold">PROPOSTA</h1>
       </div> */}
-      <div className="flex grow items-center justify-center">
+      <div className="flex grow flex-col items-center justify-center">
         {proposeCreationLoading ? (
           <div className="flex min-h-[350px] w-[400px] items-center justify-center">
             <LoadingComponent />
@@ -218,84 +224,94 @@ function Propose({ proposeInfo, project, setProposeInfo }: ProposeProps) {
           </div>
         ) : null}
         {!proposeCreationSuccess && !proposeCreationLoading ? (
-          <div className="flex min-h-[350px] w-[400px] flex-col border border-gray-200 p-3">
-            <h1 className="border-b border-gray-200 pb-2 text-center font-bold text-gray-700">
-              PROPOSTA
-            </h1>
-            <div className="flex w-full items-center gap-2 p-3">
-              <div className="flex w-1/2 items-center justify-center gap-2 rounded border border-gray-300 p-1">
-                <ImPower
-                  style={{ color: "rgb(239,68,68)", fontSize: "20px" }}
-                />
-                <p className="text-xs font-thin text-gray-600">
-                  {proposeInfo.potenciaPico} kWp
-                </p>
+          <>
+            <div className="flex min-h-[350px] w-[400px] flex-col border border-gray-200 p-3">
+              <h1 className="border-b border-gray-200 pb-2 text-center font-bold text-gray-700">
+                PROPOSTA
+              </h1>
+              <div className="flex w-full items-center gap-2 p-3">
+                <div className="flex w-1/2 items-center justify-center gap-2 rounded border border-gray-300 p-1">
+                  <ImPower
+                    style={{ color: "rgb(239,68,68)", fontSize: "20px" }}
+                  />
+                  <p className="text-xs font-thin text-gray-600">
+                    {proposeInfo.potenciaPico} kWp
+                  </p>
+                </div>
+                <div className="flex w-1/2 items-center justify-center gap-2 rounded border border-gray-300 p-1">
+                  <ImPriceTag
+                    style={{ color: "rgb(34,197,94)", fontSize: "20px" }}
+                  />
+                  <p className="text-xs font-thin text-gray-600">
+                    R${" "}
+                    {proposeInfo.valorProposta
+                      ? proposeInfo.valorProposta.toLocaleString("pt-br", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : null}
+                  </p>
+                </div>
               </div>
-              <div className="flex w-1/2 items-center justify-center gap-2 rounded border border-gray-300 p-1">
-                <ImPriceTag
-                  style={{ color: "rgb(34,197,94)", fontSize: "20px" }}
+              <div className="flex w-full grow flex-col gap-2">
+                <TextInput
+                  label="NOME DA PROPOSTA"
+                  value={proposeInfo.nome ? proposeInfo.nome : ""}
+                  placeholder="Preencha aqui o nome da proposta..."
+                  width="100%"
+                  handleChange={(value) =>
+                    setProposeInfo((prev) => ({ ...prev, nome: value }))
+                  }
                 />
-                <p className="text-xs font-thin text-gray-600">
-                  R${" "}
-                  {proposeInfo.valorProposta
-                    ? proposeInfo.valorProposta.toLocaleString("pt-br", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })
-                    : null}
-                </p>
-              </div>
-            </div>
-            <div className="flex w-full grow flex-col gap-2">
-              <TextInput
-                label="NOME DA PROPOSTA"
-                value={proposeInfo.nome ? proposeInfo.nome : ""}
-                placeholder="Preencha aqui o nome da proposta..."
-                width="100%"
-                handleChange={(value) =>
-                  setProposeInfo((prev) => ({ ...prev, nome: value }))
-                }
-              />
-              <SelectInput
-                label="TEMPLATE"
-                value={proposeInfo.template}
-                options={proposeTemplates
-                  .filter((template) =>
-                    template.applicableProjectTypes.includes(
-                      // @ts-ignore
-                      project.tipoProjeto
+                <SelectInput
+                  label="TEMPLATE"
+                  value={proposeInfo.template}
+                  options={proposeTemplates
+                    .filter((template) =>
+                      template.applicableProjectTypes.includes(
+                        // @ts-ignore
+                        project.tipoProjeto
+                      )
                     )
-                  )
-                  .map((temp, index) => {
-                    return {
-                      id: index + 1,
-                      label: temp.label,
-                      value: temp.value,
-                    };
-                  })}
-                handleChange={(value) =>
-                  setProposeInfo((prev) => ({ ...prev, template: value }))
-                }
-                selectedItemLabel="NÃO DEFINIDO"
-                onReset={() =>
-                  setProposeInfo((prev) => ({ ...prev, template: undefined }))
-                }
-                width="100%"
-              />
-              <CheckboxInput
-                checked={saveAsActive}
-                labelFalse="NÃO SALVAR COMO ATIVA"
-                labelTrue="SALVAR COMO ATIVA"
-                handleChange={(value) => setSaveAsActive(value)}
-              />
+                    .map((temp, index) => {
+                      return {
+                        id: index + 1,
+                        label: temp.label,
+                        value: temp.value,
+                      };
+                    })}
+                  handleChange={(value) =>
+                    setProposeInfo((prev) => ({ ...prev, template: value }))
+                  }
+                  selectedItemLabel="NÃO DEFINIDO"
+                  onReset={() =>
+                    setProposeInfo((prev) => ({ ...prev, template: undefined }))
+                  }
+                  width="100%"
+                />
+                <CheckboxInput
+                  checked={saveAsActive}
+                  labelFalse="NÃO SALVAR COMO ATIVA"
+                  labelTrue="SALVAR COMO ATIVA"
+                  handleChange={(value) => setSaveAsActive(value)}
+                />
+              </div>
+              <button
+                onClick={() => createPropose()}
+                className="rounded border border-green-500 p-2 text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
+              >
+                GERAR PROPOSTA
+              </button>
             </div>
-            <button
-              onClick={() => createPropose()}
-              className="rounded border border-green-500 p-2 text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
-            >
-              GERAR PROPOSTA
-            </button>
-          </div>
+            <div className="flex w-full items-center justify-between gap-2 px-1">
+              <button
+                onClick={() => moveToPreviousStage(null)}
+                className="rounded p-2 font-bold text-gray-500 duration-300 hover:scale-105"
+              >
+                Voltar
+              </button>
+            </div>
+          </>
         ) : null}
 
         {/* <button
