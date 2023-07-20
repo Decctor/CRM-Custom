@@ -42,6 +42,8 @@ type Filters = {
   suppliers: string[];
   topology: string[];
   search: string;
+  order: "ASC" | "DESC" | null;
+  potOrder: "ASC" | "DESC" | null;
 };
 type QueryTypes = "KITS POR PREMISSA" | "TODOS OS KITS";
 type SelectedKitsState = {
@@ -190,6 +192,8 @@ function System({
     suppliers: [],
     topology: [],
     search: "",
+    order: null,
+    potOrder: null,
   });
   const {
     data: kits,
@@ -243,6 +247,56 @@ function System({
   const [filteredKits, setFilteredKits] = useState<IKit[] | undefined>(kits);
 
   const [selectedKits, setSelectedKits] = useState<SelectedKitsState>([]);
+  function ordenateKits(param: string) {
+    if (!filteredKits) return;
+    var dumpyCopyOfKits = [...filteredKits];
+    var newArr;
+    console.log("PARAMETRO", param);
+    switch (param) {
+      case "ASC":
+        newArr = dumpyCopyOfKits.sort((a, b) => a.preco - b.preco);
+        setFilteredKits(newArr);
+        setFilters((prev) => ({ ...prev, order: "ASC", potOrder: null }));
+        break;
+      case "DESC":
+        newArr = dumpyCopyOfKits.sort((a, b) => b.preco - a.preco);
+        setFilteredKits(newArr);
+        setFilters((prev) => ({ ...prev, order: "DESC", potOrder: null }));
+        break;
+      default:
+        setFilters((prev) => ({ ...prev, order: null, potOrder: null }));
+        setFilteredKits(dumpyCopyOfKits);
+        break;
+    }
+  }
+  function ordenateKitsByPower(param: string) {
+    if (!filteredKits) return;
+    var dumpyCopyOfKits = [...filteredKits];
+    var newArr;
+    console.log("PARAMETRO", param);
+    switch (param) {
+      case "ASC":
+        newArr = dumpyCopyOfKits.sort(
+          (a, b) =>
+            getPeakPotByModules(a.modulos) - getPeakPotByModules(b.modulos)
+        );
+        setFilteredKits(newArr);
+        setFilters((prev) => ({ ...prev, potOrder: "ASC", order: null }));
+        break;
+      case "DESC":
+        newArr = dumpyCopyOfKits.sort(
+          (a, b) =>
+            getPeakPotByModules(b.modulos) - getPeakPotByModules(a.modulos)
+        );
+        setFilteredKits(newArr);
+        setFilters((prev) => ({ ...prev, potOrder: "DESC", order: null }));
+        break;
+      default:
+        setFilters((prev) => ({ ...prev, potOrder: null, order: null }));
+        setFilteredKits(dumpyCopyOfKits);
+        break;
+    }
+  }
   function handleFilters() {
     var newArr;
     if (filters.suppliers.length > 0) {
@@ -455,14 +509,14 @@ function System({
           <h1 className="font-bold">
             KITS FECHADOS ({filteredKits ? filteredKits.length : "..."})
           </h1>
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-col items-center gap-2 lg:w-fit lg:flex-row">
             <button
               onClick={() => setQueryType("KITS POR PREMISSA")}
               className={`${
                 queryType == "KITS POR PREMISSA"
                   ? "bg-[#fead61] text-white hover:bg-transparent hover:text-[#fead61]"
                   : "text-[#fead61] hover:bg-[#fead61] hover:text-white"
-              } rounded border border-[#fead61] px-2 py-1  font-medium`}
+              } w-full rounded border border-[#fead61] px-2  py-1 font-medium lg:w-fit`}
             >
               MOSTRAR KITS IDEAIS
             </button>
@@ -472,13 +526,13 @@ function System({
                 queryType == "TODOS OS KITS"
                   ? "bg-[#15599a] text-white hover:bg-transparent hover:text-[#15599a]"
                   : "text-[#15599a] hover:bg-[#15599a] hover:text-white"
-              } rounded border border-[#15599a] px-2 py-1  font-medium`}
+              } w-full rounded border border-[#15599a] px-2  py-1 font-medium lg:w-fit`}
             >
               MOSTRAR TODOS OS KITS
             </button>
             <button
               onClick={() => setShowFilters((prev) => !prev)}
-              className={`rounded border border-[#15599a] px-2 py-1 ${
+              className={`flex w-full items-center justify-center rounded border border-[#15599a] px-2 py-1 lg:w-fit ${
                 showFilters
                   ? "bg-[#15599a] text-white"
                   : "bg-white text-[#15599a]"
@@ -493,79 +547,124 @@ function System({
           </div>
         </div>
         {showFilters ? (
-          <div className="mt-2 flex w-full flex-wrap items-center justify-between gap-1">
-            <TextInput
-              label="PESQUISA"
-              value={filters.search}
-              handleChange={(value) => {
-                handleSearchFilter(value);
-              }}
-              placeholder="Pesquisa aqui o nome do kit..."
-            />
-            <div className="flex items-end gap-1">
-              <MultipleSelectInput
-                label="FORNECEDORES"
-                selected={
-                  filters.suppliers.length > 0
-                    ? filters.suppliers.map((supplier) => supplier)
-                    : null
-                }
-                options={Suppliers.map((supplier) => {
-                  return {
-                    id: supplier.id,
-                    label: supplier.nome,
-                    value: supplier.nome,
-                  };
-                })}
-                selectedItemLabel="NÃO DEFINIDO"
-                handleChange={(value: string[] | []) => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    suppliers: value,
-                  }));
+          <div className="mt-2 flex w-full flex-col items-center justify-between gap-1">
+            <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+              <TextInput
+                label="PESQUISA"
+                value={filters.search}
+                handleChange={(value) => {
+                  handleSearchFilter(value);
                 }}
-                onReset={() => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    suppliers: [],
-                  }));
-                }}
+                placeholder="Pesquisa aqui o nome do kit..."
               />
-              <MultipleSelectInput
-                label="TOPOLOGIA"
-                selected={
-                  filters.topology.length > 0
-                    ? filters.topology.map((supplier) => supplier)
-                    : null
-                }
-                options={[
-                  { id: 1, label: "INVERSOR", value: "INVERSOR" },
-                  {
-                    id: 2,
-                    label: "MICRO-INVERSOR",
-                    value: "MICRO-INVERSOR",
-                  },
-                ]}
-                selectedItemLabel="NÃO DEFINIDO"
-                handleChange={(value: string[] | []) => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    topology: value,
-                  }));
-                }}
-                onReset={() => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    topology: [],
-                  }));
-                }}
-              />
-              <button
-                onClick={() => handleFilters()}
-                className="flex h-[46px] items-center justify-center rounded border border-[#fead61] p-3 text-[#fead61] hover:bg-[#fead61] hover:text-black"
+              <div className="flex items-center justify-end gap-1">
+                <MultipleSelectInput
+                  label="FORNECEDORES"
+                  selected={
+                    filters.suppliers.length > 0
+                      ? filters.suppliers.map((supplier) => supplier)
+                      : null
+                  }
+                  options={Suppliers.map((supplier) => {
+                    return {
+                      id: supplier.id,
+                      label: supplier.nome,
+                      value: supplier.nome,
+                    };
+                  })}
+                  selectedItemLabel="NÃO DEFINIDO"
+                  handleChange={(value: string[] | []) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      suppliers: value,
+                    }));
+                  }}
+                  onReset={() => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      suppliers: [],
+                    }));
+                  }}
+                />
+                <MultipleSelectInput
+                  label="TOPOLOGIA"
+                  selected={
+                    filters.topology.length > 0
+                      ? filters.topology.map((supplier) => supplier)
+                      : null
+                  }
+                  options={[
+                    { id: 1, label: "INVERSOR", value: "INVERSOR" },
+                    {
+                      id: 2,
+                      label: "MICRO-INVERSOR",
+                      value: "MICRO-INVERSOR",
+                    },
+                  ]}
+                  selectedItemLabel="NÃO DEFINIDO"
+                  handleChange={(value: string[] | []) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      topology: value,
+                    }));
+                  }}
+                  onReset={() => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      topology: [],
+                    }));
+                  }}
+                />
+                <button
+                  onClick={() => handleFilters()}
+                  className="flex h-[46px] items-center justify-center self-end rounded border border-[#fead61] p-3 text-[#fead61] hover:bg-[#fead61] hover:text-black"
+                >
+                  <AiOutlineSearch />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-end gap-1 lg:flex-row">
+              <div
+                onClick={() => ordenateKitsByPower("ASC")}
+                className={`flex h-[46px] w-full cursor-pointer items-center justify-center rounded-md border border-[#FEAD41] p-1 text-center lg:w-fit ${
+                  filters.potOrder == "ASC"
+                    ? "bg-[#FEAD41] text-white"
+                    : "bg-transparent text-[#FEAD41]"
+                }`}
               >
-                <AiOutlineSearch />
-              </button>
+                POTÊNCIA CRESCENTE
+              </div>
+              <div
+                onClick={() => ordenateKitsByPower("DESC")}
+                className={`flex h-[46px] w-full cursor-pointer items-center justify-center rounded-md border border-[#FEAD41] p-1 text-center lg:w-fit ${
+                  filters.potOrder == "DESC"
+                    ? "bg-[#FEAD41] text-white"
+                    : "bg-transparent text-[#FEAD41]"
+                }`}
+              >
+                POTÊNCIA DECRESCENTE
+              </div>
+              <div
+                onClick={() => ordenateKits("ASC")}
+                className={`flex h-[46px] w-full cursor-pointer items-center justify-center rounded-md border border-[#15599a] p-1 text-center lg:w-fit ${
+                  filters.order == "ASC"
+                    ? "bg-[#15599a] text-white"
+                    : "bg-transparent text-[#15599a]"
+                }`}
+              >
+                PREÇO CRESCENTE
+              </div>
+              <div
+                onClick={() => ordenateKits("DESC")}
+                className={`flex h-[46px] w-full cursor-pointer items-center justify-center rounded-md border border-[#15599a] p-1 text-center lg:w-fit ${
+                  filters.order == "DESC"
+                    ? "bg-[#15599a] text-white"
+                    : "bg-transparent text-[#15599a]"
+                }`}
+              >
+                PREÇO DECRESCENTE
+              </div>
             </div>
           </div>
         ) : null}

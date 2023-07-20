@@ -6,6 +6,7 @@ import { BsPatchCheckFill } from "react-icons/bs";
 import { MdOpenInNew } from "react-icons/md";
 import ProjectOpenActivities from "../Modals/ProjectOpenActivities";
 import { ProjectActivity } from "@/utils/models";
+import { FaFileSignature, FaSignature } from "react-icons/fa";
 type ProjectCardProps = {
   item: {
     id: number | string;
@@ -18,6 +19,7 @@ type ProjectCardProps = {
     valorProposta?: number;
     potenciaPicoProposta?: number;
     efetivacao?: boolean;
+    assinado?: boolean;
   };
 };
 function getTagColor(activities: ProjectActivity[]) {
@@ -31,7 +33,11 @@ function Project({ item }: ProjectCardProps) {
   const [openActivitiesModal, setOpenActivitiesModal] =
     useState<boolean>(false);
   return (
-    <div className="relative flex h-[140px] min-h-[110px] w-[350px] flex-col justify-between rounded border border-gray-200 bg-[#fff] p-2 shadow-sm">
+    <div
+      className={`relative flex h-[140px] min-h-[110px] w-[350px] flex-col justify-between rounded border border-gray-200 ${
+        item.assinado ? "bg-green-100" : "bg-[#fff]"
+      }  p-2 shadow-sm`}
+    >
       {openActivitiesModal && item.atividades ? (
         <ProjectOpenActivities
           projectName={item.name}
@@ -39,11 +45,11 @@ function Project({ item }: ProjectCardProps) {
           setOpenActivitiesModal={setOpenActivitiesModal}
         />
       ) : null}
-      {/* {item.efetivacao ? (
-        <div className="absolute right-2 top-3 z-10 flex items-center justify-center text-green-500">
-          <BsPatchCheckFill />
+      {item.assinado ? (
+        <div className="absolute right-2 top-4 z-10 flex items-center justify-center text-green-500">
+          <p className="text-sm font-medium italic">ASSINADO</p>
         </div>
-      ) : null} */}
+      ) : null}
       {item.atividades && item.atividades.length > 0 ? (
         <div
           onClick={(e) => {

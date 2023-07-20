@@ -354,6 +354,7 @@ export default function Home() {
                         ? project.proposta[0].potenciaPico
                         : undefined,
                     efetivacao: project.efetivacao,
+                    assinado: project.assinado,
                   }}
                 />
               ))

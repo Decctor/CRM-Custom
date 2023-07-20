@@ -19,7 +19,11 @@ import {
   AiOutlineUser,
 } from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
-import { BsClipboardCheck, BsTelephoneFill } from "react-icons/bs";
+import {
+  BsClipboardCheck,
+  BsFillCalendarCheckFill,
+  BsTelephoneFill,
+} from "react-icons/bs";
 import { FaCity } from "react-icons/fa";
 import { GiPositionMarker } from "react-icons/gi";
 import { HiIdentification } from "react-icons/hi";
@@ -119,13 +123,13 @@ function Projeto() {
       <div className="flex h-full">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
-          <div className="flex w-full items-center justify-between border-b border-[#fead61] pb-2">
+          <div className="flex w-full flex-col items-center justify-between border-b border-[#fead61] pb-2 lg:flex-row">
             <div className="flex w-full flex-col items-start">
-              <div className="flex items-center gap-2">
-                <h1 className="flex font-Raleway text-2xl font-bold text-[#fead41]">
+              <div className="flex w-full flex-col items-center gap-2 lg:w-fit lg:flex-row">
+                <h1 className="flex text-center font-Raleway text-2xl font-bold text-[#fead41] lg:text-start">
                   {project.identificador}
                 </h1>
-                <h1 className="flex font-Raleway text-2xl font-bold text-blue-900">
+                <h1 className="flex text-center font-Raleway text-2xl font-bold text-blue-900 lg:text-start">
                   {project.nome}
                 </h1>
               </div>
@@ -146,6 +150,21 @@ function Projeto() {
                 <div className="flex items-center gap-2 rounded bg-red-500 p-2 text-sm font-medium italic text-white">
                   PERDIDO
                   <AiFillCloseCircle />
+                </div>
+              ) : null}
+              {project.assinado && project.dataAssinatura ? (
+                <div className="flex w-fit min-w-[250px] items-center justify-end gap-5 text-green-500">
+                  <BsFillCalendarCheckFill
+                    style={{ color: "rgb(34,197,94)", fontSize: "25px" }}
+                  />
+                  <div className="flex flex-col items-center">
+                    <p className="text-center text-sm italic text-gray-500">
+                      Assinado em:
+                    </p>
+                    <p className="text-md text-center font-medium text-gray-500">
+                      {dayjs(project.dataAssinatura).format("DD/MM/YYYY")}
+                    </p>
+                  </div>
                 </div>
               ) : null}
             </div>

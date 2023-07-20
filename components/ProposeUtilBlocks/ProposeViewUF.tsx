@@ -27,10 +27,11 @@ import {
 import { getPrices } from "@/utils/pricing/methods";
 import Link from "next/link";
 import RequestContract from "../Modals/RequestContract";
-import { BsPatchCheckFill } from "react-icons/bs";
+import { BsFillCalendarCheckFill, BsPatchCheckFill } from "react-icons/bs";
 import JSZip from "jszip";
 import { basename } from "path";
 import { FaUser } from "react-icons/fa";
+import dayjs from "dayjs";
 function copyToClipboard(text: string | undefined) {
   if (text) {
     var dummy = document.createElement("textarea");
@@ -160,7 +161,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
     if (propose?.infoProjeto) {
       const pricing = propose.precificacao
         ? propose.precificacao
-        : getPrices(propose?.infoProjeto, propose);
+        : getPrices(propose?.infoProjeto, propose, null);
       switch (propose.kit?.tipo) {
         case "PROMOCIONAL":
           var totalCosts = 0;
@@ -249,7 +250,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
       }
     }
   }
-  console.log("PROPOSTA", propose);
+  console.log("PROPOSTA", propose, null);
   return (
     <div className="flex h-full">
       <Sidebar />
@@ -282,7 +283,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                 REQUISITAR CONTRATO
               </button>
             )}
-            {propose.aceite ? (
+            {propose.aceite && !propose.infoProjeto?.assinado ? (
               <div className="flex items-center gap-2 rounded bg-green-500 p-2 text-sm font-medium italic text-white">
                 ACEITA
                 <BsPatchCheckFill />
@@ -291,6 +292,24 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
             {/* <button className="rounded border border-red-500 p-1 font-medium text-red-500 duration-300 ease-in-out hover:scale-105 hover:bg-red-500 hover:text-white">
               Perder
             </button> */}
+            {propose.infoProjeto?.assinado &&
+            propose.infoProjeto?.dataAssinatura ? (
+              <div className="flex w-fit min-w-[250px] items-center justify-end gap-5 text-green-500">
+                <BsFillCalendarCheckFill
+                  style={{ color: "rgb(34,197,94)", fontSize: "25px" }}
+                />
+                <div className="flex flex-col items-center">
+                  <p className="text-center text-sm italic text-gray-500">
+                    Assinado em:
+                  </p>
+                  <p className="text-md text-center font-medium text-gray-500">
+                    {dayjs(propose.infoProjeto?.dataAssinatura).format(
+                      "DD/MM/YYYY"
+                    )}
+                  </p>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="flex w-full grow flex-col py-2">
@@ -477,7 +496,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                   </h1>
                 </div>
               </div>
-              {Object.keys(getPrices(propose?.infoProjeto, propose)).map(
+              {Object.keys(getPrices(propose?.infoProjeto, propose, null)).map(
                 (priceType, index) => {
                   if (propose.precificacao) {
                     const pricesObj =
@@ -602,12 +621,12 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                   </h1>
                 </div>
               </div>
-              {Object.keys(getPrices(propose?.infoProjeto, propose)).map(
+              {Object.keys(getPrices(propose?.infoProjeto, propose, null)).map(
                 (priceType, index) => {
                   //@ts-ignore
                   const pricing = propose.precificacao
                     ? propose.precificacao
-                    : getPrices(propose?.infoProjeto, propose);
+                    : getPrices(propose?.infoProjeto, propose, null);
                   const pricesObj = pricing[priceType as keyof Pricing];
                   if (!pricesObj) return;
                   const {

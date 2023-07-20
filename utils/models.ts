@@ -217,6 +217,8 @@ export interface IProject {
   efetivacao?: boolean;
   dataEfetivacao?: string;
   idSolicitacaoContrato?: string;
+  assinado?: boolean;
+  dataAssinatura?: string;
 }
 export interface IClient {
   _id?: string;
@@ -290,6 +292,8 @@ export interface IProposeInfo {
   aceite?: boolean;
   dataEfetivacao?: string;
   idSolicitacaoContrato?: string;
+  assinado?: boolean;
+  dataAssinatura?: string;
 }
 export interface IProposeOeMInfo {
   _id?: string;
