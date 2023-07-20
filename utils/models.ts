@@ -292,6 +292,7 @@ export interface IProposeInfo {
   aceite?: boolean;
   dataEfetivacao?: string;
   idSolicitacaoContrato?: string;
+  idAnaliseTecnica?: string;
   assinado?: boolean;
   dataAssinatura?: string;
 }

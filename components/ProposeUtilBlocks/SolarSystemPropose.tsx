@@ -134,6 +134,7 @@ function SolarSystemPropose({ project }: SolarSystemProposeTypes) {
           setProposeInfo={setProposeInfo}
           project={project}
           moveToPreviousStage={() => setProposeStage((prev) => prev - 1)}
+          selectedAnalysis={selectedAnalysis}
         />
       ) : null}
     </div>

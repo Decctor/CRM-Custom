@@ -1,4 +1,9 @@
-import { IProject, IProposeInfo, ModuleType } from "@/utils/models";
+import {
+  IProject,
+  IProposeInfo,
+  ITechnicalAnalysis,
+  ModuleType,
+} from "@/utils/models";
 import Modules from "../../utils/pvmodules.json";
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
@@ -27,6 +32,7 @@ type ProposeProps = {
   proposeInfo: IProposeInfo;
   project: IProject;
   moveToPreviousStage: React.Dispatch<React.SetStateAction<null>>;
+  selectedAnalysis: ITechnicalAnalysis | null;
 };
 
 function Propose({
@@ -34,6 +40,7 @@ function Propose({
   project,
   setProposeInfo,
   moveToPreviousStage,
+  selectedAnalysis,
 }: ProposeProps) {
   const [saveAsActive, setSaveAsActive] = useState<boolean>(false);
   async function handleProposeUpload(file: any) {
@@ -152,6 +159,7 @@ function Propose({
         const { data } = await axios.post("/api/proposes", {
           ...proposeInfo,
           linkArquivo: url,
+          idAnaliseTecnica: selectedAnalysis?._id,
         });
         return data.data;
       } catch (error) {

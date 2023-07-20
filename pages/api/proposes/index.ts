@@ -272,6 +272,7 @@ const proposeSchema = z.union([
         .optional(),
     }),
     linkArquivo: z.string().optional(),
+    idAnaliseTecnica: z.string().optional().nullable(),
     potenciaPico: z.number({
       required_error: "Por favor, forneça a potência pico da proposta.",
     }),
