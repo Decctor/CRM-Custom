@@ -795,14 +795,11 @@ function System({
                 </div>
 
                 <h1 className="text-center font-medium">
-                  {(
-                    getSelectedKitsPowerPeak(selectedKits) *
-                    getEstimatedGen(
-                      getSelectedKitsPowerPeak(selectedKits),
-                      project.cliente?.cidade,
-                      project.cliente?.uf,
-                      proposeInfo.premissas.orientacao
-                    )
+                  {getEstimatedGen(
+                    getSelectedKitsPowerPeak(selectedKits),
+                    project.cliente?.cidade,
+                    project.cliente?.uf,
+                    proposeInfo.premissas.orientacao
                   ).toLocaleString("pt-br", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,

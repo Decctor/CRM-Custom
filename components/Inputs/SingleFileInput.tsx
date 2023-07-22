@@ -35,8 +35,8 @@ function SingleFileInput({
   const [file, setFile] = useState<File | null>(null);
 
   function formatLongString(str: string) {
-    if (str.length > 80) {
-      return str.substring(0, 80) + "\u2026";
+    if (str.length > 50) {
+      return str.substring(0, 50) + "\u2026";
     } else {
       return str;
     }
@@ -105,7 +105,7 @@ function SingleFileInput({
         >
           {label}
         </label>
-        <div className="relative flex h-[46px] w-full items-center justify-center rounded-lg border-2 border-dotted border-blue-700 bg-gray-100 p-2">
+        <div className="relative flex h-[46px] w-full items-center justify-center overflow-x-hidden rounded-lg border-2 border-dotted border-blue-700 bg-gray-100 p-2">
           <div className="absolute">
             {file ? (
               <div className="flex flex-col items-center">
@@ -115,9 +115,9 @@ function SingleFileInput({
                 </span>
               </div>
             ) : (
-              <div className="flex flex-col items-center text-sm">
+              <div className="flex flex-col items-center overflow-x-hidden text-sm">
                 <i className="fa fa-folder-open fa-4x text-blue-700"></i>
-                <span className="block font-normal text-gray-400">
+                <span className="block w-full overflow-x-hidden font-normal text-gray-400">
                   {currentFileUrl
                     ? formatLongString(currentFileUrl)
                     : placeholder}

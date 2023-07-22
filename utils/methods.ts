@@ -17,6 +17,7 @@ import { toast } from "react-hot-toast";
 import Modules from "../utils/pvmodules.json";
 import genFactors from "../utils/generationFactors.json";
 import { orientations, phases } from "./constants";
+import dayjs from "dayjs";
 type ViaCEPSuccessfulReturn = {
   cep: string;
   logradouro: string;
@@ -220,6 +221,7 @@ export function getProposeObject(
     textColor: "#333333",
     data: {
       idProposta: `#${project._id}`,
+      dataEmissao: dayjs().format("DD/MM/YYYY"),
       vendedor: seller?.name,
       nomeCliente: project.cliente?.nome,
       cpfCnpj: project.cliente?.cpfCnpj,
