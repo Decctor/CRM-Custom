@@ -42,6 +42,16 @@ export const companySignerKeys = [
     sign_as: "contractee",
   },
 ];
+export const TechAnalysisSolicitationTypes = [
+  "VISITA TÉCNICA REMOTA - URBANA",
+  "VISITA TÉCNICA REMOTA - RURAL",
+  "VISITA TÉCNICA IN LOCO - URBANA",
+  "VISITA TÉCNICA IN LOCO - RURAL",
+  "ALTERAÇÃO DE PROJETO",
+  "AUMENTO DE SISTEMA AMPÈRE",
+  "DESENHO PERSONALIZADO",
+  "ORÇAMENTAÇÃO",
+] as const;
 type FileTypes = {
   [contentType: string]: {
     title: string;

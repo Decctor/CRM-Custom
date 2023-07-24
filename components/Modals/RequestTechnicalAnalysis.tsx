@@ -4,7 +4,13 @@ import { VscChromeClose } from "react-icons/vsc";
 import { IProject, IResponsible, ITechnicalAnalysis } from "@/utils/models";
 import { formatToPhone, useResponsibles } from "@/utils/methods";
 import TextInput from "../Inputs/TextInput";
-import GeneralInfo from "../TechnicalAnalysisRequest/GeneralInfo";
+import GeneralInfo from "../TechnicalAnalysisRequest/Blocks/GeneralInfo";
+import SystemInfo from "../TechnicalAnalysisRequest/Blocks/SystemInfo";
+import { MdAssessment } from "react-icons/md";
+import { TbRulerMeasure } from "react-icons/tb";
+import { FaCalculator } from "react-icons/fa";
+import SolicitationTypeSelection from "../TechnicalAnalysisRequest/Blocks/SolicitationTypeSelection";
+import RemoteUrban from "../TechnicalAnalysisRequest/RemoteUrban";
 
 type RequestTechnicalAnalysisProps = {
   closeModal: () => void;
@@ -138,7 +144,7 @@ function RequestTechnicalAnalysis({
     terraplanagemUsinaSolo: "NÃO DEFINIDO",
     tipoDeLaudo: "ESTUDO SIMPLES (36 HORAS)",
     tipoDesenho: "NÃO DEFINIDO",
-    tipoDeSolicitacao: "NÃO DEFINIDO",
+    tipoDeSolicitacao: undefined,
     tipoDisjuntor: "",
     tipoEstrutura: "NÃO DEFINIDO",
     tipoFixacaoInversores: "",
@@ -148,13 +154,18 @@ function RequestTechnicalAnalysis({
     tipoProjeto: "NÃO DEFINIDO",
     tipoTelha: "NÃO DEFINIDO",
   });
-
+  const [files, setFiles] = useState<{
+    [key: string]: {
+      title: string;
+      file: File | null | string;
+    };
+  }>();
   return (
     <div
       id="ContractRequest"
       className="fixed bottom-0 left-0 right-0 top-0 z-[100] bg-[rgba(0,0,0,.85)]"
     >
-      <div className="fixed left-[50%] top-[50%] z-[100] h-[80%] w-[90%] translate-x-[-50%] translate-y-[-50%] rounded-md bg-[#fff] p-[10px] lg:w-[60%]">
+      <div className="fixed left-[50%] top-[50%] z-[100] h-[90%] w-[90%] translate-x-[-50%] translate-y-[-50%] rounded-md bg-[#fff] p-[10px] lg:w-[70%]">
         <div className="flex h-full w-full flex-col">
           <div className="flex flex-col items-center justify-between border-b border-gray-200 px-2 pb-2 text-lg lg:flex-row">
             <h3 className="text-xl font-bold text-[#353432] dark:text-white ">
@@ -168,7 +179,7 @@ function RequestTechnicalAnalysis({
               <VscChromeClose style={{ color: "red" }} />
             </button>
           </div>
-          <div className="flex h-full flex-col gap-y-2 overflow-y-auto overscroll-y-auto p-2 py-1 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+          <div className="flex grow flex-col gap-y-2 overflow-y-auto overscroll-y-auto border-b border-gray-200 py-2 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ">
             <div className="my-1 flex w-full flex-wrap items-center justify-center gap-2">
               <SelectInput
                 label="VENDEDOR"
@@ -207,11 +218,27 @@ function RequestTechnicalAnalysis({
                 }
               />
             </div>
-            {stage == 1 ? (
-              <GeneralInfo
+            {!requestInfo.tipoDeSolicitacao ? (
+              <SolicitationTypeSelection
+                selectType={(value) =>
+                  setRequestInfo((prev) => ({
+                    ...prev,
+                    tipoDeSolicitacao: value,
+                  }))
+                }
+              />
+            ) : null}
+            {requestInfo.tipoDeSolicitacao ==
+            "VISITA TÉCNICA REMOTA - URBANA" ? (
+              <RemoteUrban
                 requestInfo={requestInfo}
                 setRequestInfo={setRequestInfo}
-                goToNextStage={() => setStage((prev) => prev + 1)}
+                resetSolicitationType={() =>
+                  setRequestInfo((prev) => ({
+                    ...prev,
+                    tipoDeSolicitacao: undefined,
+                  }))
+                }
               />
             ) : null}
           </div>

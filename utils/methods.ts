@@ -824,7 +824,7 @@ export function useKits(onlyActive?: boolean): UseQueryResult<IKit[], Error> {
     queryFn: async (): Promise<IKit[]> => {
       try {
         var url;
-        if (onlyActive) url = "/api/kits/active=true";
+        if (onlyActive) url = "/api/kits?active=true";
         else url = "/api/kits";
         const { data } = await axios.get(url);
         return data.data;
@@ -1193,4 +1193,11 @@ export function getAverageValue(arr: number[]) {
   const sum = arr.reduce((a, b) => a + b, 0);
   const avg = sum / arr.length || 0;
   return avg;
+}
+export function formatLongString(str: string, size: number) {
+  if (str.length > size) {
+    return str.substring(0, size) + "\u2026";
+  } else {
+    return str;
+  }
 }

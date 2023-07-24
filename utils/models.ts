@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import {
+  TechAnalysisSolicitationTypes,
   creditors,
   customersAcquisitionChannels,
   customersNich,
@@ -663,16 +664,7 @@ export interface ITechnicalAnalysis {
     | "AUTOCAD 2D"
     | "APENAS VIABILIDADE DE ESPAÇO"
     | "NÃO DEFINIDO";
-  tipoDeSolicitacao?:
-    | "NÃO DEFINIDO"
-    | "VISITA TÉCNICA REMOTA - URBANA"
-    | "VISITA TÉCNICA REMOTA - RURAL"
-    | "VISITA TÉCNICA IN LOCO - URBANA"
-    | "VISITA TÉCNICA IN LOCO - RURAL"
-    | "ALTERAÇÃO DE PROJETO"
-    | "AUMENTO DE SISTEMA AMPÈRE"
-    | "DESENHO PERSONALIZADO"
-    | "ORÇAMENTAÇÃO";
+  tipoDeSolicitacao?: (typeof TechAnalysisSolicitationTypes)[number];
   tipoDisjuntor?: string;
   tipoEstrutura?: "NÃO DEFINIDO" | "MADEIRA" | "FERRO";
   tipoFixacaoInversores: string;

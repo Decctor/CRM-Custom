@@ -1,20 +1,49 @@
 import { ITechnicalAnalysis } from "@/utils/models";
 import React from "react";
-import TextInput from "../Inputs/TextInput";
-import { formatToCEP, formatToPhone, getCEPInfo } from "@/utils/methods";
+import TextInput from "../../Inputs/TextInput";
+import {
+  formatLongString,
+  formatToCEP,
+  formatToPhone,
+  getCEPInfo,
+} from "@/utils/methods";
 import { toast } from "react-hot-toast";
-import SelectInput from "../Inputs/SelectInput";
+import SelectInput from "../../Inputs/SelectInput";
 import { stateCities } from "@/utils/estados_cidades";
+import { BsCheckCircleFill } from "react-icons/bs";
 
 type GeneralInfoProps = {
   requestInfo: ITechnicalAnalysis;
   setRequestInfo: React.Dispatch<React.SetStateAction<ITechnicalAnalysis>>;
   goToNextStage: () => void;
+  resetSolicitationType: () => void;
+  files:
+    | {
+        [key: string]: {
+          title: string;
+          file: File | null | string;
+        };
+      }
+    | undefined;
+  setFiles: React.Dispatch<
+    React.SetStateAction<
+      | {
+          [key: string]: {
+            title: string;
+            file: File | null | string;
+          };
+        }
+      | undefined
+    >
+  >;
 };
 function GeneralInfo({
   goToNextStage,
+  resetSolicitationType,
   requestInfo,
   setRequestInfo,
+  files,
+  setFiles,
 }: GeneralInfoProps) {
   async function setAddressDataByCEP(cep: string) {
     const addressInfo = await getCEPInfo(cep);
@@ -71,6 +100,15 @@ function GeneralInfo({
     }
     if (requestInfo.numeroResidencia.trim().length == 0) {
       toast.error("Preencha o número da residência do cliente.");
+      return false;
+    }
+    if (!requestInfo.tipoDeLaudo) {
+      toast.error("Preencha o tipo de laudo.");
+      return false;
+    }
+    if (!files?.localizacao) {
+      toast.error("Anexe um arquivo para identificação da localização.");
+      return false;
     }
     return true;
   }
@@ -227,8 +265,65 @@ function GeneralInfo({
             />
           </div>
         </div>
+
+        <div className="flex w-full flex-col items-center justify-center self-center">
+          <div className="flex items-center gap-2">
+            <label
+              className="ml-2 text-center text-sm font-bold text-[#15599a]"
+              htmlFor="contaDeEnergia"
+            >
+              CONFIRMAÇÃO DA SUA LOCALIZAÇÃO
+            </label>
+            {files?.localizacao ? (
+              <BsCheckCircleFill style={{ color: "rgb(34,197,94)" }} />
+            ) : null}
+          </div>
+
+          <div className="relative mt-2 flex h-fit items-center justify-center rounded-lg border-2 border-dotted border-blue-700 bg-gray-100 p-2">
+            <div className="absolute">
+              {files?.localizacao ? (
+                <div className="flex flex-col items-center">
+                  <i className="fa fa-folder-open fa-4x text-blue-700"></i>
+                  <span className="block text-center font-normal text-gray-400">
+                    {typeof files.localizacao.file != "string"
+                      ? files.localizacao.file?.name
+                      : formatLongString(files.localizacao.file, 35)}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <i className="fa fa-folder-open fa-4x text-blue-700"></i>
+                  <span className="block font-normal text-gray-400">
+                    Adicione o arquivo aqui...
+                  </span>
+                </div>
+              )}
+            </div>
+            <input
+              onChange={(e) =>
+                setFiles({
+                  ...files,
+                  localizacao: {
+                    title: "LOCALIZAÇÃO",
+                    file: e.target.files ? e.target.files[0] : null,
+                  },
+                })
+              }
+              className="h-full w-full opacity-0"
+              type="file"
+              accept=".png, .jpeg, .pdf"
+            />
+          </div>
+        </div>
       </div>
-      <div className="mt-2 flex w-full justify-end">
+
+      <div className="mt-2 flex w-full justify-between">
+        <button
+          onClick={() => resetSolicitationType()}
+          className="rounded p-2 font-bold text-gray-500 duration-300 ease-in-out hover:scale-105"
+        >
+          Voltar
+        </button>
         <button
           onClick={() => {
             if (validateFields()) {
