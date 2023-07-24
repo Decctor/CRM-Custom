@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import Project from "@/components/Cards/Project";
 import SeachProjects from "@/components/ProjectBlocks/SeachProjects";
 import Link from "next/link";
+import { MdWhatsapp } from "react-icons/md";
 
 type Options = {
   activeResponsible: string | null;
@@ -414,11 +415,12 @@ export default function Home() {
             <p className="text-xs font-bold uppercase">Sugestões</p>
           </div>
         </Link>
-        {/* <Link href={"https://wa.me/55XXXXXXXXXXX"}>
-          <div className="fixed bottom-10 right-[140px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]">
-            <p className="text-xs font-bold uppercase">Suporte</p>
+        <Link href={"https://wa.me/5534984064658"}>
+          <div className="fixed bottom-10 right-[140px] flex cursor-pointer items-center gap-2 rounded-lg bg-[#15599a] p-3 text-xs text-white hover:bg-[#fead61] hover:text-[#15599a]">
+            <p className="text-xs font-bold uppercase">Volts</p>
+            <MdWhatsapp />
           </div>
-        </Link> */}
+        </Link>
       </div>
       {newProjectModalIsOpen ? (
         <NewProject

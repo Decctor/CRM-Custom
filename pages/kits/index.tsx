@@ -229,8 +229,10 @@ function Kits() {
                     key={index}
                     kit={kit}
                     handleClick={() => {
-                      setEditKitInfo(kit);
-                      setEditModalIsOpen(true);
+                      if (session.user?.permissoes.kits.editar) {
+                        setEditKitInfo(kit);
+                        setEditModalIsOpen(true);
+                      }
                     }}
                   />
                 ))

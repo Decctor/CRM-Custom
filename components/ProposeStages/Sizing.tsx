@@ -423,7 +423,7 @@ function Sizing({
                       selectedAnalysis?._id == analysis._id
                         ? "bg-green-200"
                         : " "
-                    } flex h-[300px] max-h-[300px] w-[400px] cursor-pointer flex-col items-center rounded border border-gray-200 p-2 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
+                    } flex h-[300px] max-h-[300px] w-[400px] cursor-pointer flex-col items-center rounded border border-gray-200 p-2 shadow-lg duration-300 ease-in-out hover:scale-[1.02]`}
                   >
                     <div className="flex w-full flex-col items-center">
                       <MdAssessment

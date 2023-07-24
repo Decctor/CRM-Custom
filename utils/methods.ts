@@ -900,14 +900,15 @@ export function useProjects(
 }
 export function useTechnicalAnalysis(
   projectCode: string | null | undefined,
-  enabled: boolean
+  enabled: boolean,
+  status?: "CONCLUIDO" | "TODOS"
 ): UseQueryResult<ITechnicalAnalysis[], Error> {
   return useQuery({
     queryKey: ["technicalAnalysis", projectCode],
     queryFn: async (): Promise<ITechnicalAnalysis[]> => {
       try {
         const { data } = await axios.get(
-          `/api/ampereIntegration/technicalAnalysis?projectIdentifier=${projectCode}`
+          `/api/ampereIntegration/technicalAnalysis?projectIdentifier=${projectCode}&status=${status}`
         );
         return data.data;
       } catch (error) {
@@ -917,6 +918,7 @@ export function useTechnicalAnalysis(
     },
     enabled: enabled,
     retry: false,
+    refetchOnWindowFocus: false,
   });
 }
 

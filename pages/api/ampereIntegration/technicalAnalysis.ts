@@ -8,20 +8,26 @@ type GetResponse = {
 };
 const getTechnicalAnalysis: NextApiHandler<GetResponse> = async (req, res) => {
   await validateAuthentication(req);
-  const { projectIdentifier } = req.query;
+  const { projectIdentifier, status } = req.query;
   if (!projectIdentifier || typeof projectIdentifier != "string")
     throw new createHttpError.BadRequest(
       "Identificador de projeto inválido ou não informado."
     );
-
   const db = await connectToDatabase(process.env.OPERATIONAL_MONGODB_URI);
   const collection = db.collection("visitaTecnica");
+  var statusMatch;
+  if (!status) statusMatch = "CONCLUIDO";
+  if (status == "CONCLUIDO") statusMatch = "CONCLUIDO";
+  if (status == "TODOS")
+    statusMatch = {
+      $ne: null,
+    };
 
   const analysis = await collection
     .aggregate([
       {
         $match: {
-          status: "CONCLUIDO",
+          status: statusMatch,
           codigoSVB: projectIdentifier,
         },
       },

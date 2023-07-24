@@ -292,8 +292,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
             {/* <button className="rounded border border-red-500 p-1 font-medium text-red-500 duration-300 ease-in-out hover:scale-105 hover:bg-red-500 hover:text-white">
               Perder
             </button> */}
-            {propose.infoProjeto?.assinado &&
-            propose.infoProjeto?.dataAssinatura ? (
+            {propose?.assinado ? (
               <div className="flex w-fit min-w-[250px] items-center justify-end gap-5 text-green-500">
                 <BsFillCalendarCheckFill
                   style={{ color: "rgb(34,197,94)", fontSize: "25px" }}
@@ -303,9 +302,9 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     Assinado em:
                   </p>
                   <p className="text-md text-center font-medium text-gray-500">
-                    {dayjs(propose.infoProjeto?.dataAssinatura).format(
-                      "DD/MM/YYYY"
-                    )}
+                    {propose?.dataAssinatura
+                      ? dayjs(propose?.dataAssinatura).format("DD/MM/YYYY")
+                      : "-"}
                   </p>
                 </div>
               </div>

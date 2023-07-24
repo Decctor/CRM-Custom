@@ -17,6 +17,7 @@ import Propose from "@/components/ProposeStages/Propose";
 import SolarSystemPropose from "@/components/ProposeUtilBlocks/SolarSystemPropose";
 import OeMPropose from "@/components/ProposeUtilBlocks/OeMPropose";
 import { energyTariffs } from "@/utils/constants";
+import Link from "next/link";
 function checkQueryEnableStatus(session: ISession | null, queryId: any) {
   if (session?.user && typeof queryId === "string") {
     return true;
@@ -85,6 +86,27 @@ function PropostaPage() {
     );
   }
   if (isSuccess) {
+    if (project.idSolicitacaoContrato)
+      return (
+        <div className="flex h-full">
+          <Sidebar />
+          <div className="flex w-full max-w-full grow flex-col items-center justify-center overflow-x-hidden bg-[#f8f9fa]">
+            <p className="text-center text-lg italic text-gray-500">
+              Oops, parece que já existe uma solicitação de contrato para esse
+              projeto e, portanto, criação novas propostas não é permitido.
+            </p>
+            <p className="text-center text-lg italic text-gray-500">
+              Crie um novo projeto, ou requisite a inativação do formulário
+              anterior.
+            </p>
+            <Link href={`/projeto/id/${project._id}`}>
+              <p className="text-center text-lg italic text-blue-300 underline hover:text-blue-500">
+                Voltar à página do projeto
+              </p>
+            </Link>
+          </div>
+        </div>
+      );
     return (
       <div className="flex h-full">
         <Sidebar />

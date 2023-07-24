@@ -1210,7 +1210,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
               />
             </button>
           </div>
-          <div className="flex w-full gap-2">
+          {/* <div className="flex w-full gap-2">
             <div className="grow">
               <NumberInput
                 label="PADRÃO DE ENTRADA"
@@ -1362,7 +1362,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
                 }}
               />
             </button>
-          </div>
+          </div> */}
           <h1 className="text-center text-sm font-medium text-[#fead61]">
             ANEXOS
           </h1>

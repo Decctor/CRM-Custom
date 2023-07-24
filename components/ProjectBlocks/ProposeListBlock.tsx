@@ -17,6 +17,10 @@ type ProposeListBlock = {
   projectProposesLoading: boolean;
   projectProposesError: boolean;
   idActivePropose?: string;
+  setBlockMode: React.Dispatch<
+    React.SetStateAction<"PROPOSES" | "TECHNICAL ANALYSIS">
+  >;
+  contractSigned?: boolean;
 };
 function ProposeListBlock({
   city,
@@ -27,34 +31,45 @@ function ProposeListBlock({
   projectProposesLoading,
   projectProposesError,
   idActivePropose,
+  contractSigned,
+  setBlockMode,
 }: ProposeListBlock) {
   const router = useRouter();
   return (
     <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
       <div className="flex  h-[40px] items-center  justify-between border-b border-gray-200 pb-2">
-        <div className="flex items-center justify-center gap-10">
+        <div className="flex items-center justify-center gap-5">
           <h1 className="w-[120px] cursor-pointer border-b border-blue-500 p-1 text-center font-bold text-black hover:border-blue-500">
             Propostas
           </h1>
+          <h1
+            onClick={() => setBlockMode("TECHNICAL ANALYSIS")}
+            className="w-fit cursor-pointer border-b border-transparent p-1 text-center font-bold text-black hover:border-blue-500"
+          >
+            Análises Técnicas
+          </h1>
         </div>
-
-        <button
-          onClick={() => {
-            if (!city || !uf) {
-              toast.error(
-                "Por favor, preecha a cidade e o estado do cliente antes de prosseguir para geração de propostas."
-              );
-            } else {
-              router.push(`/projeto/proposta/${projectId}`);
-            }
-          }}
-          className="hidden rounded bg-green-600 p-1 text-sm font-bold text-white lg:flex"
-        >
-          GERAR PROPOSTA
-        </button>
-        <button className="flex rounded bg-green-600 p-1 text-sm font-bold text-white lg:hidden">
-          <MdAdd />
-        </button>
+        {contractSigned ? null : (
+          <>
+            <button
+              onClick={() => {
+                if (!city || !uf) {
+                  toast.error(
+                    "Por favor, preecha a cidade e o estado do cliente antes de prosseguir para geração de propostas."
+                  );
+                } else {
+                  router.push(`/projeto/proposta/${projectId}`);
+                }
+              }}
+              className="hidden rounded bg-green-600 p-1 text-sm font-bold text-white lg:flex"
+            >
+              GERAR PROPOSTA
+            </button>
+            <button className="flex rounded bg-green-600 p-1 text-sm font-bold text-white lg:hidden">
+              <MdAdd />
+            </button>
+          </>
+        )}
       </div>
       <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
         <div className="flex h-[30px] min-h-[30px] w-full items-center rounded bg-black">

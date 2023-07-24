@@ -40,6 +40,7 @@ import {
   useProject,
   useRepresentatives,
   useResponsibles,
+  useTechnicalAnalysis,
 } from "@/utils/methods";
 import DetailsBlock from "@/components/ProjectBlocks/DetailsBlock";
 import { TbNotes } from "react-icons/tb";
@@ -50,6 +51,7 @@ import LoseProject from "@/components/ProjectBlocks/LoseProject";
 import EditClient from "@/components/Modals/EditClient";
 import EditClientSimplified from "@/components/Modals/EditClientSimplified";
 import ProposeListBlock from "@/components/ProjectBlocks/ProposeListBlock";
+import TechAnalysisListBlock from "@/components/ProjectBlocks/TechAnalysisListBlock";
 
 function Projeto() {
   const { data: session } = useSession({
@@ -58,7 +60,7 @@ function Projeto() {
   const { query } = useRouter();
   const queryClient = useQueryClient();
 
-  const [blockMode, setBlockMode] = useState<"PROPOSES" | "DOCUMENTS">(
+  const [blockMode, setBlockMode] = useState<"PROPOSES" | "TECHNICAL ANALYSIS">(
     "PROPOSES"
   );
   const [editModalIsOpen, setEditModalIsOpen] = useState<boolean>(false);
@@ -73,6 +75,15 @@ function Projeto() {
   } = useProject(
     typeof query.id === "string" ? query.id : "",
     checkQueryEnableStatus(session, query.id)
+  );
+  const {
+    data: technicalAnalysis,
+    isFetching: fetchingTechAnalysis,
+    isSuccess: successTechAnalysis,
+  } = useTechnicalAnalysis(
+    project?.identificador,
+    checkQueryEnableStatus(session, project?.identificador),
+    "TODOS"
   );
   const {
     data: projectProposes,
@@ -104,6 +115,7 @@ function Projeto() {
     },
     enabled: !!project,
   });
+  console.log("VISITA", technicalAnalysis);
   if (projectLoading) return <LoadingComponent />;
 
   if (projectError)
@@ -326,6 +338,17 @@ function Projeto() {
                 projectProposesLoading={projectProposesLoading}
                 projectProposesError={projectProposesError}
                 idActivePropose={project.propostaAtiva}
+                setBlockMode={setBlockMode}
+                contractSigned={project.assinado}
+              />
+            ) : null}
+            {blockMode == "TECHNICAL ANALYSIS" ? (
+              <TechAnalysisListBlock
+                project={project}
+                technicalAnalysis={technicalAnalysis}
+                fetchingTechAnalysis={fetchingTechAnalysis}
+                successTechAnalysis={successTechAnalysis}
+                setBlockMode={setBlockMode}
               />
             ) : null}
           </div>

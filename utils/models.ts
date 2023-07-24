@@ -490,11 +490,12 @@ export interface INotification {
   dataInsercao?: string;
 }
 export interface ITechnicalAnalysis {
-  _id: string;
-  nomeVendedor: string;
+  _id?: string;
+  nomeVendedor?: string;
   nomeDoCliente: string;
   codigoSVB: string;
-  cidade: string;
+  uf?: "MG" | "GO";
+  cidade?: string;
   cep: string;
   bairro: string;
   logradouro: string;
