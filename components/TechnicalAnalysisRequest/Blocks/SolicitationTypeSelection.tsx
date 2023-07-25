@@ -13,7 +13,7 @@ function SolicitationTypeSelection({
   selectType,
 }: SolicitationTypeSelectionProps) {
   return (
-    <div className="flex w-full grow flex-col items-center gap-2 px-2">
+    <div className="flex w-full grow flex-col items-center gap-2 px-4">
       <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
         TIPO DE SOLICITAÇÃO
       </span>
@@ -106,7 +106,10 @@ function SolicitationTypeSelection({
         </div>
       </div>
       <div className="flex w-full items-center gap-2">
-        <div className="flex h-[300px] w-full cursor-pointer flex-col items-center gap-2 rounded-sm border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100 lg:w-[50%]">
+        <div
+          onClick={() => selectType("DESENHO PERSONALIZADO")}
+          className="flex h-[300px] w-full cursor-pointer flex-col items-center gap-2 rounded-sm border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100 lg:w-[50%]"
+        >
           <MdAssessment style={{ color: "#000", fontSize: "35px" }} />
           <h1 className="text-center text-lg font-bold">
             DESENHO PERSONALIZADO
@@ -124,7 +127,10 @@ function SolicitationTypeSelection({
             horas úteis.
           </p>
         </div>
-        <div className="flex h-[300px] w-full cursor-pointer flex-col items-center gap-2 rounded-sm border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100 lg:w-[50%]">
+        <div
+          onClick={() => selectType("ORÇAMENTAÇÃO")}
+          className="flex h-[300px] w-full cursor-pointer flex-col items-center gap-2 rounded-sm border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100 lg:w-[50%]"
+        >
           <MdAssessment style={{ color: "#000", fontSize: "35px" }} />
           <h1 className="text-center text-lg font-bold">ORÇAMENTAÇÃO</h1>
           <p className="text-center text-sm text-gray-500">

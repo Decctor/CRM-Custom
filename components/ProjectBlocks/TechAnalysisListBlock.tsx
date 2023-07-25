@@ -63,7 +63,7 @@ function TechAnalysisListBlock({
           </h1>
         </div>
 
-        {/* <button
+        <button
           onClick={() => setRequestModalIsOpen(true)}
           className="hidden rounded bg-green-600 p-1 text-sm font-bold text-white lg:flex"
         >
@@ -74,7 +74,7 @@ function TechAnalysisListBlock({
           className="flex rounded bg-green-600 p-1 text-sm font-bold text-white lg:hidden"
         >
           <MdAdd />
-        </button> */}
+        </button>
       </div>
       <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
         <div className="flex h-[30px] min-h-[30px] w-full items-center rounded bg-black">

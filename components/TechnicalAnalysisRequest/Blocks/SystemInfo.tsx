@@ -19,6 +19,7 @@ type SystemInfoProps = {
   requestInfo: ITechnicalAnalysis;
   setRequestInfo: React.Dispatch<React.SetStateAction<ITechnicalAnalysis>>;
   goToNextStage: () => void;
+  goToPreviousStage: () => void;
 };
 type SelectedKitsState = {
   kitId: string | string[];
@@ -48,6 +49,7 @@ function SystemInfo({
   requestInfo,
   setRequestInfo,
   goToNextStage,
+  goToPreviousStage,
 }: SystemInfoProps) {
   const {
     data: kits = [],
@@ -134,6 +136,7 @@ function SystemInfo({
   }
   function formatAndProceed() {
     var selectedKitsCopy = [...selectedKits];
+    var kitIdsArr = selectedKitsCopy.flatMap((x) => x.kitId);
     var invQtdeArr = selectedKitsCopy
       .flatMap((x) => x.inversores)
       .map((inv) => inv.qtde);
@@ -164,6 +167,7 @@ function SystemInfo({
     // console.log({ joinedInvQtdeArr, joinedInvPotArr, joinedInvBrandArr });
     setRequestInfo((prev) => ({
       ...prev,
+      kitIds: kitIdsArr,
       tipoInversor: selectedKitsCopy[0].topologia,
       qtdeInversor: joinedInvQtdeArr,
       potInversor: joinedInvPotArr,
@@ -171,6 +175,10 @@ function SystemInfo({
       qtdeModulos: joinedModQtdeArr,
       potModulos: joinedModPotArr,
       marcaModulos: joinedModBrandArr,
+      localInstalacaoInversor:
+        selectedKitsCopy[0].topologia == "MICRO-INVERSOR"
+          ? "MICRO-INVERSOR"
+          : "",
     }));
     goToNextStage();
   }
@@ -395,20 +403,25 @@ function SystemInfo({
           {kitsFetching ? <LoadingComponent /> : null}
         </div>
       </div>
-      {
-        <div className="mt-2 flex w-full items-end justify-end bg-[#fff]">
-          <button
-            onClick={() => {
-              if (validateFields()) {
-                formatAndProceed();
-              }
-            }}
-            className="rounded p-2 font-bold hover:bg-black hover:text-white"
-          >
-            Prosseguir
-          </button>
-        </div>
-      }
+
+      <div className="mt-2 flex w-full justify-between">
+        <button
+          onClick={() => goToPreviousStage()}
+          className="rounded p-2 font-bold text-gray-500 duration-300 ease-in-out hover:scale-105"
+        >
+          Voltar
+        </button>
+        <button
+          onClick={() => {
+            if (validateFields()) {
+              formatAndProceed();
+            }
+          }}
+          className="rounded p-2 font-bold hover:bg-black hover:text-white"
+        >
+          Prosseguir
+        </button>
+      </div>
     </div>
   );
 }

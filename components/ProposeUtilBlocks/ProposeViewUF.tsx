@@ -6,7 +6,11 @@ import { RxDashboard } from "react-icons/rx";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
-import { checkQueryEnableStatus, getInverterStr } from "@/utils/methods";
+import {
+  checkQueryEnableStatus,
+  getEstimatedGen,
+  getInverterStr,
+} from "@/utils/methods";
 import { useSession } from "next-auth/react";
 import { IProposeInfo } from "@/utils/models";
 import { ImPower, ImPriceTag, ImTab } from "react-icons/im";
@@ -330,12 +334,30 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                         style={{ color: "rgb(239,68,68)", fontSize: "20px" }}
                       />
                       <p className="text-xs font-thin text-gray-600">
-                        POTÊNCIA PICO
+                        POTÊNCIA PICO E GERAÇÃO ESTIMADA
                       </p>
                     </div>
-                    <p className="text-lg font-thin text-gray-600">
-                      {propose?.potenciaPico} kWh
-                    </p>
+                    <div className="flex w-full items-center justify-center gap-2">
+                      <p className="text-lg font-thin text-gray-600">
+                        {propose?.potenciaPico?.toLocaleString("pt-br", {
+                          maximumFractionDigits: 2,
+                          minimumFractionDigits: 2,
+                        })}{" "}
+                        kWp
+                      </p>
+                      <p className="text-lg font-thin text-gray-600">
+                        {getEstimatedGen(
+                          propose.potenciaPico || 0,
+                          propose.infoProjeto?.cliente?.cidade,
+                          propose.infoProjeto?.cliente?.uf,
+                          propose.premissas.orientacao
+                        ).toLocaleString("pt-br", {
+                          maximumFractionDigits: 2,
+                          minimumFractionDigits: 2,
+                        })}{" "}
+                        kWh
+                      </p>
+                    </div>
                   </div>
                   <div className="flex w-full flex-col items-center justify-center gap-2 rounded border border-gray-300 p-1 ">
                     <div className="flex w-full items-center justify-center gap-2">

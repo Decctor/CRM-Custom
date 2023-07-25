@@ -11,6 +11,10 @@ import { TbRulerMeasure } from "react-icons/tb";
 import { FaCalculator } from "react-icons/fa";
 import SolicitationTypeSelection from "../TechnicalAnalysisRequest/Blocks/SolicitationTypeSelection";
 import RemoteUrban from "../TechnicalAnalysisRequest/RemoteUrban";
+import RemoteRural from "../TechnicalAnalysisRequest/RemoteRural";
+import InLocoUrban from "../TechnicalAnalysisRequest/InLoco";
+import { GiProgression } from "react-icons/gi";
+import { IoMdBuild } from "react-icons/io";
 
 type RequestTechnicalAnalysisProps = {
   closeModal: () => void;
@@ -60,12 +64,12 @@ function RequestTechnicalAnalysis({
     distanciaInversorRoteador: "",
     obsInstalacao: "",
     adaptacaoQGBT: "NÃO SE APLICA",
-    alambrado: "NÃO DEFINIDO",
+    alambrado: undefined,
     avaliarTelhado: "NÃO",
-    britagem: "NÃO DEFINIDO",
-    casaDeMaquinas: "NÃO DEFINIDO",
+    britagem: undefined,
+    casaDeMaquinas: undefined,
     concessionaria: "",
-    construcaoBarracao: "NÃO DEFINIDO",
+    construcaoBarracao: undefined,
     custosAdicionais: [],
     dataDeAbertura: "",
     dataDeConclusao: "",
@@ -82,15 +86,15 @@ function RequestTechnicalAnalysis({
     distanciaSistemaQuadro: "",
     dpsQGBT: "NÃO",
     espacoQGBT: "NÃO DEFINIDO",
-    estruturaMontagem: "NÃO DEFINIDO",
+    estruturaMontagem: undefined,
     fotoDroneDesenho: "NÃO",
     fotoFaixada: "NÃO",
     fotosDrone: "",
     googleEarth: "NÃO",
     infoPadraoConjugado: "",
     infraCabos: "NÃO DEFINIDO",
-    instalacaoRoteador: "NÃO DEFINIDO",
-    limpezaLocalUsinaSolo: "NÃO DEFINIDO",
+    instalacaoRoteador: undefined,
+    limpezaLocalUsinaSolo: undefined,
     links: [],
     linkVisualizacaoProjeto: "",
     localAterramento: "",
@@ -117,14 +121,14 @@ function RequestTechnicalAnalysis({
     obsSuprimentos: "",
     obsVisita: "",
     orientacaoEstrutura: "",
-    padraoTrafoAcoplados: "NÃO",
+    padraoTrafoAcoplados: undefined,
     pendenciasProjetos: "",
     pendenciasTrafo: "",
-    potTrafo: "",
-    ramalEntrada: "NÃO DEFINIDO",
-    ramalSaida: "NÃO DEFINIDO",
+    potTrafo: 0,
+    ramalEntrada: undefined,
+    ramalSaida: undefined,
     realimentar: "NÃO",
-    redeReligacao: "NÃO DEFINIDO",
+    redeReligacao: undefined,
     respostaConclusao: "",
     respostaEspacoProjeto: "NÃO DEFINIDO",
     respostaEstruturaInclinacao: "NÃO DEFINIDO",
@@ -141,18 +145,18 @@ function RequestTechnicalAnalysis({
     telefoneVendedor: getSellerContact(responsibles, project.responsavel.id),
     telhasReservas: "NÃO DEFINIDO",
     temEstudoDeCaso: "NÃO DEFINIDO",
-    terraplanagemUsinaSolo: "NÃO DEFINIDO",
+    terraplanagemUsinaSolo: undefined,
     tipoDeLaudo: "ESTUDO SIMPLES (36 HORAS)",
-    tipoDesenho: "NÃO DEFINIDO",
+    tipoDesenho: undefined,
     tipoDeSolicitacao: undefined,
     tipoDisjuntor: "",
-    tipoEstrutura: "NÃO DEFINIDO",
-    tipoFixacaoInversores: "",
+    tipoEstrutura: undefined,
+    tipoFixacaoInversores: undefined,
     tipoInversor: "NÃO DEFINIDO",
     tipoOrcamentacao: "",
-    tipoPadrao: "NÃO DEFINIDO",
+    tipoPadrao: undefined,
     tipoProjeto: "NÃO DEFINIDO",
-    tipoTelha: "NÃO DEFINIDO",
+    tipoTelha: undefined,
   });
   const [files, setFiles] = useState<{
     [key: string]: {
@@ -239,7 +243,58 @@ function RequestTechnicalAnalysis({
                     tipoDeSolicitacao: undefined,
                   }))
                 }
+                projectId={project._id}
               />
+            ) : null}
+            {requestInfo.tipoDeSolicitacao ==
+            "VISITA TÉCNICA REMOTA - RURAL" ? (
+              <RemoteRural
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                resetSolicitationType={() =>
+                  setRequestInfo((prev) => ({
+                    ...prev,
+                    tipoDeSolicitacao: undefined,
+                  }))
+                }
+                projectId={project._id}
+              />
+            ) : null}
+            {requestInfo.tipoDeSolicitacao ==
+              "VISITA TÉCNICA IN LOCO - URBANA" ||
+            requestInfo.tipoDeSolicitacao ==
+              "VISITA TÉCNICA IN LOCO - RURAL" ? (
+              <InLocoUrban
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                resetSolicitationType={() =>
+                  setRequestInfo((prev) => ({
+                    ...prev,
+                    tipoDeSolicitacao: undefined,
+                  }))
+                }
+                projectId={project._id}
+              />
+            ) : null}
+            {requestInfo.tipoDeSolicitacao == "DESENHO PERSONALIZADO" ||
+            requestInfo.tipoDeSolicitacao == "ORÇAMENTAÇÃO" ? (
+              <div className="flex grow flex-col items-center justify-center">
+                <IoMdBuild style={{ color: "#fead41", fontSize: "40px" }} />
+                <p className="text-lg font-medium italic text-gray-500">
+                  Em construção...
+                </p>
+                <p
+                  onClick={() =>
+                    setRequestInfo((prev) => ({
+                      ...prev,
+                      tipoDeSolicitacao: undefined,
+                    }))
+                  }
+                  className="cursor-pointer text-sm text-blue-500"
+                >
+                  Voltar
+                </p>
+              </div>
             ) : null}
           </div>
         </div>

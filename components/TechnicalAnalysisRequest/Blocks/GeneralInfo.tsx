@@ -113,7 +113,7 @@ function GeneralInfo({
     return true;
   }
   return (
-    <div className="flex w-full grow flex-col bg-[#fff] pb-2">
+    <div className="flex w-full grow flex-col bg-[#fff] px-2">
       <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
         DADOS GERAIS
       </span>

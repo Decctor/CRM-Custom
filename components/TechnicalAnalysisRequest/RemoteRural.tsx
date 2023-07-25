@@ -7,19 +7,20 @@ import TransformerInfo from "./Blocks/TransformerInfo";
 import StructureInfo from "./Blocks/StructureInfo";
 import InstallationInfo from "./Blocks/InstallationInfo";
 import ReviewInfo from "./Blocks/ReviewInfo";
-type RemoteUrbanProps = {
+import AdditionalServicesInfo from "./Blocks/AdditionalServicesInfo";
+type RemoteRuralProps = {
   requestInfo: ITechnicalAnalysis;
   setRequestInfo: React.Dispatch<React.SetStateAction<ITechnicalAnalysis>>;
   resetSolicitationType: () => void;
   projectId?: string;
 };
 
-function RemoteUrban({
+function RemoteRural({
   requestInfo,
   setRequestInfo,
   resetSolicitationType,
   projectId,
-}: RemoteUrbanProps) {
+}: RemoteRuralProps) {
   const [stage, setStage] = useState(1);
   const [files, setFiles] = useState<{
     [key: string]: {
@@ -88,6 +89,16 @@ function RemoteUrban({
         />
       ) : null}
       {stage == 7 ? (
+        <AdditionalServicesInfo
+          requestInfo={requestInfo}
+          setRequestInfo={setRequestInfo}
+          goToNextStage={() => setStage((prev) => prev + 1)}
+          goToPreviousStage={() => setStage((prev) => prev - 1)}
+          files={files}
+          setFiles={setFiles}
+        />
+      ) : null}
+      {stage == 8 ? (
         <ReviewInfo
           requestInfo={requestInfo}
           setRequestInfo={setRequestInfo}
@@ -101,4 +112,4 @@ function RemoteUrban({
   );
 }
 
-export default RemoteUrban;
+export default RemoteRural;

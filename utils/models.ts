@@ -517,28 +517,24 @@ export interface ITechnicalAnalysis {
     | "NÃO"
     | "TRILHO"
     | "CORTE";
-  alambrado:
+  alambrado?:
     | "NÃO"
     | "SIM - RESPONSABILIDADE CLIENTE"
-    | "SIM - RESPONSABILIDADE AMPÈRE"
-    | "NÃO DEFINIDO";
+    | "SIM - RESPONSABILIDADE AMPÈRE";
   avaliarTelhado: "SIM" | "NÃO";
-  britagem:
+  britagem?:
     | "NÃO"
     | "SIM - RESPONSABILIDADE CLIENTE"
-    | "SIM - RESPONSABILIDADE AMPÈRE"
-    | "NÃO DEFINIDO";
-  casaDeMaquinas:
+    | "SIM - RESPONSABILIDADE AMPÈRE";
+  casaDeMaquinas?:
     | "NÃO"
     | "SIM - RESPONSABILIDADE CLIENTE"
-    | "SIM - RESPONSABILIDADE AMPÈRE"
-    | "NÃO DEFINIDO";
+    | "SIM - RESPONSABILIDADE AMPÈRE";
   concessionaria: string;
-  construcaoBarracao:
+  construcaoBarracao?:
     | "NÃO"
     | "SIM - RESPONSABILIDADE CLIENTE"
-    | "SIM - RESPONSABILIDADE AMPÈRE"
-    | "NÃO DEFINIDO";
+    | "SIM - RESPONSABILIDADE AMPÈRE";
   custosAdicionais: {
     categoria: "PADRÃO" | "ESTRUTURA" | "INSTALAÇÃO" | "OUTROS";
     custo?: number;
@@ -561,9 +557,8 @@ export interface ITechnicalAnalysis {
   distanciaSistemaQuadro: string;
   dpsQGBT: "SIM" | "NÃO";
   espacoQGBT: "SIM" | "NÃO" | "NÃO DEFINIDO";
-  estruturaMontagem:
-    | "NÃO DEFINIDO"
-    | "TELHADO CONVENCIONAL - TELHA BARRO"
+  estruturaMontagem?:
+    | "TELHADO CONVENCIONAL"
     | "BARRACÃO À CONSTRUIR"
     | "ESTRUTURA DE SOLO"
     | "BEZERREIRO";
@@ -573,13 +568,11 @@ export interface ITechnicalAnalysis {
   googleEarth: "SIM" | "NÃO";
   infoPadraoConjugado?: string;
   infraCabos: "NÃO DEFINIDO" | "KIT NORMAL" | "KIT+MANGUEIRA" | "PERSONALIZADO";
-  instalacaoRoteador:
-    | "NÃO DEFINIDO"
+  instalacaoRoteador?:
     | "SIM - RESPONSABILIDADE AMPÈRE"
     | "SIM - RESPONSABILIDADE CLIENTE"
     | "NÃO";
-  limpezaLocalUsinaSolo:
-    | "NÃO DEFINIDO"
+  limpezaLocalUsinaSolo?:
     | "SIM - RESPONSABILIDADE AMPÈRE"
     | "SIM - RESPONSABILIDADE CLIENTE"
     | "NÃO";
@@ -613,15 +606,14 @@ export interface ITechnicalAnalysis {
   obsSuprimentos: string;
   obsVisita?: string;
   orientacaoEstrutura?: string;
-  padraoTrafoAcoplados: "NÃO" | "SIM";
+  padraoTrafoAcoplados?: "NÃO" | "SIM";
   pendenciasProjetos?: string;
   pendenciasTrafo?: string;
-  potTrafo?: string;
-  ramalEntrada?: "AÉREO" | "SUBTERRÂNEO" | "NÃO DEFINIDO";
-  ramalSaida?: "AÉREO" | "SUBTERRÂNEO" | "NÃO DEFINIDO";
+  potTrafo?: number;
+  ramalEntrada?: "AÉREO" | "SUBTERRÂNEO";
+  ramalSaida?: "AÉREO" | "SUBTERRÂNEO";
   realimentar: "SIM" | "NÃO";
-  redeReligacao:
-    | "NÃO DEFINIDO"
+  redeReligacao?:
     | "SIM - RESPONSABILIDADE AMPÈRE"
     | "SIM - RESPONSABILIDADE CLIENTE"
     | "NÃO";
@@ -649,8 +641,7 @@ export interface ITechnicalAnalysis {
   telefoneVendedor: string;
   telhasReservas?: "NÃO" | "SIM" | "NÃO DEFINIDO";
   temEstudoDeCaso?: "NÃO" | "SIM" | "NÃO DEFINIDO";
-  terraplanagemUsinaSolo:
-    | "NÃO DEFINIDO"
+  terraplanagemUsinaSolo?:
     | "SIM - RESPONSABILIDADE AMPÈRE"
     | "SIM - RESPONSABILIDADE CLIENTE"
     | "NÃO";
@@ -662,21 +653,18 @@ export interface ITechnicalAnalysis {
     | "SOLAR EDGE DESIGN"
     | "REVIT 3D"
     | "AUTOCAD 2D"
-    | "APENAS VIABILIDADE DE ESPAÇO"
-    | "NÃO DEFINIDO";
+    | "APENAS VIABILIDADE DE ESPAÇO";
   tipoDeSolicitacao?: (typeof TechAnalysisSolicitationTypes)[number];
   tipoDisjuntor?: string;
-  tipoEstrutura?: "NÃO DEFINIDO" | "MADEIRA" | "FERRO";
-  tipoFixacaoInversores: string;
+  tipoEstrutura?: "MADEIRA" | "FERRO";
+  tipoFixacaoInversores?: string;
   tipoInversor: "MICRO-INVERSOR" | "INVERSOR" | "NÃO DEFINIDO";
   tipoOrcamentacao?: string;
   tipoPadrao?:
-    | "NÃO DEFINIDO"
     | "CONTRA À REDE - POSTE DO OUTRO LADO DA RUA"
     | "À FAVOR DA REDE - POSTE DO MESMO LADO DA RUA";
   tipoProjeto?: "NÃO DEFINIDO" | "MICRO GERAÇÃO" | "REDE MÉDIA" | "REDE BAIXA";
-  tipoTelha:
-    | "NÃO DEFINIDO"
+  tipoTelha?:
     | "PORTUGUESA"
     | "FRANCESA"
     | "ROMANA"
@@ -687,4 +675,5 @@ export interface ITechnicalAnalysis {
     | "ZINCO"
     | "CAPE E BICA"
     | "LAJE";
+  kitIds?: string[];
 }
