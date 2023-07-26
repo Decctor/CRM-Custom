@@ -382,6 +382,9 @@ function Projeto() {
             projectId={project._id ? project._id : ""}
           />
         ) : null}
+        {/* <div className="fixed bottom-10 right-[30px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]">
+          <p className="text-xs font-bold uppercase">ABRIR CHAMADO</p>
+        </div> */}
       </div>
     );
 }

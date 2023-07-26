@@ -75,6 +75,7 @@ function SeachProjects() {
         <div className="absolute -top-[5px] right-[30] z-[2000] flex h-[150px] w-[270px] flex-col self-center rounded-md border border-gray-200 bg-[#fff] p-2 shadow-sm lg:right-[110%] lg:w-[350px]">
           <input
             type="text"
+            autoFocus={true}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             className="w-full  bg-transparent p-2 text-center text-sm outline-none"

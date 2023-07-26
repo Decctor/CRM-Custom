@@ -13,6 +13,7 @@ import { AiFillEdit } from "react-icons/ai";
 import PricingTable from "../ProposeUtilBlocks/PricingTable";
 import PricingTableNonEditable from "../ProposeUtilBlocks/PricingTableNonEditable";
 import EditProposePrice from "../ProposeUtilBlocks/EditProposePrice";
+import NewCost from "../Modals/NewCost";
 type SaleProps = {
   setProposeInfo: React.Dispatch<React.SetStateAction<IProposeInfo>>;
   proposeInfo: IProposeInfo;
@@ -32,6 +33,8 @@ function Sale({
   const { data: session } = useSession({ required: true });
   const [editFinalPriceModalIsOpen, setEditFinalPriceModalIsOpen] =
     useState<boolean>(false);
+
+  const [addCostModalIsOpen, setAddCostModalIsOpen] = useState<boolean>(false);
   const [pricing, setPricing] = useState(
     getPrices(project, proposeInfo, selectedAnalysis)
   );
@@ -134,7 +137,7 @@ function Sale({
     }));
     moveToNextStage(null);
   }
-  console.log("PREÇOS", pricing);
+  console.log(pricing);
   return (
     <>
       <div className="flex w-full flex-col gap-4 py-4">
@@ -156,7 +159,16 @@ function Sale({
           setPricing={setPricing}
         />
       )}
-      <div className="flex w-full items-center justify-center py-1">
+      {session?.user.permissoes.precos.editar ? (
+        <button
+          onClick={() => setAddCostModalIsOpen(true)}
+          className="self-center rounded border border-[#fead41] p-1 font-bold text-[#fead41] duration-300 ease-in-out hover:scale-105 hover:bg-[#fead41] hover:text-black"
+        >
+          NOVO CUSTO
+        </button>
+      ) : null}
+
+      <div className="flex w-full items-center justify-center gap-2 py-1">
         <div className="flex gap-2 rounded border border-gray-600 px-2 py-1 font-medium text-gray-600">
           <p>
             R$
@@ -196,6 +208,13 @@ function Sale({
           Prosseguir
         </button>
       </div>
+      {addCostModalIsOpen && session?.user.permissoes.precos.editar ? (
+        <NewCost
+          closeModal={() => setAddCostModalIsOpen(false)}
+          pricing={pricing}
+          setPricing={setPricing}
+        />
+      ) : null}
       {editFinalPriceModalIsOpen ? (
         <EditProposePrice
           pricing={pricing}

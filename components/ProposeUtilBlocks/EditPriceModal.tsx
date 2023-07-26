@@ -25,6 +25,7 @@ function EditPriceModal({
   const tag = priceType as keyof Pricing;
   const pricesObj = pricing[priceType as keyof Pricing];
   console.log("OBJETO DE PREÇO", pricesObj);
+  if (!pricesObj) return <></>;
   const { custo, vendaFinal, margemLucro, imposto } = pricesObj;
   return (
     <div

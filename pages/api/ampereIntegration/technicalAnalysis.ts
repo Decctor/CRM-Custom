@@ -69,33 +69,32 @@ const getTechnicalAnalysis: NextApiHandler<GetResponse> = async (req, res) => {
   const db = await connectToDatabase(process.env.OPERATIONAL_MONGODB_URI);
   const collection = db.collection("visitaTecnica");
   var pipeline;
-  if (!status)
-    if (status == "CONCLUIDO") {
-      pipeline = [
-        {
-          $match: {
-            status: "CONCLUIDO",
-            codigoSVB: projectIdentifier,
-          },
+  if (status == "CONCLUIDO" || !status) {
+    pipeline = [
+      {
+        $match: {
+          status: "CONCLUIDO",
+          codigoSVB: projectIdentifier,
         },
-        {
-          $addFields: {
-            diasDesdeConclusao: {
-              $dateDiff: {
-                startDate: { $toDate: "$dataDeConclusao" },
-                endDate: { $toDate: new Date().toISOString() },
-                unit: "day",
-              },
+      },
+      {
+        $addFields: {
+          diasDesdeConclusao: {
+            $dateDiff: {
+              startDate: { $toDate: "$dataDeConclusao" },
+              endDate: { $toDate: new Date().toISOString() },
+              unit: "day",
             },
           },
         },
-        {
-          $match: {
-            diasDesdeConclusao: { $lte: 30 },
-          },
+      },
+      {
+        $match: {
+          diasDesdeConclusao: { $lte: 30 },
         },
-      ];
-    }
+      },
+    ];
+  }
   if (status == "TODOS") {
     pipeline = [
       {

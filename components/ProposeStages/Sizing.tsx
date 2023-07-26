@@ -437,34 +437,43 @@ function Sizing({
                       <h1 className="mb-1 mt-2 text-xs font-medium text-gray-500">
                         CUSTOS PREVISTOS
                       </h1>
-                      {analysis.custosAdicionais?.map((cost) => (
-                        <div className="flex flex-col items-center">
-                          <div className="flex items-center gap-2">
-                            <MdAttachMoney style={{ color: "green" }} />
-                            <h1 className="text-center text-sm font-medium text-blue-500">
-                              {cost.descricao}
-                            </h1>
+                      {analysis.custosAdicionais &&
+                      analysis.custosAdicionais.length > 0 ? (
+                        analysis.custosAdicionais.map((cost) => (
+                          <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-2">
+                              <MdAttachMoney style={{ color: "green" }} />
+                              <h1 className="text-center text-sm font-medium text-blue-500">
+                                {cost.descricao}
+                              </h1>
+                            </div>
+                            <div className="flex items-center justify-between gap-2 ">
+                              <h1 className="text-sm text-gray-500">
+                                {cost.qtde}x
+                              </h1>
+                              <h1 className="text-sm font-medium text-green-500">
+                                R${" "}
+                                {cost.valor.toLocaleString("pt-br", {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}
+                              </h1>
+                            </div>
                           </div>
-                          <div className="flex items-center justify-between gap-2 ">
-                            <h1 className="text-sm text-gray-500">
-                              {cost.qtde}x
-                            </h1>
-                            <h1 className="text-sm font-medium text-green-500">
-                              R${" "}
-                              {cost.valor.toLocaleString("pt-br", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              })}
-                            </h1>
-                          </div>
-                        </div>
-                      ))}
+                        ))
+                      ) : (
+                        <p className="text-xs italic text-gray-500">
+                          Sem custos adicionais previstos...
+                        </p>
+                      )}
                       <div className="flex w-full grow flex-col">
                         <h1 className="mb-1 mt-2 text-center text-xs font-medium text-gray-500">
                           CONCLUSÃO DA AVALIAÇÃO
                         </h1>
                         <h1 className="text-center text-xs font-medium italic text-gray-800">
-                          {analysis.respostaConclusao}
+                          {analysis.respostaConclusao
+                            ? analysis.respostaConclusao
+                            : "Nenhuma conclusão preenchida para essa análise."}
                         </h1>
                       </div>
                     </div>

@@ -18,7 +18,8 @@ function SolarSystemPropose({ project }: SolarSystemProposeTypes) {
   const { data: session } = useSession();
   const { data: technicalAnalysis } = useTechnicalAnalysis(
     project.identificador,
-    checkQueryEnableStatus(session, project.identificador)
+    checkQueryEnableStatus(session, project.identificador),
+    "CONCLUIDO"
   );
 
   const [selectedAnalysis, setSelectedAnalysis] =
