@@ -116,8 +116,8 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
           `/api/proposes?id=${id}&responsible=${propose?.autor?.id}`,
           {
             changes: {
-              aceite: true,
-              dataEfetivacao: new Date().toISOString(),
+              contratoSolicitado: true,
+              dataSolicitacaoContrato: new Date().toISOString(),
             },
           }
         );
@@ -211,8 +211,8 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
 
           <div className="flex items-center gap-4">
             {propose?.infoProjeto?.dataPerda ||
-            propose?.infoProjeto?.dataEfetivacao ||
-            propose.dataEfetivacao ? null : (
+            propose?.infoProjeto?.dataSolicitacaoContrato ||
+            propose.dataSolicitacaoContrato ? null : (
               <button
                 onClick={() => closePropose()}
                 className="rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"

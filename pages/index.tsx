@@ -354,7 +354,7 @@ export default function Home() {
                       project.proposta && project.proposta?.length > 0
                         ? project.proposta[0].potenciaPico
                         : undefined,
-                    efetivacao: project.efetivacao,
+                    contratoSolicitado: project.contratoSolicitado,
                     assinado: project.assinado,
                   }}
                 />

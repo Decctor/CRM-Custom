@@ -95,7 +95,9 @@ function ProposeListBlock({
                 <div
                   key={index}
                   className={`relative flex w-full items-center ${
-                    propose.aceite ? "font-medium text-green-500" : ""
+                    propose.contratoSolicitado
+                      ? "font-medium text-green-500"
+                      : ""
                   }`}
                 >
                   <div className="flex w-full items-center justify-center lg:w-1/4">
@@ -133,7 +135,7 @@ function ProposeListBlock({
                         : null}
                     </h1>
                   </div>
-                  {propose.aceite ? (
+                  {propose.assinado ? (
                     <div className="absolute right-2 flex items-center justify-center text-green-500">
                       <BsPatchCheckFill />
                     </div>

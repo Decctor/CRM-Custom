@@ -125,8 +125,8 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
           `/api/proposes?id=${id}&responsible=${propose?.autor?.id}`,
           {
             changes: {
-              aceite: true,
-              dataEfetivacao: new Date().toISOString(),
+              contratoSolicitado: true,
+              dataSolicitacaoContrato: new Date().toISOString(),
             },
           }
         );
@@ -278,8 +278,8 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
 
           <div className="flex items-center gap-4">
             {propose?.infoProjeto?.dataPerda ||
-            propose?.infoProjeto?.dataEfetivacao ||
-            propose.dataEfetivacao ? null : (
+            propose?.infoProjeto?.dataSolicitacaoContrato ||
+            propose.dataSolicitacaoContrato ? null : (
               <button
                 onClick={() => setRequestContractModal(true)}
                 className="items-center rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
@@ -287,7 +287,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                 REQUISITAR CONTRATO
               </button>
             )}
-            {propose.aceite && !propose.infoProjeto?.assinado ? (
+            {propose.contratoSolicitado && !propose.infoProjeto?.assinado ? (
               <div className="flex items-center gap-2 rounded bg-green-500 p-2 text-sm font-medium italic text-white">
                 ACEITA
                 <BsPatchCheckFill />

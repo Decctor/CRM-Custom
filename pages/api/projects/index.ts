@@ -394,8 +394,8 @@ const editProjectSchema = z.object({
     .optional(),
   dataPerda: z.string().optional(),
   motivoPerda: z.string().optional(),
-  efetivacao: z.boolean().optional(),
-  dataEfetivacao: z.string().optional(),
+  contratoSolicitado: z.boolean().optional(),
+  dataSolicitacaoContrato: z.string().optional(),
   idSolicitacaoContrato: z.string().optional(),
 });
 const editProjects: NextApiHandler<PutResponse> = async (req, res) => {

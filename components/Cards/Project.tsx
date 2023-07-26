@@ -18,7 +18,7 @@ type ProjectCardProps = {
     nomeProposta?: string;
     valorProposta?: number;
     potenciaPicoProposta?: number;
-    efetivacao?: boolean;
+    contratoSolicitado?: boolean;
     assinado?: boolean;
   };
 };
@@ -66,7 +66,7 @@ function Project({ item }: ProjectCardProps) {
       <div className="flex w-full flex-col">
         <div
           className={`h-1 w-full rounded-sm ${
-            item.efetivacao ? "bg-green-500" : "bg-blue-400"
+            item.contratoSolicitado ? "bg-green-500" : "bg-blue-400"
           } `}
         ></div>
         <h1 className="text-xs font-bold text-[#fead41]">

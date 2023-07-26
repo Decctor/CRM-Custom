@@ -17,7 +17,7 @@ interface IFunnelListProps {
     nomeProposta?: string;
     valorProposta?: number;
     potenciaPicoProposta?: number;
-    efetivacao?: boolean;
+    contratoSolicitado?: boolean;
   }[];
 }
 function FunnelList({ stageName, items, id }: IFunnelListProps) {

@@ -76,28 +76,19 @@ function ReviewInfo({
           `/api/proposes?id=${proposeInfo?._id}&responsible=${proposeInfo?.autor?.id}`,
           {
             changes: {
-              aceite: true,
-              dataEfetivacao: new Date().toISOString(),
+              contratoSolicitado: true,
+              dataSolicitacaoContrato: new Date().toISOString(),
               idSolicitacaoContrato: data.data,
             },
           }
         );
-        // const { data: projectUpdate } = await axios.put(
-        //   `/api/projects?id=${proposeInfo?._id}&responsible=${proposeInfo?.infoProjeto?.responsavel.id}`,
-        //   {
-        //     changes: {
-        //       efetivacao: true,
-        //       dataEfetivacao: new Date().toISOString(),
-        //       idSolicitacaoContrato: data.data,
-        //     },
-        //   }
-        // );
+
         const projectPipelineUpdate = [
           {
             $set: {
               "funis.$[elem].etapaId": 8,
-              efetivacao: true,
-              dataEfetivacao: new Date().toISOString(),
+              contratoSolicitado: true,
+              dataSolicitacaoContrato: new Date().toISOString(),
               propostaAtiva: proposeInfo?._id,
               idSolicitacaoContrato: data.data,
             },

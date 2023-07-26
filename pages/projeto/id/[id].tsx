@@ -150,7 +150,7 @@ function Projeto() {
               </p>
             </div>
             <div className="flex items-center justify-center">
-              {project.dataPerda || project.dataEfetivacao ? null : (
+              {project.dataPerda || project.dataSolicitacaoContrato ? null : (
                 <LoseProject
                   oportunityId={project.idOportunidade}
                   responsibleId={project.responsavel.id}

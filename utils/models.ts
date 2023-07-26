@@ -215,8 +215,8 @@ export interface IProject {
   dataInsercao?: string;
   dataPerda?: string;
   motivoPerda?: string;
-  efetivacao?: boolean;
-  dataEfetivacao?: string;
+  contratoSolicitado?: boolean;
+  dataSolicitacaoContrato?: string;
   idSolicitacaoContrato?: string;
   assinado?: boolean;
   dataAssinatura?: string;
@@ -290,8 +290,8 @@ export interface IProposeInfo {
   potenciaPico?: number;
   valorProposta?: number;
   dataInsercao?: string;
-  aceite?: boolean;
-  dataEfetivacao?: string;
+  contratoSolicitado?: boolean;
+  dataSolicitacaoContrato?: string;
   idSolicitacaoContrato?: string;
   idAnaliseTecnica?: string;
   assinado?: boolean;
@@ -337,8 +337,8 @@ export interface IProposeOeMInfo {
   idPlanoEscolhido?: number;
   valorProposta?: number;
   dataInsercao?: string;
-  aceite?: boolean;
-  dataEfetivacao?: string;
+  contratoSolicitado?: boolean;
+  dataSolicitacaoContrato?: string;
   idSolicitacaoContrato?: string;
 }
 export interface IContractRequest {

@@ -88,8 +88,8 @@ function SpecificProposePage() {
           `/api/proposes?id=${id}&responsible=${propose?.autor?.id}`,
           {
             changes: {
-              aceite: true,
-              dataEfetivacao: new Date().toISOString(),
+              contratoSolicitado: true,
+              dataSolicitacaoContrato: new Date().toISOString(),
             },
           }
         );

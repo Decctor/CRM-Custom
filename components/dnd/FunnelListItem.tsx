@@ -19,7 +19,7 @@ interface FunnelListItemProps {
     nomeProposta?: string;
     valorProposta?: number;
     potenciaPicoProposta?: number;
-    efetivacao?: boolean;
+    contratoSolicitado?: boolean;
   };
 }
 function getTagColor(activities: ProjectActivity[]) {
@@ -47,7 +47,7 @@ function FunnelListItem({ item, index }: FunnelListItemProps) {
               setOpenActivitiesModal={setOpenActivitiesModal}
             />
           ) : null}
-          {item.efetivacao ? (
+          {item.contratoSolicitado ? (
             <div className="absolute right-2 top-2 flex items-center justify-center text-green-500">
               <BsPatchCheckFill />
             </div>
