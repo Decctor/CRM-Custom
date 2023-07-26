@@ -2,7 +2,7 @@ import { IKit, ModuleType } from "@/utils/models";
 import dayjs from "dayjs";
 import React from "react";
 import { BsFillCalendarCheckFill } from "react-icons/bs";
-import { ImPower } from "react-icons/im";
+import { ImPower, ImPriceTag } from "react-icons/im";
 import { IoMdAdd } from "react-icons/io";
 import Modules from "../../utils/pvmodules.json";
 import { TbTopologyFullHierarchy } from "react-icons/tb";
@@ -39,6 +39,14 @@ function TechAnalysisKit({ kit, handleSelect }: TechAnalysisKitProps) {
               kWp
             </p>
           </div>
+          {kit.tipo == "PROMOCIONAL" ? (
+            <div className="flex items-center justify-end gap-2 rounded border border-green-500 p-1">
+              <ImPriceTag
+                style={{ color: "rgb(34,197,94)", fontSize: "15px" }}
+              />
+              <p className="text-xs font-thin text-green-500">PROMOCIONAL</p>
+            </div>
+          ) : null}
         </div>
         <div className="flex w-full items-start">
           <div className="flex w-1/2 flex-col items-start">

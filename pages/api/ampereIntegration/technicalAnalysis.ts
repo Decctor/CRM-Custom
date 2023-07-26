@@ -100,15 +100,14 @@ const getTechnicalAnalysis: NextApiHandler<GetResponse> = async (req, res) => {
     pipeline = [
       {
         $match: {
-          status: "CONCLUIDO",
           codigoSVB: projectIdentifier,
         },
       },
     ];
   }
   if (!pipeline) return;
-  const analysis = await collection.aggregate([...pipeline]).toArray();
 
+  const analysis = await collection.aggregate([...pipeline]).toArray();
   res.status(200).json({ data: analysis });
 };
 type PostResponse = {

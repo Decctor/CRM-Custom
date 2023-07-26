@@ -115,7 +115,6 @@ function Projeto() {
     },
     enabled: !!project,
   });
-  console.log("VISITA", technicalAnalysis);
   if (projectLoading) return <LoadingComponent />;
 
   if (projectError)

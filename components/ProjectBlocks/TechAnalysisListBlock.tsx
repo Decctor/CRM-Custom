@@ -1,6 +1,6 @@
 import { IProject, ITechnicalAnalysis } from "@/utils/models";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { MdAdd } from "react-icons/md";
 import LoadingComponent from "../utils/LoadingComponent";
@@ -45,6 +45,9 @@ function TechAnalysisListBlock({
   successTechAnalysis,
 }: TechAnalysisListBlockProps) {
   const [requestModalIsOpen, setRequestModalIsOpen] = useState<boolean>(false);
+  useEffect(() => {
+    console.log("ATUALIZAÇÃO VISITA", technicalAnalysis);
+  }, [technicalAnalysis]);
   return (
     <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
       <div className="flex  h-[40px] items-center  justify-between border-b border-gray-200 pb-2">

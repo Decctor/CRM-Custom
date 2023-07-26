@@ -904,7 +904,7 @@ export function useTechnicalAnalysis(
   status?: "CONCLUIDO" | "TODOS"
 ): UseQueryResult<ITechnicalAnalysis[], Error> {
   return useQuery({
-    queryKey: ["technicalAnalysis", projectCode],
+    queryKey: ["technicalAnalysis", projectCode, status],
     queryFn: async (): Promise<ITechnicalAnalysis[]> => {
       try {
         const { data } = await axios.get(

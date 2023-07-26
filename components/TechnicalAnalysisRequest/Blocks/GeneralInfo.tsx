@@ -168,6 +168,33 @@ function GeneralInfo({
           <div className="flex w-full items-center justify-center lg:w-[50%]">
             <SelectInput
               width={"100%"}
+              label={"UF"}
+              editable={true}
+              options={[
+                {
+                  id: 1,
+                  label: "MG",
+                  value: "MG",
+                },
+                {
+                  id: 2,
+                  label: "GO",
+                  value: "GO",
+                },
+              ]}
+              value={requestInfo.uf}
+              handleChange={(value) =>
+                setRequestInfo({ ...requestInfo, uf: value })
+              }
+              selectedItemLabel="NÃO DEFINIDO"
+              onReset={() => {
+                setRequestInfo((prev) => ({ ...prev, uf: undefined }));
+              }}
+            />
+          </div>
+          <div className="flex w-full items-center justify-center lg:w-[50%]">
+            <SelectInput
+              width={"100%"}
               label={"CIDADE"}
               editable={true}
               value={requestInfo.cidade}
@@ -192,33 +219,6 @@ function GeneralInfo({
                 }));
               }}
               selectedItemLabel="NÃO DEFINIDO"
-            />
-          </div>
-          <div className="flex w-full items-center justify-center lg:w-[50%]">
-            <SelectInput
-              width={"100%"}
-              label={"UF"}
-              editable={true}
-              options={[
-                {
-                  id: 1,
-                  label: "MG",
-                  value: "MG",
-                },
-                {
-                  id: 2,
-                  label: "GO",
-                  value: "GO",
-                },
-              ]}
-              value={requestInfo.uf}
-              handleChange={(value) =>
-                setRequestInfo({ ...requestInfo, uf: value })
-              }
-              selectedItemLabel="NÃO DEFINIDO"
-              onReset={() => {
-                setRequestInfo((prev) => ({ ...prev, uf: undefined }));
-              }}
             />
           </div>
         </div>

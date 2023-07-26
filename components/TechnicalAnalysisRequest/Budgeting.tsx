@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import TextInput from "../Inputs/TextInput";
 import {
+  formatLongString,
   formatToCEP,
   formatToPhone,
   getCEPInfo,
@@ -24,8 +25,18 @@ import { IoMdRemoveCircle } from "react-icons/io";
 import MultipleSelectInput from "../Inputs/MultipleSelectInput";
 import { AiOutlineSearch } from "react-icons/ai";
 import TechAnalysisKit from "../Cards/TechAnalysisKit";
-import { BsClipboardCheckFill } from "react-icons/bs";
-type InLocoUrbanProps = {
+import { BsCheckCircleFill, BsClipboardCheckFill } from "react-icons/bs";
+import { fileTypes } from "@/utils/constants";
+import {
+  UploadResult,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import { storage } from "@/services/firebase";
+import { GiReturnArrow } from "react-icons/gi";
+
+type BudgetingProps = {
   requestInfo: ITechnicalAnalysis;
   setRequestInfo: React.Dispatch<React.SetStateAction<ITechnicalAnalysis>>;
   resetSolicitationType: () => void;
@@ -58,13 +69,19 @@ function getSelectedKitsPowerPeak(selectedKits: SelectedKitsState) {
   return totalSum;
 }
 
-function InLocoUrban({
+function Budgeting({
   resetSolicitationType,
   requestInfo,
   setRequestInfo,
   projectId,
   projectCode,
-}: InLocoUrbanProps) {
+}: BudgetingProps) {
+  const [files, setFiles] = useState<{
+    [key: string]: {
+      title: string;
+      file: File | null | string;
+    };
+  }>();
   const queryClient = useQueryClient();
   async function setAddressDataByCEP(cep: string) {
     const addressInfo = await getCEPInfo(cep);
@@ -218,6 +235,40 @@ function InLocoUrban({
     // moveToNextStage(null);
   }
   function handleRequest() {
+    if (requestInfo.nomeDoCliente.trim().length < 4) {
+      toast.error(
+        "Por favor, preencha um nome de ao menos 4 letras para o cliente."
+      );
+      return;
+    }
+    if (!requestInfo.uf) {
+      toast.error("Por favor, preencha o estado do cliente.");
+      return;
+    }
+    if (!requestInfo.cidade) {
+      toast.error("Por favor, preencha a cidade do cliente.");
+      return;
+    }
+
+    if (requestInfo.bairro.trim().length < 2) {
+      toast.error("Por favor, preencha um bairro válido.");
+      return;
+    }
+    if (requestInfo.logradouro.trim().length < 2) {
+      toast.error("Por favor, preencha um logradouro válido.");
+      return;
+    }
+    if (requestInfo.numeroResidencia.trim().length < 1) {
+      toast.error(
+        "Por favor, preencha um número/identificador de residência válido."
+      );
+      return;
+    }
+
+    if (selectedKits.length < 1) {
+      toast.error("Por favor, selecione ao menos um kit.");
+      return;
+    }
     var selectedKitsCopy = [...selectedKits];
     var kitIdsArr = selectedKitsCopy.flatMap((x) => x.kitId);
     var invQtdeArr = selectedKitsCopy
@@ -265,6 +316,53 @@ function InLocoUrban({
     }));
     createTechAnalysisRequest();
   }
+  async function uploadFiles() {
+    if (!files) return;
+
+    try {
+      var links: { title: string; link: string; format: string }[] = [];
+
+      // Create an array to store all the promises for file uploads
+      const uploadPromises = Object.keys(files).map(async (key) => {
+        const fileObj = files[key];
+        var fileRef = ref(
+          storage,
+          `clientes/${requestInfo.nomeDoCliente}-${
+            requestInfo.codigoSVB
+          }/contaDeEnergia${(Math.random() * 10000).toFixed(0)}`
+        );
+
+        if (typeof fileObj.file == "string" || fileObj.file == null) return;
+        const firebaseRes = await uploadBytes(fileRef, fileObj.file);
+        const uploadResult = firebaseRes as UploadResult;
+        const fileUrl = await getDownloadURL(
+          ref(storage, firebaseRes.metadata.fullPath)
+        );
+
+        links.push({
+          title: fileObj.title,
+          link: fileUrl,
+          format:
+            uploadResult.metadata.contentType &&
+            fileTypes[uploadResult.metadata.contentType]
+              ? fileTypes[uploadResult.metadata.contentType].title
+              : "INDEFINIDO",
+        });
+      });
+
+      // Wait for all file upload promises to resolve
+      await Promise.all(uploadPromises);
+
+      setRequestInfo((prev) => ({ ...prev, links: links }));
+
+      // Return the links array after all files are uploaded
+      return links;
+    } catch (error) {
+      toast.error(
+        "Houve um erro ao fazer upload dos arquivos, por favor, tente novamente."
+      );
+    }
+  }
   const {
     mutate: createTechAnalysisRequest,
     isLoading,
@@ -273,14 +371,16 @@ function InLocoUrban({
     mutationKey: ["createTechAnalysisRequest"],
     mutationFn: async () => {
       try {
+        const links = await uploadFiles();
         const { data } = await axios.post(
           `/api/ampereIntegration/technicalAnalysis`,
           {
             ...requestInfo,
             idProjetoCRM: projectId,
+            links: links,
           }
         );
-        return data;
+        if (data.message) toast.success(data.message);
       } catch (error) {
         if (error instanceof AxiosError) {
           let errorMsg = error.response?.data.error.message;
@@ -294,20 +394,8 @@ function InLocoUrban({
         }
       }
     },
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries({
-        queryKey: ["technicalAnalysis", projectCode, "TODOS"],
-      });
-    },
-    onSettled: async (data, variables, context) => {
-      console.log("INVALIDANDO QUERIES COM PROJECTCODE:", projectCode);
-      await queryClient.invalidateQueries({
-        queryKey: ["technicalAnalysis", projectCode, "TODOS"],
-      });
-      // await queryClient.refetchQueries({ queryKey: ["project"] });
-      if (data.message) toast.success(data.message);
-    },
   });
+  console.log(files);
   useEffect(() => {
     setFilteredKits(kits);
   }, [kits]);
@@ -383,6 +471,33 @@ function InLocoUrban({
               <div className="flex w-full items-center justify-center lg:w-[50%]">
                 <SelectInput
                   width={"100%"}
+                  label={"UF"}
+                  editable={true}
+                  options={[
+                    {
+                      id: 1,
+                      label: "MG",
+                      value: "MG",
+                    },
+                    {
+                      id: 2,
+                      label: "GO",
+                      value: "GO",
+                    },
+                  ]}
+                  value={requestInfo.uf}
+                  handleChange={(value) =>
+                    setRequestInfo({ ...requestInfo, uf: value })
+                  }
+                  selectedItemLabel="NÃO DEFINIDO"
+                  onReset={() => {
+                    setRequestInfo((prev) => ({ ...prev, uf: undefined }));
+                  }}
+                />
+              </div>
+              <div className="flex w-full items-center justify-center lg:w-[50%]">
+                <SelectInput
+                  width={"100%"}
                   label={"CIDADE"}
                   editable={true}
                   value={requestInfo.cidade}
@@ -407,33 +522,6 @@ function InLocoUrban({
                     }));
                   }}
                   selectedItemLabel="NÃO DEFINIDO"
-                />
-              </div>
-              <div className="flex w-full items-center justify-center lg:w-[50%]">
-                <SelectInput
-                  width={"100%"}
-                  label={"UF"}
-                  editable={true}
-                  options={[
-                    {
-                      id: 1,
-                      label: "MG",
-                      value: "MG",
-                    },
-                    {
-                      id: 2,
-                      label: "GO",
-                      value: "GO",
-                    },
-                  ]}
-                  value={requestInfo.uf}
-                  handleChange={(value) =>
-                    setRequestInfo({ ...requestInfo, uf: value })
-                  }
-                  selectedItemLabel="NÃO DEFINIDO"
-                  onReset={() => {
-                    setRequestInfo((prev) => ({ ...prev, uf: undefined }));
-                  }}
                 />
               </div>
             </div>
@@ -648,7 +736,129 @@ function InLocoUrban({
             )}
           </div>
         </div>
-        <div className="mt-2 flex w-full justify-between">
+        <div className="mt-4 flex w-full flex-col bg-[#fff] px-2">
+          <span className="py-2 text-center text-sm font-bold uppercase text-[#15599a]">
+            ORÇAMENTAÇÃO
+          </span>
+          <div className="mt-4 flex items-center justify-center">
+            <SelectInput
+              label="TIPO DE ORÇAMENTO"
+              width={"100%"}
+              value={requestInfo.tipoOrcamentacao}
+              selectedItemLabel="NÃO DEFINIDO"
+              options={[
+                { id: 1, label: "PADRÃO", value: "PADRÃO" },
+                {
+                  id: 2,
+                  label: "BARRACÃO COM TELHA",
+                  value: "BARRACÃO COM TELHA",
+                },
+                {
+                  id: 3,
+                  label: "BARRACÃO SEM TELHA",
+                  value: "BARRACÃO SEM TELHA",
+                },
+                { id: 4, label: "SUBESTAÇÃO", value: "SUBESTAÇÃO" },
+                {
+                  id: 5,
+                  label: "INFRAESTRUTURA ELÉTRICA",
+                  value: "INFRAESTRUTURA ELÉTRICA",
+                },
+                {
+                  id: 6,
+                  label: "OUTRO (INDIQUE NA DESCRIÇÃO)",
+                  value: "OUTRO (INDIQUE NA DESCRIÇÃO)",
+                },
+              ]}
+              handleChange={(value) =>
+                setRequestInfo((prev) => ({ ...prev, tipoOrcamentacao: value }))
+              }
+              onReset={() =>
+                setRequestInfo((prev) => ({
+                  ...prev,
+                  tipoOrcamentacao: undefined,
+                }))
+              }
+            />
+          </div>
+          <div className="mt-2 flex w-full flex-col items-center self-center">
+            <span className="font-raleway text-center text-sm font-bold uppercase">
+              OBSERVAÇÕES PARA O ORÇAMENTO
+            </span>
+            <textarea
+              placeholder={
+                "Adicione aqui observações para execução do orçamento..."
+              }
+              value={requestInfo.descricaoOrcamentacao}
+              onChange={(e) =>
+                setRequestInfo({
+                  ...requestInfo,
+                  descricaoOrcamentacao: e.target.value,
+                })
+              }
+              className="block h-[80px] w-full resize-none rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-center text-gray-900 outline-none focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            />
+          </div>
+        </div>
+        <div className="mt-4 flex w-full flex-col items-center justify-center self-center">
+          <div className="flex items-center gap-2">
+            <label
+              className="ml-2 text-center text-sm font-bold text-[#15599a]"
+              htmlFor="laudo"
+            >
+              ARQUIVOS DE AUXÍLIO PARA ORÇAMENTAÇÃO
+            </label>
+            {files ? (
+              <BsCheckCircleFill style={{ color: "rgb(34,197,94)" }} />
+            ) : null}
+          </div>
+          <div className="relative mt-2 flex h-fit items-center justify-center rounded-lg border-2 border-dotted border-blue-700 bg-gray-100 p-2">
+            <div className="absolute">
+              {files && Object.keys(files).length > 0 ? (
+                <div className="flex flex-col items-center">
+                  <i className="fa fa-folder-open fa-4x text-blue-700"></i>
+                  <span className="block text-center font-normal text-gray-400">
+                    ARQUIVOS ADICIONADOS
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <i className="fa fa-folder-open fa-4x text-blue-700"></i>
+                  <span className="block font-normal text-gray-400">
+                    Adicione o arquivo aqui...
+                  </span>
+                </div>
+              )}
+            </div>
+            <input
+              multiple={true}
+              onChange={(e) => {
+                let obj = {};
+                Array.prototype.forEach.call(
+                  e.target.files,
+                  function (file, index) {
+                    obj = {
+                      ...obj,
+                      [`orcamentacao${index + 1}`]: {
+                        title: `AUXÍLIO PARA ORÇAMENTAÇÃO (${index + 1})`,
+                        file: file,
+                      },
+                    };
+                  }
+                );
+
+                setFiles((prev) => ({ ...prev, ...obj }));
+                /*e.target.files.forEach((value, index) => {
+                  obj = { ...obj, [`${index + 1}desenho`]: value };
+                });*/
+              }}
+              className="h-full w-full opacity-0"
+              type="file"
+              accept=".png, .jpeg, .pdf"
+            />
+          </div>
+        </div>
+        <div className="mt-2 flex w-full justify-between px-2">
           <button
             onClick={() => resetSolicitationType()}
             className="rounded p-2 font-bold text-gray-500 duration-300 ease-in-out hover:scale-105"
@@ -671,4 +881,4 @@ function InLocoUrban({
     );
 }
 
-export default InLocoUrban;
+export default Budgeting;

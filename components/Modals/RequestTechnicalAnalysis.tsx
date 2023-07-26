@@ -15,6 +15,8 @@ import RemoteRural from "../TechnicalAnalysisRequest/RemoteRural";
 import InLocoUrban from "../TechnicalAnalysisRequest/InLoco";
 import { GiProgression } from "react-icons/gi";
 import { IoMdBuild } from "react-icons/io";
+import Drawing from "../TechnicalAnalysisRequest/Drawing";
+import Budgeting from "../TechnicalAnalysisRequest/Budgeting";
 
 type RequestTechnicalAnalysisProps = {
   closeModal: () => void;
@@ -153,7 +155,7 @@ function RequestTechnicalAnalysis({
     tipoEstrutura: undefined,
     tipoFixacaoInversores: undefined,
     tipoInversor: "NÃO DEFINIDO",
-    tipoOrcamentacao: "",
+    tipoOrcamentacao: undefined,
     tipoPadrao: undefined,
     tipoProjeto: "NÃO DEFINIDO",
     tipoTelha: undefined,
@@ -273,28 +275,37 @@ function RequestTechnicalAnalysis({
                     tipoDeSolicitacao: undefined,
                   }))
                 }
+                projectCode={project.identificador}
                 projectId={project._id}
               />
             ) : null}
-            {requestInfo.tipoDeSolicitacao == "DESENHO PERSONALIZADO" ||
-            requestInfo.tipoDeSolicitacao == "ORÇAMENTAÇÃO" ? (
-              <div className="flex grow flex-col items-center justify-center">
-                <IoMdBuild style={{ color: "#fead41", fontSize: "40px" }} />
-                <p className="text-lg font-medium italic text-gray-500">
-                  Em construção...
-                </p>
-                <p
-                  onClick={() =>
-                    setRequestInfo((prev) => ({
-                      ...prev,
-                      tipoDeSolicitacao: undefined,
-                    }))
-                  }
-                  className="cursor-pointer text-sm text-blue-500"
-                >
-                  Voltar
-                </p>
-              </div>
+            {requestInfo.tipoDeSolicitacao == "DESENHO PERSONALIZADO" ? (
+              <Drawing
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                resetSolicitationType={() =>
+                  setRequestInfo((prev) => ({
+                    ...prev,
+                    tipoDeSolicitacao: undefined,
+                  }))
+                }
+                projectCode={project.identificador}
+                projectId={project._id}
+              />
+            ) : null}
+            {requestInfo.tipoDeSolicitacao == "ORÇAMENTAÇÃO" ? (
+              <Budgeting
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                resetSolicitationType={() =>
+                  setRequestInfo((prev) => ({
+                    ...prev,
+                    tipoDeSolicitacao: undefined,
+                  }))
+                }
+                projectCode={project.identificador}
+                projectId={project._id}
+              />
             ) : null}
           </div>
         </div>
