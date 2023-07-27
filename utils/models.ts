@@ -482,9 +482,16 @@ export type ProjectUpdateLog = {
   };
 };
 export interface INotification {
-  remetenteId: string;
-  remetenteNome: string;
-  destinatarioId: string;
+  remetente: {
+    id: string;
+    nome: string;
+    email?: string;
+  };
+  destinatario: {
+    id: string;
+    nome: string;
+    email?: string;
+  };
   projetoReferencia?: string;
   mensagem: string;
   dataLeitura?: string;

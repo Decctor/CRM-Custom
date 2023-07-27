@@ -380,6 +380,12 @@ function Projeto() {
               setEditModalIsOpen(false);
             }}
             projectId={project._id ? project._id : ""}
+            responsibleId={project.responsavel.id}
+            editPermission={
+              session?.user.id == editModalInfo.representante?.id ||
+              session?.user.id == project.responsavel.id ||
+              session?.user.permissoes.clientes.editar == true
+            }
           />
         ) : null}
         {/* <div className="fixed bottom-10 right-[30px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]">

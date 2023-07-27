@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "next/head";
+import Notifications from "@/components/Modals/Notifications";
 
 export default function App({
   Component,
@@ -21,6 +22,7 @@ export default function App({
         <FullScreenWrapper>
           <Component {...pageProps} />
           <Toaster />
+          {/* <Notifications /> */}
         </FullScreenWrapper>
       </QueryClientProvider>
     </SessionProvider>

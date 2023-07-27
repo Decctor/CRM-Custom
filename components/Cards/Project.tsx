@@ -34,7 +34,7 @@ function Project({ item }: ProjectCardProps) {
     useState<boolean>(false);
   return (
     <div
-      className={`relative flex h-[140px] min-h-[110px] w-[350px] flex-col justify-between rounded border border-gray-200 ${
+      className={`relative flex h-[150px] min-h-[110px] w-[350px] flex-col justify-between rounded border border-gray-200 ${
         item.assinado ? "bg-green-100" : "bg-[#fff]"
       }  p-2 shadow-sm`}
     >
@@ -85,17 +85,20 @@ function Project({ item }: ProjectCardProps) {
       item.nomeProposta ? (
         <div className="flex w-full grow flex-col">
           <h1 className="text-xxs font-thin text-gray-500">PROPOSTA ATIVA</h1>
-          <div className="flex w-full flex-col">
-            <p className="text-xs text-green-500">{item.nomeProposta}</p>
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs text-green-500">
+          <div className="flex w-full flex-col justify-between">
+            <p className="text-xs font-medium text-green-500">
+              {item.nomeProposta}
+            </p>
+
+            <div className="flex  items-center justify-between">
+              <p className="text-xs font-bold text-green-500">
                 {item.potenciaPicoProposta?.toLocaleString("pt-br", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}{" "}
                 kWp
               </p>
-              <p className="text-xs text-green-500">
+              <p className="text-xs font-bold text-green-500">
                 R${" "}
                 {item.valorProposta
                   ? item.valorProposta.toLocaleString("pt-br", {

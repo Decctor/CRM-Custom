@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { MdDashboard, MdLogout } from "react-icons/md";
+import {
+  MdDashboard,
+  MdLogout,
+  MdNotifications,
+  MdNotificationsActive,
+} from "react-icons/md";
 import { FaSolarPanel, FaUser, FaUsers } from "react-icons/fa";
 import { TfiAngleRight } from "react-icons/tfi";
 import { BsGraphUpArrow } from "react-icons/bs";
@@ -10,7 +15,10 @@ import Image from "next/image";
 import Logo from "../utils/noTextLogo.png";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-
+import { useNotifications } from "@/utils/methods";
+import { Notification } from "@/utils/schemas/project.schema";
+import NotificationBlock from "./NotificationBlock";
+//react-icons.github.io/react-icons
 export const Sidebar = () => {
   const { data: session } = useSession();
   const [sidebarExtended, setSidebarExtended] = useState(false);
@@ -27,7 +35,7 @@ export const Sidebar = () => {
           delay: 0.1,
         }}
         style={{ maxHeight: "100vh" }}
-        className={`overscroll-y sticky top-0 flex flex-col overflow-y-auto border-r border-gray-200 bg-[#fff]  px-2 py-4 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ${
+        className={`overscroll-y  sticky top-0 z-[200] flex flex-col overflow-y-auto border-r border-gray-200 bg-[#fff]  px-2 py-4 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ${
           sidebarExtended ? "w-[210px] min-w-[210px]" : "w-[70px] min-w-[70px]"
         }`}
       >
@@ -66,7 +74,6 @@ export const Sidebar = () => {
           >
             <TfiAngleRight />
           </motion.div>
-
           {sidebarExtended ? (
             <h2 className="h-[18px] text-xs text-gray-500">PRINCIPAL</h2>
           ) : (
@@ -109,6 +116,7 @@ export const Sidebar = () => {
             }
           />
         </div>
+        <NotificationBlock sidebarExtended={sidebarExtended} />
         {session?.user.image ? (
           <div className="flex w-full items-center justify-center">
             <Link href={`/auth/profile?id=${session.user.id}`}>
@@ -124,7 +132,6 @@ export const Sidebar = () => {
             </Link>
           </div>
         ) : null}
-
         <div className="flex w-full flex-col">
           {session?.user.permissoes.usuarios.visualizar ? (
             <SidebarItem

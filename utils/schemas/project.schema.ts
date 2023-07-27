@@ -116,3 +116,36 @@ const getProjectSchema = z.object({
   dataAssinatura: z.string().optional(),
 });
 export type Project = TypeOf<typeof getProjectSchema>;
+
+// Notifications
+
+export const createNotificationSchema = z.object({
+  _id: z.string().optional(),
+  remetente: z.union([
+    z.object({
+      id: z.string({ required_error: "Forneça o ID do remetente." }),
+      nome: z.string({ required_error: "Forneça o nome do remetente." }),
+      avatar: z.string().optional(),
+      email: z.string().email().optional(),
+    }),
+    z.literal("SISTEMA"),
+  ]),
+  destinatario: z.object({
+    id: z.string({ required_error: "Forneça o ID do remetente." }),
+    nome: z.string({ required_error: "Forneça o nome do remetente." }),
+    email: z.string().email().optional(),
+  }),
+  projetoReferencia: z
+    .object({
+      id: z.string(),
+      nome: z.string(),
+      identificador: z.string(),
+    })
+    .optional(),
+  mensagem: z.string(),
+  dataInsercao: z
+    .string({ required_error: "Forneça a data de inserção." })
+    .optional(),
+  dataLeitura: z.string().optional(),
+});
+export type Notification = TypeOf<typeof createNotificationSchema>;

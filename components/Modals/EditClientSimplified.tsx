@@ -23,6 +23,8 @@ type EditClientSimplifiedModalProps = {
   representatives: IRepresentative[] | null;
   closeModal: () => void;
   projectId: string;
+  editPermission: boolean;
+  responsibleId: string;
 };
 
 type Funil = {
@@ -53,6 +55,8 @@ function EditClientSimplified({
   representatives,
   closeModal,
   projectId,
+  editPermission,
+  responsibleId,
 }: EditClientSimplifiedModalProps) {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -63,7 +67,7 @@ function EditClientSimplified({
     mutationFn: async () => {
       try {
         const { data } = await axios.put(
-          `/api/clients?id=${clientInfo._id}&representative=${client.representante?.id}`,
+          `/api/clients?id=${clientInfo._id}&representative=${responsibleId}`,
           {
             changes: clientInfo,
           }
@@ -162,10 +166,7 @@ function EditClientSimplified({
               <TextInput
                 label="NOME"
                 value={clientInfo.nome}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                editable={editPermission}
                 placeholder="Preencha aqui o nome do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({ ...prev, nome: value }))
@@ -174,11 +175,8 @@ function EditClientSimplified({
               />
               <TextInput
                 label="CPF/CNPJ"
-                value={clientInfo.cpfCnpj}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                value={clientInfo.cpfCnpj ? clientInfo.cpfCnpj : ""}
+                editable={editPermission}
                 placeholder="Preencha aqui o CPF ou CNPJ do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -193,10 +191,7 @@ function EditClientSimplified({
               <TextInput
                 label="TELEFONE PRIMÁRIO"
                 value={clientInfo.telefonePrimario}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                editable={editPermission}
                 placeholder="Preencha aqui o telefone primário do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -214,10 +209,7 @@ function EditClientSimplified({
                     ? clientInfo.telefoneSecundario
                     : ""
                 }
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                editable={editPermission}
                 placeholder="Preencha aqui o telefone secundário do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -231,11 +223,8 @@ function EditClientSimplified({
             <div className="grid grid-cols-1 grid-rows-2 items-center gap-6 px-2 lg:grid-cols-2 lg:grid-rows-1">
               <TextInput
                 label="EMAIL"
-                value={clientInfo.email}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                value={clientInfo.email ? clientInfo.email : ""}
+                editable={editPermission}
                 placeholder="Preencha aqui o email do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({ ...prev, email: value }))
@@ -245,11 +234,8 @@ function EditClientSimplified({
 
               <TextInput
                 label="CEP"
-                value={clientInfo.cep}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                value={clientInfo.cep ? clientInfo.cep : ""}
+                editable={editPermission}
                 placeholder="Preencha aqui o CEP do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -269,10 +255,7 @@ function EditClientSimplified({
                     ? Object.keys(stateCities).indexOf(clientInfo.uf) + 1
                     : null
                 }
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                editable={editPermission}
                 options={[
                   {
                     id: 1,
@@ -314,10 +297,7 @@ function EditClientSimplified({
                     ? stateCities[clientInfo.uf].indexOf(clientInfo.cidade)
                     : null
                 }
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                editable={editPermission}
                 options={
                   clientInfo.uf
                     ? stateCities[clientInfo.uf].map((city, index) => {
@@ -344,11 +324,8 @@ function EditClientSimplified({
             <div className="grid grid-cols-1 grid-rows-2 items-center gap-6 px-2 lg:grid-cols-2 lg:grid-rows-1">
               <TextInput
                 label="BAIRRO"
-                value={clientInfo.bairro}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                value={clientInfo.bairro ? clientInfo.bairro : ""}
+                editable={editPermission}
                 placeholder="Preencha aqui o bairro do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({ ...prev, bairro: value }))
@@ -357,11 +334,8 @@ function EditClientSimplified({
               />
               <TextInput
                 label="LOGRADOURO/RUA"
-                value={clientInfo.endereco}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                value={clientInfo.endereco ? clientInfo.endereco : ""}
+                editable={editPermission}
                 placeholder="Preencha aqui o logradouro do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({ ...prev, endereco: value }))
@@ -372,11 +346,12 @@ function EditClientSimplified({
             <div className="mb-2 grid grid-cols-1 grid-rows-2 items-center gap-6 px-2 lg:grid-cols-2 lg:grid-rows-1">
               <TextInput
                 label="NÚMERO/IDENTIFICADOR"
-                value={clientInfo.numeroOuIdentificador}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
+                value={
+                  clientInfo.numeroOuIdentificador
+                    ? clientInfo.numeroOuIdentificador
+                    : ""
                 }
+                editable={editPermission}
                 placeholder="Preencha aqui o número ou identificador da residência do cliente."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -389,10 +364,7 @@ function EditClientSimplified({
               <TextInput
                 label="COMPLEMENTO"
                 value={clientInfo.complemento ? clientInfo.complemento : ""}
-                editable={
-                  session?.user.id == clientInfo.representante?.id ||
-                  session?.user.permissoes.clientes.editar
-                }
+                editable={editPermission}
                 placeholder="Preencha aqui algum complemento do endereço."
                 handleChange={(value) =>
                   setClientInfo((prev) => ({
@@ -404,8 +376,7 @@ function EditClientSimplified({
               />
             </div>
           </div>
-          {session?.user.id == clientInfo.representante?.id ||
-          session?.user.permissoes.clientes.editar ? (
+          {editPermission ? (
             <div className="my-2 flex w-full items-center justify-end px-4">
               <button
                 onClick={() => mutate()}

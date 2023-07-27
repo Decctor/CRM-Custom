@@ -18,6 +18,7 @@ import Modules from "../utils/pvmodules.json";
 import genFactors from "../utils/generationFactors.json";
 import { orientations, phases } from "./constants";
 import dayjs from "dayjs";
+import { Notification } from "./schemas/project.schema";
 type ViaCEPSuccessfulReturn = {
   cep: string;
   logradouro: string;
@@ -921,7 +922,28 @@ export function useTechnicalAnalysis(
     refetchOnWindowFocus: false,
   });
 }
-
+export function useNotifications(
+  userId?: string | null
+): UseQueryResult<Notification[], Error> {
+  return useQuery({
+    queryKey: ["notifications", userId],
+    queryFn: async (): Promise<Notification[]> => {
+      try {
+        const { data } = await axios.get(
+          `/api/notifications?recipient=${userId}`
+        );
+        return data.data;
+      } catch (error) {
+        toast.error("Houve um erro na busca das notificações.");
+        return [];
+      }
+    },
+    enabled: !!userId,
+    cacheTime: 60 * 1000,
+    refetchInterval: 60 * 1000,
+    refetchIntervalInBackground: true,
+  });
+}
 //
 function getLevenshteinDistance(string1: string, string2: string): number {
   const matrix = Array(string1.length + 1)
