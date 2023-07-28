@@ -87,7 +87,7 @@ function NotificationCard({ notification }: NotificationCardProps) {
     <div
       className={`${
         notification.dataLeitura ? "bg-green-100" : " "
-      } flex w-full flex-col border-b border-gray-200 p-2 font-Raleway`}
+      } flex w-full flex-col rounded border-b border-gray-200 p-2 font-Raleway`}
     >
       <div className="flex w-full">
         <div className="flex w-[20%] items-start justify-center">

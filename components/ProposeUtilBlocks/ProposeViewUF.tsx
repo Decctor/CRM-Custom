@@ -319,7 +319,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
         </div>
         <div className="flex w-full grow flex-col py-2">
           <div className="flex min-h-[350px] w-full flex-col justify-around gap-3 lg:flex-row">
-            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md lg:w-1/3">
+            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-6 shadow-md lg:w-1/3">
               <div className="flex w-full flex-col items-center">
                 <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
                   INFORMAÇÕES GERAIS
@@ -407,7 +407,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                 </div>
               </div>
             </div>
-            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md lg:w-1/3">
+            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-6 shadow-md lg:w-1/3">
               <div className="flex w-full flex-col items-center">
                 <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
                   PREMISSAS
@@ -474,7 +474,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                 </div>
               </div>
             </div>
-            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md lg:w-1/3">
+            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-6 shadow-md lg:w-1/3">
               <div className="flex w-full flex-col items-center">
                 <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
                   ARQUIVO
@@ -516,7 +516,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
           </div>
           {session?.user.permissoes.precos.visualizar ? (
             <>
-              <div className="mt-4 hidden w-full flex-col gap-1 border border-gray-200 bg-[#fff] shadow-md lg:flex">
+              <div className="mt-4 hidden w-full flex-col gap-1 border border-gray-200 bg-[#fff]  shadow-md lg:flex">
                 <div className="flex w-full items-center rounded bg-gray-200">
                   <div className="flex w-4/12 items-center justify-center p-1">
                     <h1 className="font-Raleway font-bold text-gray-500">
@@ -657,8 +657,8 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 flex flex-col border border-gray-200 bg-[#fff] shadow-md lg:hidden">
-                <h1 className="rounded-tl-md rounded-tr-md bg-gray-500 text-center font-Raleway font-bold text-white">
+              <div className="mt-4 flex flex-col rounded border border-gray-200 bg-[#fff] shadow-md lg:hidden">
+                <h1 className="rounded-tl-md rounded-tr-md bg-gray-500 p-2 text-center font-Raleway font-bold text-white">
                   ITENS
                 </h1>
                 {Object.keys(
@@ -686,7 +686,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                       getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
                     return (
                       <div
-                        className="flex w-full flex-col items-center rounded"
+                        className="flex w-full flex-col items-center rounded px-4"
                         key={index}
                       >
                         <div className="flex w-full items-center justify-center p-1">
@@ -748,10 +748,10 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     );
                   }
                 })}
-                <h1 className="bg-gray-800 text-center font-Raleway font-bold text-white">
+                <h1 className="mt-4 bg-gray-800 text-center font-Raleway font-bold text-white">
                   TOTAIS
                 </h1>
-                <div className="grid w-full grid-cols-2  items-center gap-1">
+                <div className="grid w-full grid-cols-2  items-center gap-1 p-2">
                   <div className="col-span-1 flex flex-col items-center justify-center p-1">
                     <h1 className="text-sm font-thin text-gray-500">CUSTO</h1>
                     <h1 className="text-center text-xs font-bold text-[#15599a]">

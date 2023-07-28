@@ -37,8 +37,10 @@ function Notifications({
         }}
         id="defaultModal"
         className={`fixed ${
-          sidebarExtended ? "left-1 lg:left-[220px]" : "left-1 lg:left-[100px]"
-        } bottom-[10px] z-[2000] flex h-[300px] w-[300px] flex-col rounded-lg border border-gray-200 bg-[#fff] py-3 shadow-lg`}
+          sidebarExtended
+            ? "bottom-[52%] left-10 md:left-[220px]"
+            : "bottom-[57%] left-10 md:left-[100px]"
+        }  z-[2000] flex h-[300px] w-[300px] flex-col rounded-lg border border-gray-200 bg-[#fff] py-3 shadow-lg md:bottom-[10px]`}
       >
         <div className="flex items-center justify-between border-b border-gray-300 px-3 pb-1">
           <h1 className="text-center text-sm font-medium text-[#15599a]">

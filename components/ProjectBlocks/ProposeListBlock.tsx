@@ -65,7 +65,18 @@ function ProposeListBlock({
             >
               GERAR PROPOSTA
             </button>
-            <button className="flex rounded bg-green-600 p-1 text-sm font-bold text-white lg:hidden">
+            <button
+              onClick={() => {
+                if (!city || !uf) {
+                  toast.error(
+                    "Por favor, preecha a cidade e o estado do cliente antes de prosseguir para geração de propostas."
+                  );
+                } else {
+                  router.push(`/projeto/proposta/${projectId}`);
+                }
+              }}
+              className="flex rounded bg-green-600 p-1 text-sm font-bold text-white lg:hidden"
+            >
               <MdAdd />
             </button>
           </>

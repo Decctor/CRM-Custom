@@ -164,50 +164,52 @@ const editUserSchema = z.object({
     })
     .nullable()
     .optional(),
-  permissoes: z.object({
-    usuarios: z
-      .object({
-        visualizar: z.boolean(),
-        editar: z.boolean(),
-      })
-      .optional(),
-    comissoes: z
-      .object({
-        visualizar: z.boolean(),
-        editar: z.boolean(),
-      })
-      .optional(),
-    kits: z
-      .object({
-        visualizar: z.boolean(),
-        editar: z.boolean(),
-      })
-      .optional(),
-    propostas: z
-      .object({
-        visualizar: z.boolean(),
-        editar: z.boolean(),
-      })
-      .optional(),
-    projetos: z
-      .object({
-        serResponsavel: z.boolean(),
-        editar: z.boolean(),
-      })
-      .optional(),
-    clientes: z
-      .object({
-        serRepresentante: z.boolean(),
-        editar: z.boolean(),
-      })
-      .optional(),
-    precos: z
-      .object({
-        visualizar: z.boolean(),
-        editar: z.boolean(),
-      })
-      .optional(),
-  }),
+  permissoes: z
+    .object({
+      usuarios: z
+        .object({
+          visualizar: z.boolean(),
+          editar: z.boolean(),
+        })
+        .optional(),
+      comissoes: z
+        .object({
+          visualizar: z.boolean(),
+          editar: z.boolean(),
+        })
+        .optional(),
+      kits: z
+        .object({
+          visualizar: z.boolean(),
+          editar: z.boolean(),
+        })
+        .optional(),
+      propostas: z
+        .object({
+          visualizar: z.boolean(),
+          editar: z.boolean(),
+        })
+        .optional(),
+      projetos: z
+        .object({
+          serResponsavel: z.boolean(),
+          editar: z.boolean(),
+        })
+        .optional(),
+      clientes: z
+        .object({
+          serRepresentante: z.boolean(),
+          editar: z.boolean(),
+        })
+        .optional(),
+      precos: z
+        .object({
+          visualizar: z.boolean(),
+          editar: z.boolean(),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 const editUser: NextApiHandler<PutResponse> = async (req, res) => {

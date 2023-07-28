@@ -26,16 +26,18 @@ function NotificationBlock({ sidebarExtended }: { sidebarExtended: boolean }) {
         onClick={() => {
           setNotificationModalIsOpen((prev) => !prev);
         }}
-        className={`relative mb-2 flex cursor-pointer items-center justify-center rounded p-2   duration-300  ease-in hover:bg-blue-100`}
+        className={`relative mb-0 flex cursor-pointer items-center justify-center rounded p-2 duration-300   ease-in  hover:bg-blue-100 md:mb-2`}
       >
         {countUnreadNotifications(notifications) > 0 ? (
           <>
             <MdNotificationsActive
               style={{ fontSize: "20px", color: "rgb(239,68,68)" }}
             />
-            <p className="absolute top-1 ml-6 h-[15px] w-[15px] items-center justify-center rounded-full bg-red-500 p-1 text-center text-xs font-bold text-white lg:flex">
-              {countUnreadNotifications(notifications)}
-            </p>
+            <div className="absolute top-1 ml-6 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-red-500  text-center text-xs font-bold text-white">
+              <p className="h-full w-full">
+                {countUnreadNotifications(notifications)}
+              </p>
+            </div>
           </>
         ) : (
           <MdNotifications style={{ fontSize: "20px", color: "#15599a" }} />

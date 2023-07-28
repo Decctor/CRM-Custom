@@ -96,7 +96,7 @@ export const Sidebar = () => {
         <NotificationBlock sidebarExtended={sidebarExtended} />
         {session?.user.image ? (
           <div className="flex w-full items-center justify-center">
-            <Link href={`/auth/profile?id=${session.user.id}`}>
+            <Link href={`/auth/perfil?id=${session.user.id}`}>
               <div className="relative h-[37px] w-[37px]">
                 <Image
                   src={session?.user.image}
@@ -114,7 +114,7 @@ export const Sidebar = () => {
             <SidebarItem
               text="Controle de Usuários"
               isOpen={sidebarExtended}
-              url={"/auth/users"}
+              url={"/auth/usuarios"}
               icon={<FaUsers style={{ fontSize: "20px", color: "#15599a" }} />}
             />
           ) : null}
@@ -142,10 +142,10 @@ export const Sidebar = () => {
         } w-full items-center border-t border-gray-200 bg-[#fff] md:hidden`}
       >
         <div className="grid h-[50px] w-full grid-cols-3">
-          <div className="col-span-1">
+          <div className="col-span-1 flex items-center justify-center gap-2">
             {session?.user.image ? (
-              <div className="flex h-full w-full items-center justify-center">
-                <Link href={`/auth/profile?id=${session.user.id}`}>
+              <div className="flex h-full w-fit items-center justify-center">
+                <Link href={`/auth/perfil?id=${session.user.id}`}>
                   <div className="relative h-[33px] w-[33px]">
                     <Image
                       src={session?.user.image}
@@ -158,12 +158,15 @@ export const Sidebar = () => {
                 </Link>
               </div>
             ) : null}
+            <NotificationBlock sidebarExtended={sidebarExtended} />
           </div>
           <div className="col-span-1 flex items-center justify-center">
             <div className="flex h-[37px] w-full items-start justify-center">
-              <div className="relative h-[37px] w-[37px]">
-                <Image src={Logo} alt="LOGO" title="LOGO" fill={true} />
-              </div>
+              <Link href={"/"}>
+                <div className="relative h-[37px] w-[37px]">
+                  <Image src={Logo} alt="LOGO" title="LOGO" fill={true} />
+                </div>
+              </Link>
             </div>
           </div>
           <div className="col-span-1 flex items-center justify-center">
