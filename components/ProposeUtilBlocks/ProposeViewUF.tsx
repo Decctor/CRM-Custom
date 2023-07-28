@@ -256,27 +256,29 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
   }
   console.log("PROPOSTA", propose, null);
   return (
-    <div className="flex h-full">
+    <div className="flex h-full flex-col md:flex-row">
       <Sidebar />
       <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
-        <div className="flex w-full items-center justify-between border-b border-gray-200 pb-2">
+        <div className="flex w-full flex-col items-center justify-between border-b border-gray-200 pb-2 lg:flex-row">
           <div className="flex flex-col gap-1">
-            <h1 className="font-Raleway text-xl font-bold text-gray-800">
+            <h1 className="text-center font-Raleway text-xl font-bold text-gray-800 lg:text-start">
               {propose?.nome}
             </h1>
-            <Link href={`/projeto/id/${propose.infoProjeto?._id}`}>
-              <div className="flex items-center gap-2">
-                <RxDashboard style={{ color: "#15599a" }} />
-                <p className="text-xs">{propose?.infoProjeto?.nome}</p>
-              </div>
-            </Link>
             <div className="flex items-center gap-2">
-              <FaUser style={{ color: "#15599a", fontSize: "15px" }} />
-              <p className="text-xs">{propose?.autor?.nome}</p>
+              <Link href={`/projeto/id/${propose.infoProjeto?._id}`}>
+                <div className="flex items-center gap-2">
+                  <RxDashboard style={{ color: "#15599a", fontSize: "15px" }} />
+                  <p className="text-xs">{propose?.infoProjeto?.nome}</p>
+                </div>
+              </Link>
+              <div className="flex items-center gap-2">
+                <FaUser style={{ color: "#15599a", fontSize: "15px" }} />
+                <p className="text-xs">{propose?.autor?.nome}</p>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="mt-4 flex items-center gap-4 lg:mt-0">
             {propose?.infoProjeto?.dataPerda ||
             propose?.infoProjeto?.dataSolicitacaoContrato ||
             propose.dataSolicitacaoContrato ? null : (
@@ -297,15 +299,15 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
               Perder
             </button> */}
             {propose?.assinado ? (
-              <div className="flex w-fit min-w-[250px] items-center justify-end gap-5 text-green-500">
-                <BsFillCalendarCheckFill
-                  style={{ color: "rgb(34,197,94)", fontSize: "25px" }}
-                />
-                <div className="flex flex-col items-center">
-                  <p className="text-center text-sm italic text-gray-500">
-                    Assinado em:
-                  </p>
-                  <p className="text-md text-center font-medium text-gray-500">
+              <div className="flex flex-col items-center rounded-md  bg-green-400 p-2 shadow-md">
+                <h1 className="text-center font-Raleway text-sm font-bold text-black">
+                  CONTRATO ASSINADO
+                </h1>
+                <div className="flex items-center justify-center gap-2">
+                  <BsFillCalendarCheckFill
+                    style={{ color: "#000", fontSize: "15px" }}
+                  />
+                  <p className="text-center text-sm font-bold text-black">
                     {propose?.dataAssinatura
                       ? dayjs(propose?.dataAssinatura).format("DD/MM/YYYY")
                       : "-"}
@@ -416,51 +418,73 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                 </p>
               </div>
               <div className="flex w-full grow flex-col justify-around">
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium">Consumo de energia mensal</h1>
-                  <h1>{propose?.premissas.consumoEnergiaMensal} kWh</h1>
+                <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+                  <h1 className="font-medium text-gray-500">
+                    Consumo de energia mensal
+                  </h1>
+                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                    {propose?.premissas.consumoEnergiaMensal} kWh
+                  </h1>
                 </div>
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium">Tarifa de energia</h1>
+                <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+                  <h1 className="font-medium text-gray-500">
+                    Tarifa de energia
+                  </h1>
                   <h1>R$ {propose?.premissas.tarifaEnergia} R$/kWh</h1>
                 </div>
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium">Tarifa TUSD</h1>
-                  <h1>{propose?.premissas.tarifaTUSD} R$/kWh</h1>
+                <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+                  <h1 className="font-medium text-gray-500">Tarifa TUSD</h1>
+                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                    {propose?.premissas.tarifaTUSD} R$/kWh
+                  </h1>
                 </div>
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium">Tensão da rede</h1>
-                  <h1>{propose?.premissas.tensaoRede}</h1>
+                <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+                  <h1 className="font-medium text-gray-500">Tensão da rede</h1>
+                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                    {propose?.premissas.tensaoRede}
+                  </h1>
                 </div>
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium">Fase</h1>
-                  <h1>{propose?.premissas.fase}</h1>
+                <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+                  <h1 className="font-medium text-gray-500">Fase</h1>
+                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                    {propose?.premissas.fase}
+                  </h1>
                 </div>
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium">Fator de simultaneidade</h1>
-                  <h1>{propose?.premissas.fatorSimultaneidade}</h1>
+                <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+                  <h1 className="font-medium text-gray-500">
+                    Fator de simultaneidade
+                  </h1>
+                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                    {propose?.premissas.fatorSimultaneidade}
+                  </h1>
                 </div>
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium">Tipo de estrutura</h1>
-                  <h1>{propose?.premissas.tipoEstrutura}</h1>
+                <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+                  <h1 className="font-medium text-gray-500">
+                    Tipo de estrutura
+                  </h1>
+                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                    {propose?.premissas.tipoEstrutura}
+                  </h1>
                 </div>
-                <div className="flex w-full items-center justify-between">
-                  <h1 className="font-medium">Distância</h1>
-                  <h1>{propose?.premissas.distancia} km</h1>
+                <div className="flex w-full flex-col items-center justify-between lg:flex-row">
+                  <h1 className="font-medium text-gray-500">Distância</h1>
+                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                    {propose?.premissas.distancia} km
+                  </h1>
                 </div>
               </div>
             </div>
             <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md lg:w-1/3">
               <div className="flex w-full flex-col items-center">
                 <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
-                  Arquivo
+                  ARQUIVO
                 </h1>
                 <p className="text-center text-xs italic text-gray-500">
                   Faça o download do arquivo da proposta utilize do link para
                   acessá-lo a qualquer momento.
                 </p>
               </div>
-              <div className="flex w-full grow flex-col justify-center gap-4">
+              <div className="mt-4 flex w-full grow flex-col justify-center gap-4 lg:mt-0">
                 <button
                   onClick={() =>
                     handleDownload(
@@ -491,34 +515,38 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
             </div>
           </div>
           {session?.user.permissoes.precos.visualizar ? (
-            <div className="mt-4 flex w-full flex-col gap-1 border border-gray-200 bg-[#fff] shadow-md">
-              <div className="flex w-full items-center rounded bg-gray-200">
-                <div className="flex w-4/12 items-center justify-center p-1">
-                  <h1 className="font-Raleway font-bold text-gray-500">ITEM</h1>
+            <>
+              <div className="mt-4 hidden w-full flex-col gap-1 border border-gray-200 bg-[#fff] shadow-md lg:flex">
+                <div className="flex w-full items-center rounded bg-gray-200">
+                  <div className="flex w-4/12 items-center justify-center p-1">
+                    <h1 className="font-Raleway font-bold text-gray-500">
+                      ITEM
+                    </h1>
+                  </div>
+                  <div className="flex w-2/12 items-center justify-center p-1">
+                    <h1 className="font-Raleway font-bold text-gray-500">
+                      CUSTO
+                    </h1>
+                  </div>
+                  <div className="flex w-2/12 items-center justify-center p-1">
+                    <h1 className="font-Raleway font-bold text-gray-500">
+                      IMPOSTO
+                    </h1>
+                  </div>
+                  <div className="flex w-2/12 items-center justify-center p-1">
+                    <h1 className="font-Raleway font-bold text-gray-500">
+                      LUCRO
+                    </h1>
+                  </div>
+                  <div className="flex w-2/12 items-center justify-center p-1">
+                    <h1 className="font-Raleway font-bold text-gray-500">
+                      VENDA
+                    </h1>
+                  </div>
                 </div>
-                <div className="flex w-2/12 items-center justify-center p-1">
-                  <h1 className="font-Raleway font-bold text-gray-500">
-                    CUSTO
-                  </h1>
-                </div>
-                <div className="flex w-2/12 items-center justify-center p-1">
-                  <h1 className="font-Raleway font-bold text-gray-500">
-                    IMPOSTO
-                  </h1>
-                </div>
-                <div className="flex w-2/12 items-center justify-center p-1">
-                  <h1 className="font-Raleway font-bold text-gray-500">
-                    LUCRO
-                  </h1>
-                </div>
-                <div className="flex w-2/12 items-center justify-center p-1">
-                  <h1 className="font-Raleway font-bold text-gray-500">
-                    VENDA
-                  </h1>
-                </div>
-              </div>
-              {Object.keys(getPrices(propose?.infoProjeto, propose, null)).map(
-                (priceType, index) => {
+                {Object.keys(
+                  getPrices(propose?.infoProjeto, propose, null)
+                ).map((priceType, index) => {
                   if (propose.precificacao) {
                     const pricesObj =
                       propose?.precificacao[priceType as keyof Pricing];
@@ -586,50 +614,187 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                       </div>
                     );
                   }
-                }
-              )}
-              <div className="flex w-full items-center rounded border-t border-gray-200 py-1">
-                <div className="flex w-4/12 items-center justify-center p-1">
-                  <h1 className="font-bold text-gray-800">TOTAIS</h1>
-                </div>
-                <div className="flex w-2/12 items-center justify-center p-1">
-                  <h1 className="font-medium text-gray-800">
-                    R${" "}
-                    {getTotals()?.totalCosts.toLocaleString("pt-br", {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
-                    })}
-                  </h1>
-                </div>
-                <div className="flex w-2/12 items-center justify-center p-1">
-                  <h1 className="font-medium text-gray-800">
-                    R${" "}
-                    {getTotals()?.totalTaxes.toLocaleString("pt-br", {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
-                    })}
-                  </h1>
-                </div>
-                <div className="flex w-2/12 items-center justify-center p-1">
-                  <h1 className="font-medium text-gray-800">
-                    R${" "}
-                    {getTotals()?.totalProfits.toLocaleString("pt-br", {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
-                    })}
-                  </h1>
-                </div>
-                <div className="flex w-2/12 items-center justify-center p-1">
-                  <h1 className="font-medium text-gray-800">
-                    R${" "}
-                    {getTotals()?.finalProposePrice.toLocaleString("pt-br", {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
-                    })}
-                  </h1>
+                })}
+                <div className="flex w-full items-center rounded border-t border-gray-200 py-1">
+                  <div className="flex w-4/12 items-center justify-center p-1">
+                    <h1 className="font-bold text-gray-800">TOTAIS</h1>
+                  </div>
+                  <div className="flex w-2/12 items-center justify-center p-1">
+                    <h1 className="font-medium text-gray-800">
+                      R${" "}
+                      {getTotals()?.totalCosts.toLocaleString("pt-br", {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                    </h1>
+                  </div>
+                  <div className="flex w-2/12 items-center justify-center p-1">
+                    <h1 className="font-medium text-gray-800">
+                      R${" "}
+                      {getTotals()?.totalTaxes.toLocaleString("pt-br", {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                    </h1>
+                  </div>
+                  <div className="flex w-2/12 items-center justify-center p-1">
+                    <h1 className="font-medium text-gray-800">
+                      R${" "}
+                      {getTotals()?.totalProfits.toLocaleString("pt-br", {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                    </h1>
+                  </div>
+                  <div className="flex w-2/12 items-center justify-center p-1">
+                    <h1 className="font-medium text-gray-800">
+                      R${" "}
+                      {getTotals()?.finalProposePrice.toLocaleString("pt-br", {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                    </h1>
+                  </div>
                 </div>
               </div>
-            </div>
+              <div className="mt-4 flex flex-col border border-gray-200 bg-[#fff] shadow-md lg:hidden">
+                <h1 className="rounded-tl-md rounded-tr-md bg-gray-500 text-center font-Raleway font-bold text-white">
+                  ITENS
+                </h1>
+                {Object.keys(
+                  getPrices(propose?.infoProjeto, propose, null)
+                ).map((priceType, index) => {
+                  if (propose.precificacao) {
+                    const pricesObj =
+                      propose?.precificacao[priceType as keyof Pricing];
+                    if (!pricesObj) return;
+                    const {
+                      custo,
+                      vendaFinal,
+                      margemLucro,
+                      imposto,
+                      vendaProposto,
+                    } = pricesObj;
+                    const description =
+                      priceType == "kit"
+                        ? propose.kit?.nome
+                        : priceDescription[priceType];
+
+                    const taxValue =
+                      getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
+                    const marginValue =
+                      getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
+                    return (
+                      <div
+                        className="flex w-full flex-col items-center rounded"
+                        key={index}
+                      >
+                        <div className="flex w-full items-center justify-center p-1">
+                          <h1 className="font-medium text-gray-800">
+                            {description}
+                          </h1>
+                        </div>
+                        <div className="grid w-full grid-cols-2  items-center gap-1">
+                          <div className="col-span-1 flex flex-col items-center justify-center p-1">
+                            <h1 className="text-sm font-thin text-gray-500">
+                              CUSTO
+                            </h1>
+                            <h1 className="text-center text-xs font-bold text-[#15599a]">
+                              R${" "}
+                              {custo.toLocaleString("pt-br", {
+                                maximumFractionDigits: 2,
+                                minimumFractionDigits: 2,
+                              })}
+                            </h1>
+                          </div>
+                          <div className="col-span-1 flex flex-col items-center justify-center p-1">
+                            <h1 className="text-sm font-thin text-gray-500">
+                              IMPOSTO
+                            </h1>
+                            <h1 className="text-center text-xs font-bold text-[#15599a]">
+                              R${" "}
+                              {taxValue.toLocaleString("pt-br", {
+                                maximumFractionDigits: 2,
+                                minimumFractionDigits: 2,
+                              })}
+                            </h1>
+                          </div>
+                          <div className="col-span-1 flex flex-col items-center justify-center p-1">
+                            <h1 className="text-sm font-thin text-gray-500">
+                              LUCRO
+                            </h1>
+                            <h1 className="text-center text-xs font-bold text-[#15599a]">
+                              R${" "}
+                              {marginValue.toLocaleString("pt-br", {
+                                maximumFractionDigits: 2,
+                                minimumFractionDigits: 2,
+                              })}
+                            </h1>
+                          </div>
+                          <div className="col-span-1 flex flex-col items-center justify-center p-1">
+                            <h1 className="text-sm font-thin text-gray-500">
+                              VENDA
+                            </h1>
+                            <h1 className="text-center text-xs font-bold text-[#fead41]">
+                              R${" "}
+                              {vendaFinal.toLocaleString("pt-br", {
+                                maximumFractionDigits: 2,
+                                minimumFractionDigits: 2,
+                              })}
+                            </h1>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
+                <h1 className="bg-gray-800 text-center font-Raleway font-bold text-white">
+                  TOTAIS
+                </h1>
+                <div className="grid w-full grid-cols-2  items-center gap-1">
+                  <div className="col-span-1 flex flex-col items-center justify-center p-1">
+                    <h1 className="text-sm font-thin text-gray-500">CUSTO</h1>
+                    <h1 className="text-center text-xs font-bold text-[#15599a]">
+                      R${" "}
+                      {getTotals()?.totalCosts.toLocaleString("pt-br", {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                    </h1>
+                  </div>
+                  <div className="col-span-1 flex flex-col items-center justify-center p-1">
+                    <h1 className="text-sm font-thin text-gray-500">IMPOSTO</h1>
+                    <h1 className="text-center text-xs font-bold text-[#15599a]">
+                      R${" "}
+                      {getTotals()?.totalTaxes.toLocaleString("pt-br", {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                    </h1>
+                  </div>
+                  <div className="col-span-1 flex flex-col items-center justify-center p-1">
+                    <h1 className="text-sm font-thin text-gray-500">LUCRO</h1>
+                    <h1 className="text-center text-xs font-bold text-[#15599a]">
+                      R${" "}
+                      {getTotals()?.totalProfits.toLocaleString("pt-br", {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                    </h1>
+                  </div>
+                  <div className="col-span-1 flex flex-col items-center justify-center p-1">
+                    <h1 className="text-sm font-thin text-gray-500">VENDA</h1>
+                    <h1 className="text-center text-xs font-bold text-[#fead41]">
+                      R${" "}
+                      {getTotals()?.finalProposePrice.toLocaleString("pt-br", {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </>
           ) : (
             <div className="mt-4 flex w-full flex-col gap-1 border border-gray-200 bg-[#fff] shadow-md">
               <div className="flex w-full items-center rounded bg-gray-200">

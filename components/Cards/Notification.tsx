@@ -23,12 +23,15 @@ function NotificationCard({ notification }: NotificationCardProps) {
           avatar?: string;
         }
       | "SISTEMA",
-    projectName?: string
+    projectName?: string,
+    projectIdentificator?: string
   ) {
     if (recipient == "SISTEMA")
       return (
         <h1 className="text-xs italic text-gray-500">
-          ATUALIZAÇÃO SOBRE O PROJETO <strong>{projectName}</strong>:
+          ATUALIZAÇÃO SOBRE O PROJETO{" "}
+          <strong className="text-[#fead41]">{projectIdentificator}</strong>{" "}
+          <strong>{projectName}</strong>:
         </h1>
       );
     if (recipient.nome && projectName)
@@ -106,7 +109,8 @@ function NotificationCard({ notification }: NotificationCardProps) {
         <div className="flex w-[80%] flex-col">
           {getHeaderMessage(
             notification.remetente,
-            notification.projetoReferencia?.nome
+            notification.projetoReferencia?.nome,
+            notification.projetoReferencia?.identificador
           )}
 
           <div className="flex w-full items-center gap-1 text-xs italic text-gray-800">

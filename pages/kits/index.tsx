@@ -102,7 +102,7 @@ function Kits() {
   if (status == "loading") return <LoadingPage />;
   if (session.user.permissoes.kits.visualizar)
     return (
-      <div className="flex h-full">
+      <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
           <div className="flex flex-col items-center border-b border-[#fead61] pb-2 ">

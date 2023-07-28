@@ -22,7 +22,7 @@ function Teste() {
     }
   }
   return (
-    <div className="flex h-full">
+    <div className="flex h-full flex-col md:flex-row">
       <Sidebar />
       <div className="flex w-full max-w-full grow flex-col gap-2 overflow-x-hidden bg-[#f8f9fa] p-6">
         <input onChange={(e) => handleFileChange(e)} type="file" />

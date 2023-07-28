@@ -9,20 +9,7 @@ import { toast } from "react-hot-toast";
 import { checkQueryEnableStatus, getInverterStr } from "@/utils/methods";
 import { useSession } from "next-auth/react";
 import { IProposeInfo, IProposeOeMInfo } from "@/utils/models";
-import { ImPower, ImPriceTag, ImTab } from "react-icons/im";
-import { TbDownload } from "react-icons/tb";
-import { MdContentCopy } from "react-icons/md";
-import { fileTypes } from "@/utils/constants";
-import { FullMetadata, getMetadata, ref } from "firebase/storage";
-import { storage } from "@/services/firebase";
-import {
-  PricesObj,
-  getMarginValue,
-  getProposedPrice,
-  getTaxValue,
-  priceDescription,
-} from "@/utils/pricing/methods";
-import { getPrices } from "@/utils/pricing/methods";
+
 import ProposeViewUF from "@/components/ProposeUtilBlocks/ProposeViewUF";
 import ProposeViewOeM from "@/components/ProposeUtilBlocks/ProposeViewOeM";
 
@@ -134,7 +121,7 @@ function SpecificProposePage() {
       // @ts-ignore
       return <ProposeViewOeM propose={propose} />;
     // return (
-    //   <div className="flex h-full">
+    //   <div className="flex flex-col md:flex-row h-full">
     //     <Sidebar />
     //     <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
     //       <div className="flex w-full items-center justify-between border-b border-gray-200 pb-2">

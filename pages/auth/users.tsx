@@ -60,7 +60,7 @@ function Users() {
   if (status == "loading") return <LoadingPage />;
   if (session?.user.permissoes.usuarios.visualizar)
     return (
-      <div className="flex h-full">
+      <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa]">
           <div className="flex h-[80px] w-full items-center justify-center bg-gray-800 p-2">

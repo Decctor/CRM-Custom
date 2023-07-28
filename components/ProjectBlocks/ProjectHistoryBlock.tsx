@@ -120,7 +120,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
     <div className="flex w-full flex-col gap-2 rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">
       <div className="flex h-fit flex-col items-center justify-between border-b border-gray-200 pb-2 lg:h-[40px] lg:flex-row">
         <h1 className="font-bold text-black">Histórico</h1>
-        <div className="flex items-center gap-2">
+        <div className="mt-2 flex w-full grow flex-col items-center justify-end gap-2 lg:mt-0 lg:w-fit lg:flex-row">
           <button
             onClick={() => {
               setNewEvent((prev) => ({
@@ -132,7 +132,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
               }));
               setView("NEW ACTIVITY");
             }}
-            className="flex items-center gap-2 rounded bg-[#15599a] p-1.5 font-medium text-white hover:bg-blue-800"
+            className="flex w-full items-center justify-center gap-2 rounded bg-[#15599a] p-1.5 font-medium text-white hover:bg-blue-800 lg:w-fit"
           >
             <BsClipboardCheck />
             <p className="text-xs font-normal">Nova Atividade</p>
@@ -145,7 +145,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
               }));
               setView("NEW NOTE");
             }}
-            className="flex items-center gap-2 rounded bg-[#15599a] p-1.5 font-medium text-white hover:bg-blue-800"
+            className="flex w-full items-center justify-center gap-2 rounded bg-[#15599a] p-1.5 font-medium text-white hover:bg-blue-800 lg:w-fit"
           >
             <TbNotes />
             <p className="text-xs font-normal">Nova Anotação</p>
@@ -240,7 +240,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
               }
               width="100%"
             />
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-2 flex flex-col items-center gap-2 lg:flex-row">
               <div className="w-full lg:w-[50%]">
                 <SelectInput
                   label="TIPO"
@@ -260,7 +260,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
                   width="100%"
                 />
               </div>
-              <div className="flex w-[50%] flex-col gap-1">
+              <div className="flex w-full flex-col gap-1 lg:w-[50%]">
                 <label
                   htmlFor={"DATAVENCIMENTO"}
                   className="font-sans font-bold  text-[#353432]"

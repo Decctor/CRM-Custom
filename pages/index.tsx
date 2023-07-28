@@ -271,7 +271,7 @@ export default function Home() {
 
   if (status == "loading") return <LoadingPage />;
   return (
-    <div className="flex h-full">
+    <div className="flex h-full flex-col md:flex-row">
       <Sidebar />
       <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
         <div className="flex flex-col items-center border-b border-[#fead61] pb-2 xl:flex-row">
@@ -328,7 +328,7 @@ export default function Home() {
             <SeachProjects />
           </div>
         </div>
-        <div className="flex w-full grow flex-wrap justify-between gap-2 py-2">
+        <div className="flex w-full grow flex-wrap justify-center gap-2 py-2 md:justify-between">
           {projects && projects.length > 0
             ? projects.map((project) => (
                 <Project

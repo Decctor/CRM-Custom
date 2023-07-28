@@ -77,7 +77,7 @@ function PropostaPage() {
   if (isLoading) return <LoadingPage />;
   if (error) {
     return (
-      <div className="flex h-full">
+      <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col items-center justify-center overflow-x-hidden bg-[#f8f9fa]">
           <p>Oops, houve um erro ao acessar essa página.</p>
@@ -88,7 +88,7 @@ function PropostaPage() {
   if (isSuccess) {
     if (project.idSolicitacaoContrato)
       return (
-        <div className="flex h-full">
+        <div className="flex h-full flex-col md:flex-row">
           <Sidebar />
           <div className="flex w-full max-w-full grow flex-col items-center justify-center overflow-x-hidden bg-[#f8f9fa]">
             <p className="text-center text-lg italic text-gray-500">
@@ -108,7 +108,7 @@ function PropostaPage() {
         </div>
       );
     return (
-      <div className="flex h-full">
+      <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa]">
           <div className="flex h-[70px] w-full items-center justify-around bg-black">

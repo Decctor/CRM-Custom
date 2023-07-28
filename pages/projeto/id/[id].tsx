@@ -119,7 +119,7 @@ function Projeto() {
 
   if (projectError)
     return (
-      <div className="flex h-full">
+      <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col items-center justify-center overflow-x-hidden bg-[#f8f9fa] p-6">
           <p className="text-lg italic text-gray-700">
@@ -131,7 +131,7 @@ function Projeto() {
     );
   if (projectSuccess)
     return (
-      <div className="flex h-full">
+      <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
         <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
           <div className="flex w-full flex-col items-center justify-between border-b border-[#fead61] pb-2 lg:flex-row">
@@ -164,16 +164,18 @@ function Projeto() {
                 </div>
               ) : null}
               {project.assinado && project.dataAssinatura ? (
-                <div className="flex w-fit min-w-[250px] items-center justify-end gap-5 text-green-500">
-                  <BsFillCalendarCheckFill
-                    style={{ color: "rgb(34,197,94)", fontSize: "25px" }}
-                  />
-                  <div className="flex flex-col items-center">
-                    <p className="text-center text-sm italic text-gray-500">
-                      Assinado em:
-                    </p>
-                    <p className="text-md text-center font-medium text-gray-500">
-                      {dayjs(project.dataAssinatura).format("DD/MM/YYYY")}
+                <div className="flex min-w-[200px] flex-col items-center  rounded-md bg-green-400 p-2 shadow-md">
+                  <h1 className="text-center font-Raleway text-sm font-bold text-black">
+                    CONTRATO ASSINADO
+                  </h1>
+                  <div className="flex items-center justify-center gap-2">
+                    <BsFillCalendarCheckFill
+                      style={{ color: "#000", fontSize: "15px" }}
+                    />
+                    <p className="text-center text-sm font-bold text-black">
+                      {project.dataAssinatura
+                        ? dayjs(project.dataAssinatura).format("DD/MM/YYYY")
+                        : "-"}
                     </p>
                   </div>
                 </div>

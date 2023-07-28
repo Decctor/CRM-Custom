@@ -414,7 +414,7 @@ function EditClient({
               />
               <TextInput
                 label="CPF/CNPJ"
-                value={clientInfo.cpfCnpj}
+                value={clientInfo.cpfCnpj ? clientInfo.cpfCnpj : ""}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
                   session?.user.permissoes.clientes.editar
@@ -471,7 +471,7 @@ function EditClient({
             <div className="grid grid-cols-1 grid-rows-2 items-center gap-6 px-2 lg:grid-cols-2 lg:grid-rows-1">
               <TextInput
                 label="EMAIL"
-                value={clientInfo.email}
+                value={clientInfo.email ? clientInfo.email : ""}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
                   session?.user.permissoes.clientes.editar
@@ -485,7 +485,7 @@ function EditClient({
 
               <TextInput
                 label="CEP"
-                value={clientInfo.cep}
+                value={clientInfo.cep ? clientInfo.cep : ""}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
                   session?.user.permissoes.clientes.editar
@@ -584,7 +584,7 @@ function EditClient({
             <div className="grid grid-cols-1 grid-rows-2 items-center gap-6 px-2 lg:grid-cols-2 lg:grid-rows-1">
               <TextInput
                 label="BAIRRO"
-                value={clientInfo.bairro}
+                value={clientInfo.bairro ? clientInfo.bairro : ""}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
                   session?.user.permissoes.clientes.editar
@@ -597,7 +597,7 @@ function EditClient({
               />
               <TextInput
                 label="LOGRADOURO/RUA"
-                value={clientInfo.endereco}
+                value={clientInfo.endereco ? clientInfo.endereco : ""}
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
                   session?.user.permissoes.clientes.editar
@@ -612,7 +612,11 @@ function EditClient({
             <div className="mb-2 grid grid-cols-1 grid-rows-2 items-center gap-6 px-2 lg:grid-cols-2 lg:grid-rows-1">
               <TextInput
                 label="NÚMERO/IDENTIFICADOR"
-                value={clientInfo.numeroOuIdentificador}
+                value={
+                  clientInfo.numeroOuIdentificador
+                    ? clientInfo.numeroOuIdentificador
+                    : ""
+                }
                 editable={
                   session?.user.id == clientInfo.representante?.id ||
                   session?.user.permissoes.clientes.editar
