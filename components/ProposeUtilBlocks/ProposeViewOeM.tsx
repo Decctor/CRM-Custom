@@ -349,7 +349,7 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                   acessá-lo a qualquer momento.
                 </p>
               </div>
-              <div className="flex w-full grow flex-col justify-center gap-4">
+              <div className="mt-4 flex w-full grow flex-col justify-center gap-4">
                 <button
                   onClick={() =>
                     handleDownload(
@@ -372,11 +372,11 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
               </div>
             </div>
           </div>
-          <div className="mt-2 flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md">
+          <div className="mt-2 flex w-full grow flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md">
             <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
               PLANOS
             </h1>
-            <div className="flex grow items-start justify-around gap-2 py-2">
+            <div className="flex w-full grow flex-col items-start justify-center gap-2 py-2 md:flex-row md:justify-around">
               <div
                 onClick={() =>
                   updatePropose({
@@ -385,9 +385,9 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                       propose.precificacao?.manutencaoSimples.vendaFinal,
                   })
                 }
-                className={`flex h-[400px] ${
+                className={`flex h-[450px] min-h-[400px] ${
                   propose.idPlanoEscolhido == 1 ? "bg-green-200" : ""
-                }  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
+                } w-full cursor-pointer  flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50 md:w-[350px]`}
               >
                 <h1 className="text-center text-lg font-medium text-gray-800">
                   MANUTENÇÃO SIMPLES
@@ -402,8 +402,8 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                         MANUTENÇÃO ELÉTRICA INVERSORES + QUADROS ELÉTRICOS
                       </h1>
                     </div>
-                    <div className="flex w-[20%] items-center justify-end text-red-500">
-                      <AiFillCloseCircle />
+                    <div className="flex w-[20%] items-center justify-end text-green-500">
+                      <BsPatchCheckFill />
                     </div>
                   </div>
                   <div className="flex w-full items-center">
@@ -412,8 +412,8 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                         REAPERTO CONEXÕES ELÉTRICAS
                       </h1>
                     </div>
-                    <div className="flex w-[20%] items-center justify-end text-red-500">
-                      <AiFillCloseCircle />
+                    <div className="flex w-[20%] items-center justify-end text-green-500">
+                      <BsPatchCheckFill />
                     </div>
                   </div>
                   <div className="flex w-full items-center">
@@ -423,8 +423,8 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                         EQUIPAMENTOS ELÉTRICOS
                       </h1>
                     </div>
-                    <div className="flex w-[20%] items-center justify-end text-red-500">
-                      <AiFillCloseCircle />
+                    <div className="flex w-[20%] items-center justify-end text-green-500">
+                      <BsPatchCheckFill />
                     </div>
                   </div>
                   <div className="flex w-full items-center">
@@ -476,9 +476,9 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                     valorProposta: propose.precificacao?.planoSol.vendaFinal,
                   })
                 }
-                className={`flex h-[400px] ${
+                className={`flex h-[450px] min-h-[400px] ${
                   propose.idPlanoEscolhido == 2 ? "bg-green-200" : ""
-                }  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
+                } w-full cursor-pointer  flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50 md:w-[350px]`}
               >
                 <h1 className="text-center text-lg font-medium text-gray-800">
                   PLANO SOL
@@ -574,9 +574,9 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                       propose.precificacao?.planoSolPlus.vendaFinal,
                   })
                 }
-                className={`flex h-[400px] ${
+                className={`flex h-[450px] min-h-[400px] ${
                   propose.idPlanoEscolhido == 3 ? "bg-green-200" : ""
-                }  w-[350px] cursor-pointer flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50`}
+                } w-full cursor-pointer  flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50 md:w-[350px]`}
               >
                 <h1 className="text-center text-lg font-medium text-gray-800">
                   PLANO SOL+

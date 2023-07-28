@@ -36,6 +36,7 @@ import DocumentAttachmentInfo from "../ContractRequest/SolarSystem/DocumentAttac
 import CreditDistributionInfo from "../ContractRequest/SolarSystem/CreditDistributionInfo";
 import ReviewInfo from "../ContractRequest/SolarSystem/ReviewInfo";
 import { Pricing } from "@/utils/pricing/methods";
+import SolarSystemForm from "../ContractRequest/SolarSystemForm";
 type ContractRequestProps = {
   closeModal: () => void;
   proposeInfo: IProposeInfo;
@@ -309,7 +310,22 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
                 }
               />
             </div>
-            {stage == 1 ? (
+            {proposeInfo?.infoProjeto?.tipoProjeto == "SISTEMA FOTOVOLTAICO" ? (
+              <SolarSystemForm
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                proposeInfo={proposeInfo}
+              />
+            ) : null}
+            {proposeInfo?.infoProjeto?.tipoProjeto ==
+            "OPERAÇÃO E MANUTENÇÃO" ? (
+              <SolarSystemForm
+                requestInfo={requestInfo}
+                setRequestInfo={setRequestInfo}
+                proposeInfo={proposeInfo}
+              />
+            ) : null}
+            {/* {stage == 1 ? (
               <ContractInfo
                 requestInfo={requestInfo}
                 setRequestInfo={setRequestInfo}
@@ -405,7 +421,7 @@ function ContractRequest({ closeModal, proposeInfo }: ContractRequestProps) {
                 projectId={proposeInfo?.infoProjeto?._id}
                 proposeInfo={proposeInfo}
               />
-            ) : null}
+            ) : null} */}
           </div>
         </div>
       </div>

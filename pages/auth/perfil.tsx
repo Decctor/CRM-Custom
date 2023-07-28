@@ -178,6 +178,7 @@ function Profile() {
                         }}
                         className="h-full w-full opacity-0"
                         type="file"
+                        accept=".png, .jpeg"
                       />
                     </div>
                   ) : image ? (
@@ -343,7 +344,7 @@ function Profile() {
                 )}
               </div>
             </div>
-            <div className="flex h-fit w-full grow flex-col rounded-md border border-gray-300 bg-[#fff] py-3 md:h-[80%] md:w-[60%]">
+            <div className="flex h-fit w-full grow flex-col rounded-md border border-gray-300 bg-[#fff] p-4 md:h-[80%] md:w-[60%]">
               <h1 className="mb-4 text-center font-Raleway text-2xl font-bold uppercase text-[#15599a]">
                 Histórico de Notificações
               </h1>

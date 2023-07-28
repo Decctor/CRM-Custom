@@ -748,7 +748,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     );
                   }
                 })}
-                <h1 className="mt-4 bg-gray-800 text-center font-Raleway font-bold text-white">
+                <h1 className="mt-4 bg-gray-800 p-2 text-center font-Raleway font-bold text-white">
                   TOTAIS
                 </h1>
                 <div className="grid w-full grid-cols-2  items-center gap-1 p-2">
