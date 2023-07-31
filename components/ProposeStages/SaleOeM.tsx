@@ -53,7 +53,7 @@ function SaleOeM({
       <div className="flex grow items-start justify-around gap-2 py-2">
         <div
           className={
-            "flex h-[400px]  w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg"
+            "flex h-[450px]  w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg"
           }
         >
           <h1 className="text-center text-lg font-medium text-gray-800">
@@ -69,8 +69,8 @@ function SaleOeM({
                   MANUTENÇÃO ELÉTRICA INVERSORES + QUADROS ELÉTRICOS
                 </h1>
               </div>
-              <div className="flex w-[20%] items-center justify-end text-red-500">
-                <AiFillCloseCircle />
+              <div className="flex w-[20%] items-center justify-end text-green-500">
+                <BsPatchCheckFill />
               </div>
             </div>
             <div className="flex w-full items-center">
@@ -79,8 +79,8 @@ function SaleOeM({
                   REAPERTO CONEXÕES ELÉTRICAS
                 </h1>
               </div>
-              <div className="flex w-[20%] items-center justify-end text-red-500">
-                <AiFillCloseCircle />
+              <div className="flex w-[20%] items-center justify-end text-green-500">
+                <BsPatchCheckFill />
               </div>
             </div>
             <div className="flex w-full items-center">
@@ -90,8 +90,8 @@ function SaleOeM({
                   ELÉTRICOS
                 </h1>
               </div>
-              <div className="flex w-[20%] items-center justify-end text-red-500">
-                <AiFillCloseCircle />
+              <div className="flex w-[20%] items-center justify-end text-green-500">
+                <BsPatchCheckFill />
               </div>
             </div>
             <div className="flex w-full items-center">
@@ -148,7 +148,7 @@ function SaleOeM({
         </div>
         <div
           className={
-            "flex h-[400px]  w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg"
+            "flex h-[450px]  w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg"
           }
         >
           <h1 className="text-center text-lg font-medium text-gray-800">
@@ -246,7 +246,7 @@ function SaleOeM({
         </div>
         <div
           className={
-            "flex h-[400px]  w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg"
+            "flex h-[450px]  w-[350px] flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg"
           }
         >
           <h1 className="text-center text-lg font-medium text-gray-800">

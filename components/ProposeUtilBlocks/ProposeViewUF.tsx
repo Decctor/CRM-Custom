@@ -544,77 +544,80 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     </h1>
                   </div>
                 </div>
-                {Object.keys(
-                  getPrices(propose?.infoProjeto, propose, null)
-                ).map((priceType, index) => {
-                  if (propose.precificacao) {
-                    const pricesObj =
-                      propose?.precificacao[priceType as keyof Pricing];
-                    if (!pricesObj) return;
-                    const {
-                      custo,
-                      vendaFinal,
-                      margemLucro,
-                      imposto,
-                      vendaProposto,
-                    } = pricesObj;
-                    const description =
-                      priceType == "kit"
-                        ? propose.kit?.nome
-                        : priceDescription[priceType];
+                {propose.precificacao
+                  ? Object.keys(propose.precificacao).map(
+                      (priceType, index) => {
+                        if (!propose?.precificacao) return;
+                        const pricesObj =
+                          propose?.precificacao[priceType as keyof Pricing];
+                        if (!pricesObj) return;
+                        const {
+                          custo,
+                          vendaFinal,
+                          margemLucro,
+                          imposto,
+                          vendaProposto,
+                        } = pricesObj;
+                        const description =
+                          priceType == "kit"
+                            ? propose.kit?.nome
+                            : priceDescription[priceType];
 
-                    const taxValue =
-                      getTaxValue(custo, vendaFinal, margemLucro) * vendaFinal;
-                    const marginValue =
-                      getMarginValue(custo, vendaFinal, imposto) * vendaFinal;
-                    return (
-                      <div
-                        className="flex w-full items-center rounded"
-                        key={index}
-                      >
-                        <div className="flex w-4/12 items-center justify-center p-1">
-                          <h1 className="text-gray-500">{description}</h1>
-                        </div>
-                        <div className="flex w-2/12 items-center justify-center p-1">
-                          <h1 className="text-gray-500">
-                            R${" "}
-                            {custo.toLocaleString("pt-br", {
-                              maximumFractionDigits: 2,
-                              minimumFractionDigits: 2,
-                            })}
-                          </h1>
-                        </div>
-                        <div className="flex w-2/12 items-center justify-center p-1">
-                          <h1 className="text-gray-500">
-                            R${" "}
-                            {taxValue.toLocaleString("pt-br", {
-                              maximumFractionDigits: 2,
-                              minimumFractionDigits: 2,
-                            })}
-                          </h1>
-                        </div>
-                        <div className="flex w-2/12 items-center justify-center p-1">
-                          <h1 className="text-gray-500">
-                            R${" "}
-                            {marginValue.toLocaleString("pt-br", {
-                              maximumFractionDigits: 2,
-                              minimumFractionDigits: 2,
-                            })}
-                          </h1>
-                        </div>
-                        <div className="flex w-2/12 items-center justify-center p-1">
-                          <h1 className="text-gray-500">
-                            R${" "}
-                            {vendaFinal.toLocaleString("pt-br", {
-                              maximumFractionDigits: 2,
-                              minimumFractionDigits: 2,
-                            })}
-                          </h1>
-                        </div>
-                      </div>
-                    );
-                  }
-                })}
+                        const taxValue =
+                          getTaxValue(custo, vendaFinal, margemLucro) *
+                          vendaFinal;
+                        const marginValue =
+                          getMarginValue(custo, vendaFinal, imposto) *
+                          vendaFinal;
+                        return (
+                          <div
+                            className="flex w-full items-center rounded"
+                            key={index}
+                          >
+                            <div className="flex w-4/12 items-center justify-center p-1">
+                              <h1 className="text-gray-500">{description}</h1>
+                            </div>
+                            <div className="flex w-2/12 items-center justify-center p-1">
+                              <h1 className="text-gray-500">
+                                R${" "}
+                                {custo.toLocaleString("pt-br", {
+                                  maximumFractionDigits: 2,
+                                  minimumFractionDigits: 2,
+                                })}
+                              </h1>
+                            </div>
+                            <div className="flex w-2/12 items-center justify-center p-1">
+                              <h1 className="text-gray-500">
+                                R${" "}
+                                {taxValue.toLocaleString("pt-br", {
+                                  maximumFractionDigits: 2,
+                                  minimumFractionDigits: 2,
+                                })}
+                              </h1>
+                            </div>
+                            <div className="flex w-2/12 items-center justify-center p-1">
+                              <h1 className="text-gray-500">
+                                R${" "}
+                                {marginValue.toLocaleString("pt-br", {
+                                  maximumFractionDigits: 2,
+                                  minimumFractionDigits: 2,
+                                })}
+                              </h1>
+                            </div>
+                            <div className="flex w-2/12 items-center justify-center p-1">
+                              <h1 className="text-gray-500">
+                                R${" "}
+                                {vendaFinal.toLocaleString("pt-br", {
+                                  maximumFractionDigits: 2,
+                                  minimumFractionDigits: 2,
+                                })}
+                              </h1>
+                            </div>
+                          </div>
+                        );
+                      }
+                    )
+                  : null}
                 <div className="flex w-full items-center rounded border-t border-gray-200 py-1">
                   <div className="flex w-4/12 items-center justify-center p-1">
                     <h1 className="font-bold text-gray-800">TOTAIS</h1>

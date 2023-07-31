@@ -25,7 +25,7 @@ function OeMPlansInfo({
   activePlanId,
 }: OeMPlansInfo) {
   const [pricing, setPricing] = useState(getOeMPrices(modulesQty, distance));
-
+  console.log(requestInfo);
   // Nos casos em que houver um plano selecionado, captar nova escolha e atualizar informações da proposta.
 
   return (

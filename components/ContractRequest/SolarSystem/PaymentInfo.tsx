@@ -49,20 +49,23 @@ function PaymentInfo({
       );
       return false;
     }
-    if (!requestInfo.localEntrega) {
-      toast.error("Por favor, preencha o local de entrega.");
-      return false;
+    if (requestInfo.tipoDeServico == "SISTEMA FOTOVOLTAICO") {
+      if (!requestInfo.localEntrega) {
+        toast.error("Por favor, preencha o local de entrega.");
+        return false;
+      }
+      if (!requestInfo.entregaIgualCobranca) {
+        toast.error(
+          "Por favor, preencha se o endereço de entrega é igual ao de cobrança."
+        );
+        return false;
+      }
+      if (!requestInfo.restricoesEntrega) {
+        toast.error("Por favor, preencha as restrições para entrega.");
+        return false;
+      }
     }
-    if (!requestInfo.entregaIgualCobranca) {
-      toast.error(
-        "Por favor, preencha se o endereço de entrega é igual ao de cobrança."
-      );
-      return false;
-    }
-    if (!requestInfo.restricoesEntrega) {
-      toast.error("Por favor, preencha as restrições para entrega.");
-      return false;
-    }
+
     if (requestInfo.valorContrato == null || requestInfo.valorContrato == 0) {
       toast.error("Por favor, preencha o valor do contrato fotovoltaico.");
       return false;
@@ -239,130 +242,133 @@ function PaymentInfo({
             )}
           </div>
         </div>
-        <div className="flex flex-col p-2">
-          <h1 className="col-span-3 py-2 text-center font-bold text-[#fead61]">
-            SOBRE A ENTREGA
-          </h1>
-          <div className="mt-2 flex flex-col gap-2 lg:grid lg:grid-cols-2">
-            <div className="col-span-2 flex items-center justify-center">
-              <SelectInput
-                width={"450px"}
-                label={"LOCAL DE ENTREGA"}
-                options={[
-                  {
-                    id: 1,
-                    label: "MESMO DO PROJETO",
-                    value: "MESMO DO PROJETO",
-                  },
-                  {
-                    id: 2,
-                    label:
-                      "LOCAL DIFERENTE DA INSTALAÇÃO (DESCRITO NAS OBSERVAÇÕES)",
-                    value:
-                      "LOCAL DIFERENTE DA INSTALAÇÃO (DESCRITO NAS OBSERVAÇÕES)",
-                  },
-                  {
-                    id: 3,
-                    label:
-                      "ENTREGAR NA AMPÈRE(SOMENTE COM AUTORIZAÇÃO DO GERENTE COMERCIAL)",
-                    value:
-                      "ENTREGAR NA AMPÈRE(SOMENTE COM AUTORIZAÇÃO DO GERENTE COMERCIAL)",
-                  },
-                ]}
-                editable={true}
-                value={requestInfo.localEntrega}
-                handleChange={(value) =>
-                  setRequestInfo({ ...requestInfo, localEntrega: value })
-                }
-                selectedItemLabel="NÃO DEFINIDO"
-                onReset={() => {
-                  setRequestInfo((prev) => ({ ...prev, localEntrega: null }));
-                }}
-              />
-            </div>
-            <div className="flex items-center justify-center">
-              <SelectInput
-                width={"450px"}
-                label={"END. ENTREGA IGUAL COBRANÇA?"}
-                editable={true}
-                value={requestInfo.entregaIgualCobranca}
-                handleChange={(value) =>
-                  setRequestInfo({
-                    ...requestInfo,
-                    entregaIgualCobranca: value,
-                  })
-                }
-                options={[
-                  {
-                    id: 1,
-                    label: "SIM",
-                    value: "SIM",
-                  },
-                  {
-                    id: 2,
-                    label: "NÃO",
-                    value: "NÃO",
-                  },
-                ]}
-                selectedItemLabel="NÃO DEFINIDO"
-                onReset={() =>
-                  setRequestInfo((prev) => ({
-                    ...prev,
-                    entregaIgualCobranca: null,
-                  }))
-                }
-              />
-            </div>
-            <div className="flex items-center justify-center">
-              <SelectInput
-                width={"450px"}
-                label={"HÁ RESTRIÇÕES PARA ENTREGA?"}
-                editable={true}
-                value={requestInfo.restricoesEntrega}
-                handleChange={(value) =>
-                  setRequestInfo({ ...requestInfo, restricoesEntrega: value })
-                }
-                options={[
-                  {
-                    id: 1,
-                    label: "SOMENTE HORARIO COMERCIAL",
-                    value: "SOMENTE HORARIO COMERCIAL",
-                  },
-                  {
-                    id: 2,
-                    label: "NÃO HÁ RESTRIÇÕES",
-                    value: "NÃO HÁ RESTRIÇÕES",
-                  },
-                  {
-                    id: 3,
-                    label: "CASA EM CONSTRUÇÃO",
-                    value: "CASA EM CONSTRUÇÃO",
-                  },
-                  {
-                    id: 4,
-                    label: "NÃO PODE RECEBER EM HORARIO COMERCIAL",
-                    value: "NÃO PODE RECEBER EM HORARIO COMERCIAL",
-                  },
-                ]}
-                selectedItemLabel="NÃO DEFINIDO"
-                onReset={() => {
-                  setRequestInfo((prev) => ({
-                    ...prev,
-                    restricoesEntrega: null,
-                  }));
-                }}
-              />
+        {requestInfo.tipoDeServico == "SISTEMA FOTOVOLTAICO" ? (
+          <div className="flex flex-col p-2">
+            <h1 className="col-span-3 py-2 text-center font-bold text-[#fead61]">
+              SOBRE A ENTREGA
+            </h1>
+            <div className="mt-2 flex flex-col gap-2 lg:grid lg:grid-cols-2">
+              <div className="col-span-2 flex items-center justify-center">
+                <SelectInput
+                  width={"450px"}
+                  label={"LOCAL DE ENTREGA"}
+                  options={[
+                    {
+                      id: 1,
+                      label: "MESMO DO PROJETO",
+                      value: "MESMO DO PROJETO",
+                    },
+                    {
+                      id: 2,
+                      label:
+                        "LOCAL DIFERENTE DA INSTALAÇÃO (DESCRITO NAS OBSERVAÇÕES)",
+                      value:
+                        "LOCAL DIFERENTE DA INSTALAÇÃO (DESCRITO NAS OBSERVAÇÕES)",
+                    },
+                    {
+                      id: 3,
+                      label:
+                        "ENTREGAR NA AMPÈRE(SOMENTE COM AUTORIZAÇÃO DO GERENTE COMERCIAL)",
+                      value:
+                        "ENTREGAR NA AMPÈRE(SOMENTE COM AUTORIZAÇÃO DO GERENTE COMERCIAL)",
+                    },
+                  ]}
+                  editable={true}
+                  value={requestInfo.localEntrega}
+                  handleChange={(value) =>
+                    setRequestInfo({ ...requestInfo, localEntrega: value })
+                  }
+                  selectedItemLabel="NÃO DEFINIDO"
+                  onReset={() => {
+                    setRequestInfo((prev) => ({ ...prev, localEntrega: null }));
+                  }}
+                />
+              </div>
+              <div className="flex items-center justify-center">
+                <SelectInput
+                  width={"450px"}
+                  label={"END. ENTREGA IGUAL COBRANÇA?"}
+                  editable={true}
+                  value={requestInfo.entregaIgualCobranca}
+                  handleChange={(value) =>
+                    setRequestInfo({
+                      ...requestInfo,
+                      entregaIgualCobranca: value,
+                    })
+                  }
+                  options={[
+                    {
+                      id: 1,
+                      label: "SIM",
+                      value: "SIM",
+                    },
+                    {
+                      id: 2,
+                      label: "NÃO",
+                      value: "NÃO",
+                    },
+                  ]}
+                  selectedItemLabel="NÃO DEFINIDO"
+                  onReset={() =>
+                    setRequestInfo((prev) => ({
+                      ...prev,
+                      entregaIgualCobranca: null,
+                    }))
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-center">
+                <SelectInput
+                  width={"450px"}
+                  label={"HÁ RESTRIÇÕES PARA ENTREGA?"}
+                  editable={true}
+                  value={requestInfo.restricoesEntrega}
+                  handleChange={(value) =>
+                    setRequestInfo({ ...requestInfo, restricoesEntrega: value })
+                  }
+                  options={[
+                    {
+                      id: 1,
+                      label: "SOMENTE HORARIO COMERCIAL",
+                      value: "SOMENTE HORARIO COMERCIAL",
+                    },
+                    {
+                      id: 2,
+                      label: "NÃO HÁ RESTRIÇÕES",
+                      value: "NÃO HÁ RESTRIÇÕES",
+                    },
+                    {
+                      id: 3,
+                      label: "CASA EM CONSTRUÇÃO",
+                      value: "CASA EM CONSTRUÇÃO",
+                    },
+                    {
+                      id: 4,
+                      label: "NÃO PODE RECEBER EM HORARIO COMERCIAL",
+                      value: "NÃO PODE RECEBER EM HORARIO COMERCIAL",
+                    },
+                  ]}
+                  selectedItemLabel="NÃO DEFINIDO"
+                  onReset={() => {
+                    setRequestInfo((prev) => ({
+                      ...prev,
+                      restricoesEntrega: null,
+                    }));
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        ) : null}
+
         <div className="flex flex-col p-2">
           <h1 className="col-span-3 py-2 text-center font-bold text-[#fead61]">
             SOBRE O PAGAMENTO
           </h1>
           <div className="mt-2 flex flex-col gap-2 lg:grid lg:grid-cols-3">
-            <div className="col-span-3 flex flex-wrap items-center justify-center gap-2">
+            <div className="col-span-3 flex flex-col items-center justify-center gap-2">
               <NumberInput
-                width={"450px"}
+                width={"100%"}
                 label={"VALOR DO CONTRATO FOTOVOLTAICO(SEM CUSTOS ADICIONAIS)"}
                 editable={true}
                 value={requestInfo.valorContrato}
@@ -377,7 +383,7 @@ function PaymentInfo({
                 }
               />
               <SelectInput
-                width={"450px"}
+                width={"100%"}
                 label={"ORIGEM DO RECURSO"}
                 editable={true}
                 value={requestInfo.origemRecurso}

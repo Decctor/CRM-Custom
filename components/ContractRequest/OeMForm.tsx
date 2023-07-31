@@ -13,9 +13,10 @@ import PAInfo from "./SolarSystem/PAInfo";
 import OeMPlansInfo from "./SolarSystem/OeMPlansInfo";
 import PaymentInfo from "./SolarSystem/PaymentInfo";
 import CreditDistributionInfo from "./SolarSystem/CreditDistributionInfo";
-import DocumentAttachmentInfo from "./SolarSystem/DocumentAttachmentInfo";
-import ReviewInfo from "./SolarSystem/ReviewInfo";
+import DocumentAttachmentInfo from "./OeM/DocumentAttachmentInfo";
+import ReviewInfo from "./OeM/ReviewInfo";
 import { getModulesQty } from "@/utils/methods";
+import PersonalizedSystemInfo from "./OeM/PersonalizedSystemInfo";
 type OeMFormProps = {
   requestInfo: IContractRequest;
   setRequestInfo: React.Dispatch<React.SetStateAction<IContractRequest>>;
@@ -49,15 +50,14 @@ function OeMForm({ requestInfo, setRequestInfo, proposeInfo }: OeMFormProps) {
           goToNextStage={() => setStage((prev) => prev + 1)}
         />
       ) : null}
-      {/* {stage == 4 ? (
-        <SystemInfo
+      {stage == 4 ? (
+        <PersonalizedSystemInfo
           requestInfo={requestInfo}
           setRequestInfo={setRequestInfo}
           goToPreviousStage={() => setStage((prev) => prev - 1)}
           goToNextStage={() => setStage((prev) => prev + 1)}
-          kit={proposeInfo.kit}
         />
-      ) : null} */}
+      ) : null}
       {stage == 5 ? (
         <StructureInfo
           requestInfo={requestInfo}
@@ -82,6 +82,7 @@ function OeMForm({ requestInfo, setRequestInfo, proposeInfo }: OeMFormProps) {
           goToNextStage={() => setStage((prev) => prev + 1)}
           modulesQty={proposeInfo.premissas.qtdeModulos}
           distance={proposeInfo.premissas.distancia}
+          activePlanId={proposeInfo.idPlanoEscolhido}
         />
       ) : null}
       {stage == 8 ? (
@@ -100,7 +101,7 @@ function OeMForm({ requestInfo, setRequestInfo, proposeInfo }: OeMFormProps) {
           goToNextStage={() => setStage((prev) => prev + 1)}
         />
       ) : null}
-      {/* {stage == 10 ? (
+      {stage == 10 ? (
         <DocumentAttachmentInfo
           projectInfo={proposeInfo.infoProjeto}
           requestInfo={requestInfo}
@@ -109,20 +110,18 @@ function OeMForm({ requestInfo, setRequestInfo, proposeInfo }: OeMFormProps) {
           goToPreviousStage={() => setStage((prev) => prev - 1)}
           goToNextStage={() => setStage((prev) => prev + 1)}
         />
-      ) : null} */}
-      {/* {stage == 11 ? (
+      ) : null}
+      {stage == 11 ? (
         <ReviewInfo
           requestInfo={requestInfo}
           setRequestInfo={setRequestInfo}
           goToPreviousStage={() => setStage((prev) => prev - 1)}
           goToNextStage={() => setStage((prev) => prev + 1)}
-          kit={proposeInfo.kit}
-          modulesQty={proposeInfo.kit}
           distance={proposeInfo.premissas.distancia}
           projectId={proposeInfo?.infoProjeto?._id}
           proposeInfo={proposeInfo}
         />
-      ) : null} */}
+      ) : null}
     </>
   );
 }

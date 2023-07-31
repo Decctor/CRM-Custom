@@ -340,6 +340,9 @@ export interface IProposeOeMInfo {
   contratoSolicitado?: boolean;
   dataSolicitacaoContrato?: string;
   idSolicitacaoContrato?: string;
+  idAnaliseTecnica?: string;
+  assinado?: boolean;
+  dataAssinatura?: string;
 }
 export interface IContractRequest {
   nomeVendedor?: string;
@@ -400,7 +403,7 @@ export interface IContractRequest {
   potInversor: string;
   marcaModulos: string;
   qtdeModulos: string | number;
-  potModulos: string | null;
+  potModulos: string;
   tipoEstrutura: (typeof structureTypes)[number]["value"] | null;
   materialEstrutura?: "MADEIRA" | "FERRO" | null;
   estruturaAmpere?: "SIM" | "NÃO";

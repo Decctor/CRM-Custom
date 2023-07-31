@@ -46,7 +46,7 @@ function Project({ item }: ProjectCardProps) {
         />
       ) : null}
       {item.assinado ? (
-        <div className="absolute right-2 top-4 z-10 flex items-center justify-center text-green-500">
+        <div className="z-8 absolute right-2 top-4 flex items-center justify-center text-green-500">
           <p className="text-sm font-medium italic">ASSINADO</p>
         </div>
       ) : null}
@@ -56,7 +56,7 @@ function Project({ item }: ProjectCardProps) {
             e.stopPropagation();
             setOpenActivitiesModal((prev) => !prev);
           }}
-          className={`absolute right-2 top-4 flex h-[15px] w-[15px] cursor-pointer items-center justify-center rounded-full text-white  ${getTagColor(
+          className={`absolute right-2 top-9 flex h-[15px] w-[15px] cursor-pointer items-center justify-center rounded-full text-white  ${getTagColor(
             item.atividades
           )}`}
         >

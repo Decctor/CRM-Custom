@@ -1,34 +1,27 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { Sidebar } from "../../components/Sidebar";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { RxDashboard } from "react-icons/rx";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import ContractRequest from "../Modals/RequestContract";
 
-import { checkQueryEnableStatus, getInverterStr } from "@/utils/methods";
 import { useSession } from "next-auth/react";
-import { IProposeInfo, IProposeOeMInfo } from "@/utils/models";
+import { IProposeOeMInfo } from "@/utils/models";
 import { ImPower, ImPriceTag, ImTab } from "react-icons/im";
 import { TbDownload } from "react-icons/tb";
 import { MdAttachMoney, MdContentCopy } from "react-icons/md";
 import { fileTypes } from "@/utils/constants";
 import { FullMetadata, getMetadata, ref } from "firebase/storage";
 import { storage } from "@/services/firebase";
-import {
-  PricesObj,
-  getMarginValue,
-  getProposedPrice,
-  getTaxValue,
-  priceDescription,
-} from "@/utils/pricing/methods";
-import { getPrices } from "@/utils/pricing/methods";
-import { BsPatchCheckFill } from "react-icons/bs";
+import { BsFillCalendarCheckFill, BsPatchCheckFill } from "react-icons/bs";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Link from "next/link";
 import JSZip from "jszip";
 import { basename } from "path";
 import { FaUser } from "react-icons/fa";
+import dayjs from "dayjs";
 function copyToClipboard(text: string | undefined) {
   if (text) {
     var dummy = document.createElement("textarea");
@@ -104,54 +97,14 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
   const { data: session } = useSession({
     required: true,
   });
+
+  const [requestContractModal, setRequestContractModal] =
+    useState<boolean>(false);
+
   const { id } = router.query;
 
   const queryClient = useQueryClient();
 
-  const { mutate: closePropose } = useMutation({
-    mutationKey: ["editPropose"],
-    mutationFn: async () => {
-      try {
-        const { data } = await axios.put(
-          `/api/proposes?id=${id}&responsible=${propose?.autor?.id}`,
-          {
-            changes: {
-              contratoSolicitado: true,
-              dataSolicitacaoContrato: new Date().toISOString(),
-            },
-          }
-        );
-        if (propose?.infoProjeto?.idOportunidade) {
-          await axios.post("/api/utils/updateOportunityRD", {
-            oportunityId: propose?.infoProjeto?.idOportunidade,
-            operation: "GANHAR",
-          });
-          toast.success("Alteração de oportunidade bem sucedida.");
-        }
-        // queryClient.invalidateQueries({ queryKey: ["project"] });
-        // if (data.message) toast.success(data.message);
-        return data;
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          let errorMsg = error.response?.data.error.message;
-          toast.error(errorMsg);
-          return;
-        }
-        if (error instanceof Error) {
-          let errorMsg = error.message;
-          toast.error(errorMsg);
-          return;
-        }
-      }
-    },
-    onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries({
-        queryKey: ["propose", id],
-      });
-      // await queryClient.refetchQueries({ queryKey: ["project"] });
-      if (data.message) toast.success(data.message);
-    },
-  });
   const { mutate: updatePropose } = useMutation({
     mutationKey: ["editPropose"],
     mutationFn: async (changes: { [key: string]: any }) => {
@@ -209,21 +162,43 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="mt-4 flex items-center gap-4 lg:mt-0">
             {propose?.infoProjeto?.dataPerda ||
             propose?.infoProjeto?.dataSolicitacaoContrato ||
             propose.dataSolicitacaoContrato ? null : (
               <button
-                onClick={() => closePropose()}
-                className="rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
+                onClick={() => setRequestContractModal(true)}
+                className="items-center rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
               >
-                EFETIVAR CONTRATO
+                REQUISITAR CONTRATO
               </button>
             )}
-
+            {propose.contratoSolicitado && !propose.infoProjeto?.assinado ? (
+              <div className="flex items-center gap-2 rounded bg-green-500 p-2 text-sm font-medium italic text-white">
+                ACEITA
+                <BsPatchCheckFill />
+              </div>
+            ) : null}
             {/* <button className="rounded border border-red-500 p-1 font-medium text-red-500 duration-300 ease-in-out hover:scale-105 hover:bg-red-500 hover:text-white">
               Perder
             </button> */}
+            {propose?.assinado ? (
+              <div className="flex flex-col items-center rounded-md  bg-green-400 p-2 shadow-md">
+                <h1 className="text-center font-Raleway text-sm font-bold text-black">
+                  CONTRATO ASSINADO
+                </h1>
+                <div className="flex items-center justify-center gap-2">
+                  <BsFillCalendarCheckFill
+                    style={{ color: "#000", fontSize: "15px" }}
+                  />
+                  <p className="text-center text-sm font-bold text-black">
+                    {propose?.dataAssinatura
+                      ? dayjs(propose?.dataAssinatura).format("DD/MM/YYYY")
+                      : "-"}
+                  </p>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="flex w-full grow flex-col py-2">
@@ -668,6 +643,12 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
           </div>
         </div>
       </div>
+      {requestContractModal ? (
+        <ContractRequest
+          closeModal={() => setRequestContractModal(false)}
+          proposeInfo={propose}
+        />
+      ) : null}
     </div>
   );
 }
