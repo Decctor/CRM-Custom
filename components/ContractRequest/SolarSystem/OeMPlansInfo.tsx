@@ -43,7 +43,6 @@ function OeMPlansInfo({
               ...prev,
               possuiOeM: "SIM",
               planoOeM: "MANUTENÇÃO SIMPLES",
-              valorOeMOuSeguro: pricing.manutencaoSimples.vendaFinal,
             }));
             goToNextStage();
           }}
@@ -136,7 +135,6 @@ function OeMPlansInfo({
               ...prev,
               possuiOeM: "SIM",
               planoOeM: "PLANO SOL",
-              valorOeMOuSeguro: pricing.planoSol.vendaFinal,
             }));
             goToNextStage();
           }}
@@ -235,7 +233,6 @@ function OeMPlansInfo({
               ...prev,
               possuiOeM: "SIM",
               planoOeM: "PLANO SOL +",
-              valorOeMOuSeguro: pricing.planoSolPlus.vendaFinal,
             }));
             goToNextStage();
           }}

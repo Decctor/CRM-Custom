@@ -578,6 +578,7 @@ export function useKitQueryPipelines(
         {
           $match: {
             ativo: true,
+            estruturasCompativeis: payload.structure,
           },
         },
         {
@@ -609,6 +610,7 @@ export function useKitQueryPipelines(
         {
           $match: {
             ativo: true,
+            estruturasCompativeis: payload.structure,
           },
         },
         {

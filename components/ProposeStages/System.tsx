@@ -216,15 +216,15 @@ function System({
           )
         );
         const { data } = await axios.post("/api/kits/query", {
-          pipeline: useKitQueryPipelines(
-            queryType,
-            getIdealPowerInterval(
+          pipeline: useKitQueryPipelines(queryType, {
+            ...getIdealPowerInterval(
               proposeInfo.premissas.consumoEnergiaMensal,
               project.cliente?.cidade,
               project.cliente?.uf,
               proposeInfo.premissas.orientacao
-            )
-          ),
+            ),
+            structure: proposeInfo.premissas.tipoEstrutura,
+          }),
         });
         return data.data;
       } catch (error) {
