@@ -22,6 +22,12 @@ type ProposeListBlock = {
   >;
   contractSigned?: boolean;
 };
+type renderProposeStatusArguments = {
+  contractId?: string;
+  contractRequestId?: string;
+  activeProposeId?: string;
+  proposeId: string;
+};
 function ProposeListBlock({
   city,
   uf,
@@ -35,6 +41,31 @@ function ProposeListBlock({
   setBlockMode,
 }: ProposeListBlock) {
   const router = useRouter();
+  function renderProposeStatus({
+    contractId,
+    contractRequestId,
+    activeProposeId,
+    proposeId,
+  }: renderProposeStatusArguments) {
+    if (contractId == proposeId)
+      return (
+        <h1 className="w-full text-center font-bold text-green-500">
+          ASSINADA
+        </h1>
+      );
+    if (contractRequestId == proposeId)
+      return (
+        <h1 className="w-full text-center font-bold text-[#fead41]">
+          SOLICITADO
+        </h1>
+      );
+    if (activeProposeId == proposeId)
+      return (
+        <h1 className="w-full text-center font-bold text-[#15599a]">ATIVA</h1>
+      );
+    return <h1 className="w-full text-center">GERADA</h1>;
+  }
+
   return (
     <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
       <div className="flex  h-[40px] items-center  justify-between border-b border-gray-200 pb-2">
@@ -84,18 +115,21 @@ function ProposeListBlock({
       </div>
       <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
         <div className="flex h-[30px] min-h-[30px] w-full items-center rounded bg-black">
-          <div className="flex w-full items-center justify-center lg:w-1/4">
+          <div className="flex w-full items-center justify-center lg:w-1/5">
+            <h1 className="w-full text-center text-white">STATUS</h1>
+          </div>
+          <div className="flex w-full items-center justify-center lg:w-1/5">
             <h1 className="w-full text-center text-white">NOME</h1>
           </div>
-          <div className="hidden items-center justify-center lg:flex lg:w-1/4">
+          <div className="hidden items-center justify-center lg:flex lg:w-1/5">
             <h1 className="w-full text-center text-white">POTÊNCIA</h1>
           </div>
 
-          <div className="hidden items-center justify-center lg:flex  lg:w-1/4">
+          <div className="hidden items-center justify-center lg:flex  lg:w-1/5">
             <h1 className="w-full text-center text-white">VALOR</h1>
           </div>
 
-          <div className="hidden w-full items-center justify-center lg:flex lg:w-1/4">
+          <div className="hidden w-full items-center justify-center lg:flex lg:w-1/5">
             <h1 className="w-full text-center text-white">DATA INSERÇÃO</h1>
           </div>
         </div>
@@ -106,22 +140,34 @@ function ProposeListBlock({
                 <div
                   key={index}
                   className={`relative flex w-full items-center ${
-                    propose.contratoSolicitado
-                      ? "font-medium text-green-500"
+                    propose.infoProjeto?.contrato?.idProposta == propose._id
+                      ? "font-bold text-green-500"
+                      : propose.infoProjeto?.solicitacaoContrato?.idProposta ==
+                        propose._id
+                      ? "font-medium text-[#fead41]"
                       : ""
                   }`}
                 >
-                  <div className="flex w-full items-center justify-center lg:w-1/4">
-                    {propose._id == idActivePropose ? (
+                  <div className="flex items-center justify-center lg:w-1/5">
+                    {renderProposeStatus({
+                      contractId: propose.infoProjeto?.contrato?.idProposta,
+                      contractRequestId:
+                        propose.infoProjeto?.solicitacaoContrato?.idProposta,
+                      activeProposeId: idActivePropose,
+                      proposeId: propose._id as string,
+                    })}
+                  </div>
+                  <div className="flex w-full items-center justify-center lg:w-1/5">
+                    {/* {propose._id == idActivePropose ? (
                       <AiFillStar style={{ color: "#15599a" }} />
-                    ) : null}
+                    ) : null} */}
                     <Link href={`/proposta/${propose._id}`}>
                       <h1 className="text-center hover:text-blue-400">
                         {propose.nome}
                       </h1>
                     </Link>
                   </div>
-                  <div className="hidden items-center justify-center lg:flex lg:w-1/4">
+                  <div className="hidden items-center justify-center lg:flex lg:w-1/5">
                     <h1 className="w-full text-center">
                       {propose.potenciaPico?.toLocaleString("pt-br", {
                         minimumFractionDigits: 2,
@@ -130,7 +176,7 @@ function ProposeListBlock({
                       kWp
                     </h1>
                   </div>
-                  <div className="hidden items-center justify-center lg:flex lg:w-1/4">
+                  <div className="hidden items-center justify-center lg:flex lg:w-1/5">
                     <h1 className="w-full text-center">
                       R${" "}
                       {propose.valorProposta?.toLocaleString("pt-br", {
@@ -139,14 +185,14 @@ function ProposeListBlock({
                       })}
                     </h1>
                   </div>
-                  <div className="hidden items-center justify-center lg:flex lg:w-1/4">
-                    <h1 className="hidden w-1/4 text-center lg:flex">
+                  <div className="hidden items-center justify-center lg:flex lg:w-1/5">
+                    <h1 className="hidden text-center lg:flex">
                       {propose.dataInsercao
                         ? dayjs(propose.dataInsercao).format("DD/MM/YYYY")
                         : null}
                     </h1>
                   </div>
-                  {propose.assinado ? (
+                  {propose.infoProjeto?.contrato?.idProposta == propose._id ? (
                     <div className="absolute right-2 flex items-center justify-center text-green-500">
                       <BsPatchCheckFill />
                     </div>

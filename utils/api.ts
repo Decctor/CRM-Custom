@@ -64,7 +64,7 @@ function errorHandler(err: unknown, res: NextApiResponse<ErrorResponse>) {
   } else {
     // Erro de servidor padrão 500
     return res.status(500).json({
-      error: { message: "Internal Server Error", err: err },
+      error: { message: "Oops, algo deu errado!", err: err },
       status: createHttpError.isHttpError(err) ? err.statusCode : 500,
     });
   }

@@ -215,6 +215,16 @@ export interface IProject {
   dataInsercao?: string;
   dataPerda?: string;
   motivoPerda?: string;
+  contrato?: {
+    id: string;
+    idProposta: string;
+    dataAssinatura: string;
+  };
+  solicitacaoContrato?: {
+    id: string;
+    idProposta: string;
+    dataSolicitacao: string;
+  };
   contratoSolicitado?: boolean;
   dataSolicitacaoContrato?: string;
   idSolicitacaoContrato?: string;

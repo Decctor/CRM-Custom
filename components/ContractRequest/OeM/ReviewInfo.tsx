@@ -89,6 +89,11 @@ function ReviewInfo({
           {
             $set: {
               "funis.$[elem].etapaId": 8,
+              solicitacaoContrato: {
+                id: data.data,
+                idProposta: proposeInfo?._id,
+                dataSolicitacao: new Date().toISOString(),
+              },
               contratoSolicitado: true,
               dataSolicitacaoContrato: new Date().toISOString(),
               propostaAtiva: proposeInfo?._id,

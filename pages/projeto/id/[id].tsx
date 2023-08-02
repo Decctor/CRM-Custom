@@ -22,6 +22,7 @@ import { MdEmail } from "react-icons/md";
 import {
   BsClipboardCheck,
   BsFillCalendarCheckFill,
+  BsPatchCheckFill,
   BsTelephoneFill,
 } from "react-icons/bs";
 import { FaCity } from "react-icons/fa";
@@ -149,7 +150,7 @@ function Projeto() {
                 {project.descricao}
               </p>
             </div>
-            <div className="flex items-center justify-center">
+            <div className="mt-4 flex w-full flex-col items-center gap-4 lg:mt-0 lg:w-fit lg:flex-row">
               {project.dataPerda || project.dataSolicitacaoContrato ? null : (
                 <LoseProject
                   oportunityId={project.idOportunidade}
@@ -163,19 +164,39 @@ function Projeto() {
                   <AiFillCloseCircle />
                 </div>
               ) : null}
-              {project.assinado && project.dataAssinatura ? (
+              {project.solicitacaoContrato ? (
+                <div className="flex w-[80%] min-w-[200px] flex-col items-center rounded-md  bg-[#fead41] p-2 shadow-md lg:w-fit">
+                  <h1 className="text-center font-Raleway text-xs font-bold text-black">
+                    CONTRATO SOLICITADO
+                  </h1>
+
+                  <div className="flex items-center justify-center gap-2">
+                    <BsPatchCheckFill
+                      style={{ color: "#000", fontSize: "15px" }}
+                    />
+                    <p className="text-center text-xs font-bold text-black">
+                      {project.solicitacaoContrato
+                        ? dayjs(project.solicitacaoContrato.dataSolicitacao)
+                            .add(3, "hours")
+                            .format("DD/MM/YYYY")
+                        : "-"}
+                    </p>
+                  </div>
+                </div>
+              ) : null}
+              {project.contrato ? (
                 <div className="flex min-w-[200px] flex-col items-center  rounded-md bg-green-400 p-2 shadow-md">
-                  <h1 className="text-center font-Raleway text-sm font-bold text-black">
+                  <h1 className="text-center font-Raleway text-xs font-bold text-black">
                     CONTRATO ASSINADO
                   </h1>
                   <div className="flex items-center justify-center gap-2">
                     <BsFillCalendarCheckFill
                       style={{ color: "#000", fontSize: "15px" }}
                     />
-                    <p className="text-center text-sm font-bold text-black">
-                      {project.dataAssinatura
-                        ? dayjs(project.dataAssinatura).format("DD/MM/YYYY")
-                        : "-"}
+                    <p className="text-center text-xs font-bold text-black">
+                      {dayjs(project.contrato.dataAssinatura)
+                        .add(3, "hours")
+                        .format("DD/MM/YYYY")}
                     </p>
                   </div>
                 </div>
@@ -252,83 +273,6 @@ function Projeto() {
                 </div>
               </div>
             </div>
-            {/* <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
-              <div className="flex  h-[40px] items-center justify-between border-b border-gray-200 pb-2">
-                <div className="flex items-center justify-center gap-10">
-                  <h1 className="w-[120px] cursor-pointer border-b border-blue-500 p-1 text-center font-bold text-black hover:border-blue-500">
-                    Propostas
-                  </h1>
-                </div>
-                <Link href={`/projeto/proposta/${project._id}`}>
-                  <button className="rounded bg-green-600 p-1 text-sm font-bold text-white">
-                    GERAR PROPOSTA
-                  </button>
-                </Link>
-              </div>
-              <div className="overscroll-y mt-3 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
-                <div className="flex h-[30px] min-h-[30px] w-full items-center rounded bg-black">
-                  <h1 className="w-1/4 text-center text-white">NOME</h1>
-                  <h1 className="w-1/4 text-center text-white">POTÊNCIA</h1>
-                  <h1 className="w-1/4 text-center text-white">VALOR</h1>
-                  <h1 className="w-1/4 text-center text-white">
-                    DATA INSERÇÃO
-                  </h1>
-                </div>
-                {projectProposesSuccess ? (
-                  projectProposes.length > 0 ? (
-                    projectProposes.map((propose, index) => (
-                      <div key={index} className="flex w-full items-center">
-                        <div className="flex w-1/4 items-center justify-center gap-2">
-                          {propose._id == project.propostaAtiva ? (
-                            <AiOutlineStar style={{ color: "#15599a" }} />
-                          ) : null}
-                          <Link href={`/proposta/${propose._id}`}>
-                            <h1 className="text-center hover:text-blue-400">
-                              {propose.nome}
-                            </h1>
-                          </Link>
-                        </div>
-
-                        <h1 className="w-1/4 text-center">
-                          {propose.potenciaPico?.toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}{" "}
-                          kWp
-                        </h1>
-                        <h1 className="w-1/4 text-center">
-                          R${" "}
-                          {propose.valorProposta?.toLocaleString("pt-br", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </h1>
-                        <h1 className="w-1/4 text-center">
-                          {propose.dataInsercao
-                            ? dayjs(propose.dataInsercao).format("DD/MM/YYYY")
-                            : null}
-                        </h1>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="flex grow items-center justify-center italic text-gray-500">
-                      Sem propostas vinculadas a esse projeto.
-                    </p>
-                  )
-                ) : null}
-                {projectLoading ? (
-                  <div className="flex grow items-center justify-center">
-                    <LoadingComponent />
-                  </div>
-                ) : null}
-                {projectProposesError ? (
-                  <p className="flex grow items-center justify-center italic text-gray-500">
-                    Oops, houve um erro na busca das propostas desse projeto.
-                    Tente recarregar a página.
-                  </p>
-                ) : null}
-              </div>
-            </div> */}
             {blockMode == "PROPOSES" ? (
               <ProposeListBlock
                 city={project.cliente?.cidade}
@@ -340,7 +284,7 @@ function Projeto() {
                 projectProposesError={projectProposesError}
                 idActivePropose={project.propostaAtiva}
                 setBlockMode={setBlockMode}
-                contractSigned={project.assinado}
+                contractSigned={!!project.contrato?.id}
               />
             ) : null}
             {blockMode == "TECHNICAL ANALYSIS" ? (

@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 import ContractRequest from "../Modals/RequestContract";
 
 import { useSession } from "next-auth/react";
-import { IProposeOeMInfo } from "@/utils/models";
+import { IProject, IProposeOeMInfo } from "@/utils/models";
 import { ImPower, ImPriceTag, ImTab } from "react-icons/im";
 import { TbDownload } from "react-icons/tb";
 import { MdAttachMoney, MdContentCopy } from "react-icons/md";
@@ -60,13 +60,6 @@ async function handleDownload(url: string | undefined, proposeName: string) {
       }
     );
 
-    // const url = window.URL.createObjectURL(new Blob([response.data]));
-    // const link = document.createElement("a");
-    // link.href = url;
-    // link.setAttribute("download", `${proposeName}${extension}`);
-    // document.body.appendChild(link);
-    // link.click();
-    // link.remove();
     // Given that the API now returns zipped files for reduced size, we gotta decompress
     const zip = new JSZip();
     const unzippedFiles = await zip.loadAsync(response.data);
@@ -97,13 +90,68 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
   const { data: session } = useSession({
     required: true,
   });
-
+  const { id } = router.query;
+  const queryClient = useQueryClient();
   const [requestContractModal, setRequestContractModal] =
     useState<boolean>(false);
-
-  const { id } = router.query;
-
-  const queryClient = useQueryClient();
+  function renderContractRequestInfo(
+    proposeId: string,
+    contractRequest?: IProject["solicitacaoContrato"]
+  ) {
+    if (!contractRequest) return null;
+    return (
+      <div className="flex w-[80%] flex-col items-center rounded-md bg-[#fead41]  p-2 shadow-md lg:w-fit">
+        <h1 className="text-center font-Raleway text-xs font-bold text-black">
+          CONTRATO SOLICITADO
+        </h1>
+        {contractRequest.idProposta != proposeId ? (
+          <p className="text-center font-Raleway text-xxs font-thin text-gray-700">
+            (ATRAVÉS DE OUTRA PROPOSTA)
+          </p>
+        ) : null}
+        <div className="flex items-center justify-center gap-2">
+          <BsPatchCheckFill style={{ color: "#000", fontSize: "15px" }} />
+          <p className="text-center text-xs font-bold text-black">
+            {contractRequest.dataSolicitacao
+              ? dayjs(contractRequest.dataSolicitacao)
+                  .add(3, "hours")
+                  .format("DD/MM/YYYY")
+              : "-"}
+          </p>
+        </div>
+      </div>
+    );
+  }
+  function renderContractSigningInfo(
+    proposeId: string,
+    contract?: IProject["contrato"]
+  ) {
+    if (!contract) return null;
+    return (
+      <div className="flex w-[80%] flex-col items-center rounded-md bg-green-400  p-2 shadow-md lg:w-fit">
+        <h1 className="text-center font-Raleway text-xs font-bold text-black">
+          CONTRATO ASSINADO
+        </h1>
+        {contract.idProposta != proposeId ? (
+          <p className="text-center font-Raleway text-xxs font-thin text-gray-700">
+            (ATRAVÉS DE OUTRA PROPOSTA)
+          </p>
+        ) : null}
+        <div className="flex items-center justify-center gap-2">
+          <BsFillCalendarCheckFill
+            style={{ color: "#000", fontSize: "15px" }}
+          />
+          <p className="text-center text-xs font-bold text-black">
+            {contract.dataAssinatura
+              ? dayjs(contract.dataAssinatura)
+                  .add(3, "hours")
+                  .format("DD/MM/YYYY")
+              : "-"}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const { mutate: updatePropose } = useMutation({
     mutationKey: ["editPropose"],
@@ -162,10 +210,9 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
             </div>
           </div>
 
-          <div className="mt-4 flex items-center gap-4 lg:mt-0">
-            {propose?.infoProjeto?.dataPerda ||
-            propose?.infoProjeto?.dataSolicitacaoContrato ||
-            propose.dataSolicitacaoContrato ? null : (
+          <div className="mt-4 flex w-full flex-col items-center gap-4 lg:mt-0 lg:w-fit lg:flex-row">
+            {propose.infoProjeto?.solicitacaoContrato ||
+            propose.infoProjeto?.contrato ? null : (
               <button
                 onClick={() => setRequestContractModal(true)}
                 className="items-center rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
@@ -173,32 +220,15 @@ function ProposeViewOeM({ propose }: ProposeViewOeMProps) {
                 REQUISITAR CONTRATO
               </button>
             )}
-            {propose.contratoSolicitado && !propose.infoProjeto?.assinado ? (
-              <div className="flex items-center gap-2 rounded bg-green-500 p-2 text-sm font-medium italic text-white">
-                ACEITA
-                <BsPatchCheckFill />
-              </div>
-            ) : null}
-            {/* <button className="rounded border border-red-500 p-1 font-medium text-red-500 duration-300 ease-in-out hover:scale-105 hover:bg-red-500 hover:text-white">
-              Perder
-            </button> */}
-            {propose?.assinado ? (
-              <div className="flex flex-col items-center rounded-md  bg-green-400 p-2 shadow-md">
-                <h1 className="text-center font-Raleway text-sm font-bold text-black">
-                  CONTRATO ASSINADO
-                </h1>
-                <div className="flex items-center justify-center gap-2">
-                  <BsFillCalendarCheckFill
-                    style={{ color: "#000", fontSize: "15px" }}
-                  />
-                  <p className="text-center text-sm font-bold text-black">
-                    {propose?.dataAssinatura
-                      ? dayjs(propose?.dataAssinatura).format("DD/MM/YYYY")
-                      : "-"}
-                  </p>
-                </div>
-              </div>
-            ) : null}
+            {/** Showing */}
+            {renderContractRequestInfo(
+              propose._id as string,
+              propose.infoProjeto?.solicitacaoContrato
+            )}
+            {renderContractSigningInfo(
+              propose._id as string,
+              propose.infoProjeto?.contrato
+            )}
           </div>
         </div>
         <div className="flex w-full grow flex-col py-2">

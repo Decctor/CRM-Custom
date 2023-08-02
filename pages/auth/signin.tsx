@@ -19,26 +19,30 @@ function SignIn() {
     email: "",
     password: "",
   });
-  const [message, setMessage] = useState<IMessage>({
-    text: "",
-    color: "",
-  });
+  const [loading, setLoading] = useState<boolean>(false);
 
   function handleChange(e: any) {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   }
   async function handleLogin() {
+    setLoading(true);
     let signInResponse = await signIn("credentials", {
       email: user.email,
       password: user.password,
       redirect: false,
     });
-    if (!signInResponse?.ok)
+    if (!signInResponse?.ok) {
       toast.error(
         signInResponse?.error ? signInResponse?.error : "Erro ao fazer login."
       );
-    if (signInResponse?.ok) push("/");
+      setLoading(false);
+    }
+
+    if (signInResponse?.ok) {
+      push("/");
+      setLoading(false);
+    }
   }
 
   return (
@@ -67,17 +71,13 @@ function SignIn() {
           />
           <div className="flex flex-col items-center justify-center gap-2 lg:flex-row lg:justify-start">
             <button
+              disabled={!!loading}
               type="button"
-              className="inline-block rounded bg-blue-600 px-7 py-3 text-sm font-medium uppercase leading-snug text-white shadow-md transition duration-150 ease-in-out focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 hover:bg-blue-700 hover:shadow-lg active:bg-blue-800 active:shadow-lg"
+              className="inline-block rounded bg-blue-600 px-7 py-3 text-sm font-medium uppercase leading-snug text-white shadow-md transition duration-150 ease-in-out focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 disabled:bg-gray-500 disabled:text-white hover:bg-blue-700 hover:shadow-lg active:bg-blue-800 active:shadow-lg"
               onClick={handleLogin}
             >
               Login
             </button>
-            {message.text ? (
-              <p className={`text-center text-lg ${message.color}`}>
-                {message.text}
-              </p>
-            ) : null}
           </div>
         </form>
       </div>

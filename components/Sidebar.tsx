@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useNotifications } from "@/utils/methods";
 import { Notification } from "@/utils/schemas/project.schema";
 import NotificationBlock from "./NotificationBlock";
+import { ImStatsDots } from "react-icons/im";
 //react-icons.github.io/react-icons
 export const Sidebar = () => {
   const { data: session } = useSession();
@@ -71,6 +72,14 @@ export const Sidebar = () => {
             url="/"
             icon={
               <MdDashboard style={{ fontSize: "20px", color: "#15599a" }} />
+            }
+          />
+          <SidebarItem
+            text="Estatísticas"
+            isOpen={sidebarExtended}
+            url="/estatisticas"
+            icon={
+              <ImStatsDots style={{ fontSize: "20px", color: "#15599a" }} />
             }
           />
           {sidebarExtended ? (

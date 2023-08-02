@@ -12,7 +12,7 @@ import {
   getInverterStr,
 } from "@/utils/methods";
 import { useSession } from "next-auth/react";
-import { IProposeInfo } from "@/utils/models";
+import { IProject, IProposeInfo } from "@/utils/models";
 import { ImPower, ImPriceTag, ImTab } from "react-icons/im";
 import { TbDownload } from "react-icons/tb";
 import { MdContentCopy } from "react-icons/md";
@@ -36,6 +36,9 @@ import JSZip from "jszip";
 import { basename } from "path";
 import { FaUser } from "react-icons/fa";
 import dayjs from "dayjs";
+type ProposeViewUFProps = {
+  propose: IProposeInfo;
+};
 function copyToClipboard(text: string | undefined) {
   if (text) {
     var dummy = document.createElement("textarea");
@@ -74,13 +77,6 @@ async function handleDownload(url: string | undefined, proposeName: string) {
       }
     );
 
-    // const url = window.URL.createObjectURL(new Blob([response.data]));
-    // const link = document.createElement("a");
-    // link.href = url;
-    // link.setAttribute("download", `${proposeName}${extension}`);
-    // document.body.appendChild(link);
-    // link.click();
-    // link.remove();
     // Given that the API now returns zipped files for reduced size, we gotta decompress
     const zip = new JSZip();
     const unzippedFiles = await zip.loadAsync(response.data);
@@ -103,9 +99,7 @@ async function handleDownload(url: string | undefined, proposeName: string) {
     toast.error("Houve um erro no download do arquivo.");
   }
 }
-type ProposeViewUFProps = {
-  propose: IProposeInfo;
-};
+
 function ProposeViewUF({ propose }: ProposeViewUFProps) {
   const router = useRouter();
   const [requestContractModal, setRequestContractModal] =
@@ -113,54 +107,64 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
   const { data: session } = useSession({
     required: true,
   });
-  const { id } = router.query;
-
-  const queryClient = useQueryClient();
-
-  const { mutate: closePropose } = useMutation({
-    mutationKey: ["editPropose"],
-    mutationFn: async () => {
-      try {
-        const { data } = await axios.put(
-          `/api/proposes?id=${id}&responsible=${propose?.autor?.id}`,
-          {
-            changes: {
-              contratoSolicitado: true,
-              dataSolicitacaoContrato: new Date().toISOString(),
-            },
-          }
-        );
-        if (propose?.infoProjeto?.idOportunidade) {
-          await axios.post("/api/utils/updateOportunityRD", {
-            oportunityId: propose?.infoProjeto?.idOportunidade,
-            operation: "GANHAR",
-          });
-          toast.success("Alteração de oportunidade bem sucedida.");
-        }
-        // queryClient.invalidateQueries({ queryKey: ["project"] });
-        // if (data.message) toast.success(data.message);
-        return data;
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          let errorMsg = error.response?.data.error.message;
-          toast.error(errorMsg);
-          return;
-        }
-        if (error instanceof Error) {
-          let errorMsg = error.message;
-          toast.error(errorMsg);
-          return;
-        }
-      }
-    },
-    onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries({
-        queryKey: ["propose", id],
-      });
-      // await queryClient.refetchQueries({ queryKey: ["project"] });
-      if (data.message) toast.success(data.message);
-    },
-  });
+  function renderContractRequestInfo(
+    proposeId: string,
+    contractRequest?: IProject["solicitacaoContrato"]
+  ) {
+    if (!contractRequest) return null;
+    return (
+      <div className="flex w-[80%] flex-col items-center rounded-md bg-[#fead41]  p-2 shadow-md lg:w-fit">
+        <h1 className="text-center font-Raleway text-xs font-bold text-black">
+          CONTRATO SOLICITADO
+        </h1>
+        {contractRequest.idProposta != proposeId ? (
+          <p className="text-center font-Raleway text-xxs font-thin text-gray-700">
+            (ATRAVÉS DE OUTRA PROPOSTA)
+          </p>
+        ) : null}
+        <div className="flex items-center justify-center gap-2">
+          <BsPatchCheckFill style={{ color: "#000", fontSize: "15px" }} />
+          <p className="text-center text-xs font-bold text-black">
+            {contractRequest.dataSolicitacao
+              ? dayjs(contractRequest.dataSolicitacao)
+                  .add(3, "hours")
+                  .format("DD/MM/YYYY")
+              : "-"}
+          </p>
+        </div>
+      </div>
+    );
+  }
+  function renderContractSigningInfo(
+    proposeId: string,
+    contract?: IProject["contrato"]
+  ) {
+    if (!contract) return null;
+    return (
+      <div className="flex w-[80%] flex-col items-center rounded-md bg-green-400  p-2 shadow-md lg:w-fit">
+        <h1 className="text-center font-Raleway text-xs font-bold text-black">
+          CONTRATO ASSINADO
+        </h1>
+        {contract.idProposta != proposeId ? (
+          <p className="text-center font-Raleway text-xxs font-thin text-gray-700">
+            (ATRAVÉS DE OUTRA PROPOSTA)
+          </p>
+        ) : null}
+        <div className="flex items-center justify-center gap-2">
+          <BsFillCalendarCheckFill
+            style={{ color: "#000", fontSize: "15px" }}
+          />
+          <p className="text-center text-xs font-bold text-black">
+            {contract.dataAssinatura
+              ? dayjs(contract.dataAssinatura)
+                  .add(3, "hours")
+                  .format("DD/MM/YYYY")
+              : "-"}
+          </p>
+        </div>
+      </div>
+    );
+  }
   function getTotals() {
     if (propose?.infoProjeto) {
       const pricing = propose.precificacao
@@ -254,7 +258,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
       }
     }
   }
-  console.log("PROPOSTA", propose, null);
+
   return (
     <div className="flex h-full flex-col md:flex-row">
       <Sidebar />
@@ -278,10 +282,9 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
             </div>
           </div>
 
-          <div className="mt-4 flex items-center gap-4 lg:mt-0">
-            {propose?.infoProjeto?.dataPerda ||
-            propose?.infoProjeto?.dataSolicitacaoContrato ||
-            propose.dataSolicitacaoContrato ? null : (
+          <div className="mt-4 flex w-full flex-col items-center gap-4 lg:mt-0 lg:w-fit lg:flex-row">
+            {propose.infoProjeto?.solicitacaoContrato ||
+            propose.infoProjeto?.contrato ? null : (
               <button
                 onClick={() => setRequestContractModal(true)}
                 className="items-center rounded border border-green-500 p-1 font-medium text-green-500 duration-300 ease-in-out hover:scale-105 hover:bg-green-500 hover:text-white"
@@ -289,16 +292,38 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                 REQUISITAR CONTRATO
               </button>
             )}
-            {propose.contratoSolicitado && !propose.infoProjeto?.assinado ? (
-              <div className="flex items-center gap-2 rounded bg-green-500 p-2 text-sm font-medium italic text-white">
-                ACEITA
-                <BsPatchCheckFill />
+            {/** Showing */}
+            {renderContractRequestInfo(
+              propose._id as string,
+              propose.infoProjeto?.solicitacaoContrato
+            )}
+            {renderContractSigningInfo(
+              propose._id as string,
+              propose.infoProjeto?.contrato
+            )}
+            {/* {propose.infoProjeto?.solicitacaoContrato ? (
+              <div className="flex flex-col items-center rounded-md  bg-[#fead41] p-2 shadow-md">
+                <h1 className="text-center font-Raleway text-sm font-bold text-black">
+                  CONTRATO SOLICITADO
+                </h1>
+                <div className="flex items-center justify-center gap-2">
+                  <BsPatchCheckFill
+                    style={{ color: "#000", fontSize: "15px" }}
+                  />
+                  <p className="text-center text-sm font-bold text-black">
+                    {propose.infoProjeto?.solicitacaoContrato.dataSolicitacao
+                      ? dayjs(
+                          propose.infoProjeto?.solicitacaoContrato
+                            .dataSolicitacao
+                        )
+                          .add(3, "hours")
+                          .format("DD/MM/YYYY")
+                      : "-"}
+                  </p>
+                </div>
               </div>
             ) : null}
-            {/* <button className="rounded border border-red-500 p-1 font-medium text-red-500 duration-300 ease-in-out hover:scale-105 hover:bg-red-500 hover:text-white">
-              Perder
-            </button> */}
-            {propose?.assinado ? (
+            {propose.infoProjeto?.contrato ? ( 
               <div className="flex flex-col items-center rounded-md  bg-green-400 p-2 shadow-md">
                 <h1 className="text-center font-Raleway text-sm font-bold text-black">
                   CONTRATO ASSINADO
@@ -308,13 +333,15 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     style={{ color: "#000", fontSize: "15px" }}
                   />
                   <p className="text-center text-sm font-bold text-black">
-                    {propose?.dataAssinatura
-                      ? dayjs(propose?.dataAssinatura).format("DD/MM/YYYY")
+                    {propose.infoProjeto?.contrato.dataAssinatura
+                      ? dayjs(propose.infoProjeto?.contrato.dataAssinatura)
+                          .add(3, "hours")
+                          .format("DD/MM/YYYY")
                       : "-"}
                   </p>
                 </div>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
         </div>
         <div className="flex w-full grow flex-col py-2">
@@ -430,7 +457,9 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                   <h1 className="font-medium text-gray-500">
                     Tarifa de energia
                   </h1>
-                  <h1>R$ {propose?.premissas.tarifaEnergia} R$/kWh</h1>
+                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                    R$ {propose?.premissas.tarifaEnergia} R$/kWh
+                  </h1>
                 </div>
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
                   <h1 className="font-medium text-gray-500">Tarifa TUSD</h1>

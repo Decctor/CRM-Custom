@@ -420,14 +420,33 @@ const getProposes: NextApiHandler<GetResponse> = async (req, res) => {
           },
         },
         {
+          $addFields: {
+            projetoId: { $toObjectId: "$projeto.id" },
+          },
+        },
+        {
+          $lookup: {
+            from: "projects",
+            localField: "projetoId",
+            foreignField: "_id",
+            as: "infoProjeto",
+          },
+        },
+        {
           $sort: {
             dataInsercao: -1,
           },
         },
       ])
       .toArray();
+    const formattedProposes = proposes.map((propose: any) => {
+      const projectInfo = propose.infoProjeto
+        ? propose.infoProjeto[0]
+        : undefined;
+      return { ...propose, infoProjeto: projectInfo };
+    });
     // console.log(proposes);
-    res.status(200).json(proposes);
+    res.status(200).json(formattedProposes);
   }
   // else {
   //   throw new createHttpError.BadRequest("ID de proposta inválido.");
