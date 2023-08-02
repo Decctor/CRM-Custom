@@ -36,6 +36,7 @@ import JSZip from "jszip";
 import { basename } from "path";
 import { FaUser } from "react-icons/fa";
 import dayjs from "dayjs";
+import { AiFillStar } from "react-icons/ai";
 type ProposeViewUFProps = {
   propose: IProposeInfo;
 };
@@ -102,6 +103,7 @@ async function handleDownload(url: string | undefined, proposeName: string) {
 
 function ProposeViewUF({ propose }: ProposeViewUFProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [requestContractModal, setRequestContractModal] =
     useState<boolean>(false);
   const { data: session } = useSession({
@@ -258,7 +260,45 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
       }
     }
   }
-
+  const { mutate: setProposeAsActive } = useMutation({
+    mutationKey: ["editProject"],
+    mutationFn: async () => {
+      try {
+        const { data } = await axios.put(
+          `/api/projects?id=${propose.infoProjeto?._id}&responsavel=${propose.infoProjeto?.responsavel.id}`,
+          {
+            changes: {
+              propostaAtiva: propose._id,
+            },
+          }
+        );
+        // queryClient.invalidateQueries({ queryKey: ["project"] });
+        // if (data.message) toast.success(data.message);
+        return data;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          let errorMsg = error.response?.data.error.message;
+          toast.error(errorMsg);
+          return;
+        }
+        if (error instanceof Error) {
+          let errorMsg = error.message;
+          toast.error(errorMsg);
+          return;
+        }
+      }
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["propose", propose._id] });
+    },
+    onSettled: async (data, variables, context) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["propose", propose._id],
+      });
+      // await queryClient.refetchQueries({ queryKey: ["project"] });
+      if (data.message) toast.success(data.message);
+    },
+  });
   return (
     <div className="flex h-full flex-col md:flex-row">
       <Sidebar />
@@ -345,6 +385,19 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
           </div>
         </div>
         <div className="flex w-full grow flex-col py-2">
+          {propose.infoProjeto?.contrato ||
+          propose.infoProjeto?.solicitacaoContrato ||
+          propose.infoProjeto?.propostaAtiva == propose._id ? null : (
+            <div className="my-2 flex w-full items-center justify-center">
+              <button
+                onClick={() => setProposeAsActive()}
+                className="flex w-fit items-center gap-2 rounded bg-blue-300 p-2 text-xs font-black text-white hover:bg-blue-500"
+              >
+                <h1>USAR COMO PROPOSTA ATIVA</h1>
+                <AiFillStar />
+              </button>
+            </div>
+          )}
           <div className="flex min-h-[350px] w-full flex-col justify-around gap-3 lg:flex-row">
             <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-6 shadow-md lg:w-1/3">
               <div className="flex w-full flex-col items-center">

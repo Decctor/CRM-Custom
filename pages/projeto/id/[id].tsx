@@ -151,7 +151,9 @@ function Projeto() {
               </p>
             </div>
             <div className="mt-4 flex w-full flex-col items-center gap-4 lg:mt-0 lg:w-fit lg:flex-row">
-              {project.dataPerda || project.dataSolicitacaoContrato ? null : (
+              {project.dataPerda ||
+              !!project.solicitacaoContrato ||
+              !!project.contrato ? null : (
                 <LoseProject
                   oportunityId={project.idOportunidade}
                   responsibleId={project.responsavel.id}
