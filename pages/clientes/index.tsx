@@ -61,7 +61,7 @@ function Clientes() {
       <Sidebar />
       <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
         <div className="flex flex-col items-center justify-between border-b border-[#fead61] pb-2 xl:flex-row">
-          <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
+          <h1 className="flex font-Raleway text-2xl font-black text-[#fead61]">
             CLIENTES
           </h1>
         </div>

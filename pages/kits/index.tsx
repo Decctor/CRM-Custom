@@ -108,10 +108,10 @@ function Kits() {
           <div className="flex flex-col items-center border-b border-[#fead61] pb-2 ">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2">
-                <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
+                <h1 className="flex font-Raleway text-2xl font-black text-[#fead61]">
                   KITS
                 </h1>
-                <h1 className="flex font-['Roboto'] text-2xl font-bold text-[#fead61]">
+                <h1 className="flex font-Raleway text-2xl font-bold text-[#fead61]">
                   ({filteredKits ? filteredKits.length : 0})
                 </h1>
               </div>

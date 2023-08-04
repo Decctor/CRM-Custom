@@ -77,7 +77,6 @@ function getIdealPowerInterval(
       ideal: consumption / 127,
     };
   const factor = cityFactors[orientation];
-  console.log("FATOR", factor);
   return {
     max: 400 + (consumption / cityFactors[orientation]) * 1000,
     min: -400 + (consumption / cityFactors[orientation]) * 1000,
@@ -204,17 +203,17 @@ function System({
     queryKey: ["queryKits", queryType],
     queryFn: async (): Promise<IKit[]> => {
       try {
-        console.log(
-          useKitQueryPipelines(
-            queryType,
-            getIdealPowerInterval(
-              proposeInfo.premissas.consumoEnergiaMensal,
-              project.cliente?.cidade,
-              project.cliente?.uf,
-              proposeInfo.premissas.orientacao
-            )
-          )
-        );
+        // console.log(
+        //   useKitQueryPipelines(
+        //     queryType,
+        //     getIdealPowerInterval(
+        //       proposeInfo.premissas.consumoEnergiaMensal,
+        //       project.cliente?.cidade,
+        //       project.cliente?.uf,
+        //       proposeInfo.premissas.orientacao
+        //     )
+        //   )
+        // );
         const { data } = await axios.post("/api/kits/query", {
           pipeline: useKitQueryPipelines(queryType, {
             ...getIdealPowerInterval(
@@ -251,7 +250,6 @@ function System({
     if (!filteredKits) return;
     var dumpyCopyOfKits = [...filteredKits];
     var newArr;
-    console.log("PARAMETRO", param);
     switch (param) {
       case "ASC":
         newArr = dumpyCopyOfKits.sort((a, b) => a.preco - b.preco);
@@ -273,7 +271,7 @@ function System({
     if (!filteredKits) return;
     var dumpyCopyOfKits = [...filteredKits];
     var newArr;
-    console.log("PARAMETRO", param);
+
     switch (param) {
       case "ASC":
         newArr = dumpyCopyOfKits.sort(
@@ -397,7 +395,6 @@ function System({
         .map((selectedKit) => selectedKit.nome)
         .join(" + ");
       const kitTopology = selectedKits[0].topologia;
-      console.log("KITS", selectedKits);
       const concatenatedModules = selectedKits.reduce(
         // @ts-ignore
         (accumulator, currentKit) => {
@@ -429,18 +426,24 @@ function System({
       const kitSupplier = selectedKits[0].fornecedor;
       // @ts-ignore
       const kitPrice = selectedKits.reduce((accumulator, currentKit) => {
-        console.log("ACCUMULUDADOR", accumulator);
         const iterator = accumulator.preco ? accumulator.preco : accumulator;
         // @ts-ignore
         return iterator + currentKit.preco;
       });
       // @ts-ignore
       peakPower = selectedKits.reduce((accumulator, currentKit) => {
-        return (
-          getPeakPotByModules(accumulator.modulos) +
-          getPeakPotByModules(currentKit.modulos)
+        console.log("ACUMULADOR POTÊNCIA", accumulator, "CURRENT", currentKit);
+        let currentSum = accumulator.kitId
+          ? getPeakPotByModules(accumulator.modulos)
+          : accumulator;
+        // @ts-ignore
+        return Number(
+          Number(currentSum + getPeakPotByModules(currentKit.modulos)).toFixed(
+            2
+          )
         );
       });
+      console.log("POTÊNCIA PICO ACUMULADA", peakPower);
       proposeKitObject = {
         kitId: kitIds,
         tipo: kitType,
@@ -464,8 +467,8 @@ function System({
       };
       peakPower = getPeakPotByModules(selectedKits[0].modulos);
     }
-    console.log(selectedKits, peakPower);
-    console.log(proposeKitObject);
+    // console.log(selectedKits, peakPower);
+    // console.log(proposeKitObject);
     // @ts-ignore
     setProposeInfo((prev) => ({
       ...prev,
@@ -477,7 +480,6 @@ function System({
   useEffect(() => {
     setFilteredKits(kits);
   }, [kits]);
-  console.log(selectedKits);
   return (
     <div className="flex min-h-[400px] w-full flex-col gap-2 py-4">
       <div className="flex w-full items-center justify-center">
