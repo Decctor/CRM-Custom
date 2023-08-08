@@ -60,6 +60,7 @@ interface IClientInsertInfo {
   complemento: string;
   uf: "MG" | "GO" | null;
   cidade: string;
+  indicador?: string;
 }
 
 function getCurrentActiveFunnelOptions(funnelId: number, funnels: Funnel[]) {
@@ -219,6 +220,9 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
         cidade: opportunityInfo.cidade ? opportunityInfo.cidade : "",
         endereco: opportunityInfo.logradouro ? opportunityInfo.logradouro : "",
         bairro: opportunityInfo.bairro ? opportunityInfo.bairro : "",
+        indicador: opportunityInfo.indicador
+          ? opportunityInfo.indicador
+          : undefined,
       }));
       toast.success("Informações buscadas com sucesso !", { duration: 1500 });
       toast.dismiss(toastID);
@@ -507,6 +511,17 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
                       ...prev,
                       complemento: value,
                     }))
+                  }
+                  width="100%"
+                />
+              </div>
+              <div className="flex w-full">
+                <TextInput
+                  label="INDICADOR"
+                  value={clientInfo.indicador ? clientInfo.indicador : ""}
+                  placeholder="Digite aqui o nome do indicador..."
+                  handleChange={(value) =>
+                    setClientInfo((prev) => ({ ...prev, indicador: value }))
                   }
                   width="100%"
                 />

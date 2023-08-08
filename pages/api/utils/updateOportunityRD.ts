@@ -105,6 +105,17 @@ function getRepresentativeByCustomField(custom_fieldArr: any) {
     nome: insider.nome,
   };
 }
+function getIndicatorByCustomField(custom_fieldArr: any) {
+  const indicatorCustomField = custom_fieldArr.find(
+    (fieldObj: any) => fieldObj.custom_field_id == "64d2a55aec06320018eec599"
+  );
+  if (!indicatorCustomField) return undefined;
+  const indicatorName = Array.isArray(indicatorCustomField.value)
+    ? indicatorCustomField.value[0]
+    : indicatorCustomField.value;
+  if (!indicatorName) return undefined;
+  return indicatorName;
+}
 function getCity(leadCity: string) {
   var allCities: string[] = [];
   Object.values(stateCities).map((arr) => {
@@ -152,6 +163,7 @@ const getOpportunity: NextApiHandler<GetResponse> = async (req, res) => {
   const { data: contactInfo }: any = await axios.get(
     `https://crm.rdstation.com/api/v1/deals/${queryId}/contacts?token=${process.env.RD_TOKEN}`
   );
+  console.log("INFORMAÇÕES DA OPORTUNIDADE", opportunityInfo);
   console.log("INFO CONTATO", contactInfo);
   // console.log("INFO CONTATO", contactInfo);
   // const opportunityInfo = {
@@ -446,6 +458,7 @@ const getOpportunity: NextApiHandler<GetResponse> = async (req, res) => {
           )?.value
         )
       : undefined,
+    indicador: getIndicatorByCustomField(opportunityInfo.deal_custom_fields),
   };
   res.json({ data: responseObj });
 };

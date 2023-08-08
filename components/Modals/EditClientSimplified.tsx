@@ -375,6 +375,17 @@ function EditClientSimplified({
                 width="100%"
               />
             </div>
+            <div className="flex w-full items-center justify-center">
+              <TextInput
+                label="INDICADOR"
+                value={clientInfo.indicador ? clientInfo.indicador : ""}
+                placeholder="Digite aqui o nome do indicador..."
+                handleChange={(value) =>
+                  setClientInfo((prev) => ({ ...prev, indicador: value }))
+                }
+                width="50%"
+              />
+            </div>
           </div>
           {editPermission ? (
             <div className="my-2 flex w-full items-center justify-end px-4">

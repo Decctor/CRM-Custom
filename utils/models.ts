@@ -257,6 +257,7 @@ export interface IClient {
   canalVenda?: (typeof customersAcquisitionChannels)[number]["value"] | null;
   dataInsercao?: Date | null;
   projetos?: IProject[];
+  indicador?: string;
 }
 
 export interface IProposeInfo {

@@ -79,6 +79,7 @@ const clientSchema = z.object({
     required_error: "Por favor, preencha a cidade do cliente.",
     invalid_type_error: "Por favor, preencha a cidade do cliente.",
   }),
+  indicador: z.string().optional(),
 });
 
 const createClient: NextApiHandler<PostResponse> = async (req, res) => {
