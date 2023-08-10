@@ -299,7 +299,7 @@ function getSalePrice({
       laborPrice +
       projectPrice +
       paPrice) *
-    0.05
+    0.06
   );
 }
 type TechnicalAnalysisCostReturnObj = {
