@@ -13,6 +13,7 @@ type DropdownSelectProps<T> = {
   editable?: boolean;
   categoryName: string;
   width?: string;
+  labelClassName?: string;
   onChange: (value: DropdownOption<T>) => void;
   onReset: () => void;
 };
@@ -24,6 +25,7 @@ function DropdownSelect<T extends {}>({
   editable = true,
   categoryName,
   width,
+  labelClassName,
   onChange,
   onReset,
 }: DropdownSelectProps<T>) {
@@ -125,7 +127,7 @@ function DropdownSelect<T extends {}>({
       </div>
       {selectMenuIsOpen ? (
         <div className="absolute top-[45px] z-[100] flex h-[250px] w-full flex-col self-center rounded-md border border-gray-200 bg-[#fff] p-2 shadow-sm">
-          <h1 className="w-full border-b border-[#15599a] pb-1 text-center font-medium italic">
+          <h1 className="w-full border-b border-[#fbcb83] pb-1 text-center font-medium italic">
             {categoryName}
           </h1>
           <div className="overscroll-y my-2 flex w-full grow flex-col gap-1 overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">

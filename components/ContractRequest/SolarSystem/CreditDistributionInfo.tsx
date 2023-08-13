@@ -52,7 +52,7 @@ function CreditDistributionInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] pb-2">
-      <span className="py-2 text-center text-sm font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-sm font-bold uppercase text-[#fbcb83]">
         DISTRIBUIÇÃO DE CRÉDITOS
       </span>
       <div className="flex w-full grow flex-col">
@@ -115,7 +115,7 @@ function CreditDistributionInfo({
                 />
                 <button
                   onClick={addCreditDist}
-                  className="rounded bg-[#fead61] p-1 font-bold hover:bg-[#15599a] hover:text-white"
+                  className="rounded bg-[#fead61] p-1 font-bold hover:bg-[#fbcb83] hover:text-white"
                 >
                   ADICIONAR
                 </button>

@@ -104,7 +104,7 @@ function Kits() {
     return (
       <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
-        <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
+        <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#393E46] p-6">
           <div className="flex flex-col items-center border-b border-[#fead61] pb-2 ">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2">
@@ -119,7 +119,7 @@ function Kits() {
               {session?.user.permissoes.kits.editar ? (
                 <button
                   onClick={() => setNewKitModalIsOpen(true)}
-                  className="rounded bg-[#15599a] p-2 text-sm font-bold text-white"
+                  className="rounded bg-[#fbcb83] p-2 text-sm font-bold text-white"
                 >
                   NOVO KIT
                 </button>
@@ -128,6 +128,7 @@ function Kits() {
             <div className="mt-2 flex w-full flex-wrap items-center justify-between gap-1">
               <TextInput
                 label="PESQUISA"
+                labelClassName="font-sans font-medium text-white"
                 value={filters.search}
                 handleChange={(value) => {
                   handleSearchFilter(value);
@@ -137,26 +138,27 @@ function Kits() {
               <div className="flex flex-wrap items-end gap-1">
                 <div
                   onClick={() => ordenateKits("ASC")}
-                  className={`flex h-[46px] cursor-pointer items-center justify-center rounded-md border border-[#15599a] p-1 text-center ${
+                  className={`flex h-[46px] cursor-pointer items-center justify-center rounded-md border border-[#fbcb83] p-1 text-center ${
                     filters.order == "ASC"
-                      ? "bg-[#15599a] text-white"
-                      : "bg-transparent text-[#15599a]"
+                      ? "bg-[#fbcb83] text-white"
+                      : "bg-transparent text-[#fbcb83]"
                   }`}
                 >
                   PREÇO CRESCENTE
                 </div>
                 <div
                   onClick={() => ordenateKits("DESC")}
-                  className={`flex h-[46px] cursor-pointer items-center justify-center rounded-md border border-[#15599a] p-1 text-center ${
+                  className={`flex h-[46px] cursor-pointer items-center justify-center rounded-md border border-[#fbcb83] p-1 text-center ${
                     filters.order == "DESC"
-                      ? "bg-[#15599a] text-white"
-                      : "bg-transparent text-[#15599a]"
+                      ? "bg-[#fbcb83] text-white"
+                      : "bg-transparent text-[#fbcb83]"
                   }`}
                 >
                   PREÇO DECRESCENTE
                 </div>
                 <MultipleSelectInput
                   label="FORNECEDORES"
+                  labelClassName="font-sans font-medium text-white"
                   selected={
                     filters.suppliers.length > 0
                       ? filters.suppliers.map((supplier) => supplier)
@@ -185,6 +187,7 @@ function Kits() {
                 />
                 <MultipleSelectInput
                   label="TOPOLOGIA"
+                  labelClassName="font-sans font-medium text-white"
                   selected={
                     filters.topology.length > 0
                       ? filters.topology.map((supplier) => supplier)

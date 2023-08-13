@@ -49,7 +49,7 @@ function FunnelList({ stageName, items, id }: IFunnelListProps) {
     <Droppable droppableId={id.toString()}>
       {(provided) => (
         <div className="flex w-full min-w-[350px] flex-col p-2 px-4 lg:w-[350px]">
-          <div className="flex h-[60px] w-full flex-col rounded bg-[#15599a] px-2">
+          <div className="flex h-[60px] w-full flex-col rounded bg-[#fbcb83] px-2">
             <h1 className="rounded p-1 text-center font-medium text-white">
               {stageName}
             </h1>

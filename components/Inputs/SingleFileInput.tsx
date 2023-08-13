@@ -18,6 +18,7 @@ type SingleFileInputProps = {
   currentFileUrl?: string;
   info: IProject;
   infoHolder: IProject | undefined;
+  labelClassName?: string;
   handleAttachment: (fileKey: string, file: File) => void;
 };
 function SingleFileInput({
@@ -28,6 +29,7 @@ function SingleFileInput({
   fileKey,
   currentFileUrl,
   info,
+  labelClassName,
   infoHolder,
   handleAttachment,
 }: SingleFileInputProps) {
@@ -101,7 +103,11 @@ function SingleFileInput({
       >
         <label
           htmlFor={inputIdentifier}
-          className="font-sans font-bold  text-[#353432]"
+          className={
+            labelClassName
+              ? labelClassName
+              : "font-sans font-bold  text-[#353432]"
+          }
         >
           {label}
         </label>

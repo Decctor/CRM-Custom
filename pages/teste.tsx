@@ -28,7 +28,7 @@ function Teste() {
         <input onChange={(e) => handleFileChange(e)} type="file" />
         <button
           onClick={() => sendFile()}
-          className="rounded border border-[#15599a] p-1 text-[#15599a]"
+          className="rounded border border-[#fbcb83] p-1 text-[#fbcb83]"
         >
           ENVIAR
         </button>

@@ -61,21 +61,21 @@ function ProposeListBlock({
       );
     if (activeProposeId == proposeId)
       return (
-        <h1 className="w-full text-center font-bold text-[#15599a]">ATIVA</h1>
+        <h1 className="w-full text-center font-bold text-blue-500">ATIVA</h1>
       );
-    return <h1 className="w-full text-center">GERADA</h1>;
+    return <h1 className="w-full text-center text-white">GERADA</h1>;
   }
 
   return (
-    <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
-      <div className="flex  h-[40px] items-center  justify-between border-b border-gray-200 pb-2">
+    <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-600 bg-[#27374D] p-3 shadow-lg lg:w-[60%]">
+      <div className="flex  h-[40px] items-center  justify-between border-b border-gray-600 pb-2">
         <div className="flex items-center justify-center gap-5">
-          <h1 className="w-[120px] cursor-pointer border-b border-blue-500 p-1 text-center font-bold text-black hover:border-blue-500">
+          <h1 className="w-[120px] cursor-pointer border-b border-blue-500 p-1 text-center font-bold text-white hover:border-blue-500">
             Propostas
           </h1>
           <h1
             onClick={() => setBlockMode("TECHNICAL ANALYSIS")}
-            className="w-fit cursor-pointer border-b border-transparent p-1 text-center font-bold text-black hover:border-blue-500"
+            className="w-fit cursor-pointer border-b border-transparent p-1 text-center font-bold text-white hover:border-blue-500"
           >
             Análises Técnicas
           </h1>
@@ -159,16 +159,16 @@ function ProposeListBlock({
                   </div>
                   <div className="flex w-full items-center justify-center lg:w-1/5">
                     {/* {propose._id == idActivePropose ? (
-                      <AiFillStar style={{ color: "#15599a" }} />
+                      <AiFillStar style={{ color: "#fbcb83" }} />
                     ) : null} */}
                     <Link href={`/proposta/${propose._id}`}>
-                      <h1 className="text-center hover:text-blue-400">
+                      <h1 className="text-center text-white hover:text-blue-400">
                         {propose.nome}
                       </h1>
                     </Link>
                   </div>
                   <div className="hidden items-center justify-center lg:flex lg:w-1/5">
-                    <h1 className="w-full text-center">
+                    <h1 className="w-full text-center text-white">
                       {propose.potenciaPico?.toLocaleString("pt-br", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
@@ -177,7 +177,7 @@ function ProposeListBlock({
                     </h1>
                   </div>
                   <div className="hidden items-center justify-center lg:flex lg:w-1/5">
-                    <h1 className="w-full text-center">
+                    <h1 className="w-full text-center text-white">
                       R${" "}
                       {propose.valorProposta?.toLocaleString("pt-br", {
                         minimumFractionDigits: 2,
@@ -186,7 +186,7 @@ function ProposeListBlock({
                     </h1>
                   </div>
                   <div className="hidden items-center justify-center lg:flex lg:w-1/5">
-                    <h1 className="hidden text-center lg:flex">
+                    <h1 className="hidden text-center text-white lg:flex">
                       {propose.dataInsercao
                         ? dayjs(propose.dataInsercao).format("DD/MM/YYYY")
                         : null}

@@ -45,7 +45,7 @@ function OeMPropose({ project }: OeMProposeTypes) {
       <div className="grid min-h-[50px] w-full grid-cols-1 grid-rows-3 items-center gap-6 border-b border-gray-200 pb-4 lg:grid-cols-3 lg:grid-rows-1 lg:gap-1">
         <div
           className={`flex items-center justify-center gap-1 ${
-            proposeStage == 1 ? "text-[#15599a]" : "text-gray-600"
+            proposeStage == 1 ? "text-[#fbcb83]" : "text-gray-600"
           } `}
         >
           <IoMdOptions style={{ fontSize: "23px" }} />
@@ -53,7 +53,7 @@ function OeMPropose({ project }: OeMProposeTypes) {
         </div>
         <div
           className={`flex items-center justify-center gap-1 ${
-            proposeStage == 2 ? "text-[#15599a]" : "text-gray-600"
+            proposeStage == 2 ? "text-[#fbcb83]" : "text-gray-600"
           } `}
         >
           <MdSell style={{ fontSize: "23px" }} />
@@ -61,7 +61,7 @@ function OeMPropose({ project }: OeMProposeTypes) {
         </div>
         <div
           className={`flex items-center justify-center gap-1 ${
-            proposeStage == 3 ? "text-[#15599a]" : "text-gray-600"
+            proposeStage == 3 ? "text-[#fbcb83]" : "text-gray-600"
           } `}
         >
           <ImFileEmpty style={{ fontSize: "23px" }} />

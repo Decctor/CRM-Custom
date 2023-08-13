@@ -385,7 +385,7 @@ function NewClientModal({ closeModal, representatives }: NewClientModalProps) {
           <div className="my-2 flex w-full items-center justify-end px-4">
             <button
               onClick={() => mutate()}
-              className="font-medium text-[#15599a] duration-300 ease-in-out hover:scale-110"
+              className="font-medium text-green-500 duration-300 ease-in-out hover:scale-110"
             >
               CRIAR
             </button>

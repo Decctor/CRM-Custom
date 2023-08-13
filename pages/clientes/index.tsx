@@ -59,7 +59,7 @@ function Clientes() {
   return (
     <div className="flex h-full flex-col md:flex-row">
       <Sidebar />
-      <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
+      <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#393E46] p-6">
         <div className="flex flex-col items-center justify-between border-b border-[#fead61] pb-2 xl:flex-row">
           <h1 className="flex font-Raleway text-2xl font-black text-[#fead61]">
             CLIENTES
@@ -74,23 +74,23 @@ function Clientes() {
                     handleOpenEditClientModal(client._id ? client._id : "");
                   }}
                   key={client._id}
-                  className="flex h-[125px] w-[450px] cursor-pointer flex-col border border-gray-300 bg-[#fff] p-2 shadow-sm duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100"
+                  className="flex h-[125px] w-[450px] cursor-pointer flex-col border border-gray-600 bg-[#27374D] p-2 shadow-sm duration-300 ease-in-out hover:scale-[1.02]"
                 >
                   <div className="flex w-full items-center justify-between">
-                    <h1 className="font-medium text-gray-600">{client.nome}</h1>
-                    <h1 className="font-medium text-[#15599a]">
+                    <h1 className="font-medium text-white">{client.nome}</h1>
+                    <h1 className="font-medium text-[#fbcb83]">
                       {client.cidade}
                     </h1>
                   </div>
                   <div className="mt-2 flex w-full items-center justify-between">
                     <div className="flex flex-col items-start">
-                      <p className="text-xs text-gray-500">REPRESENTANTE</p>
+                      <p className="text-xs text-gray-200">REPRESENTANTE</p>
                       <h1 className="text-sm font-medium text-[#fead61]">
                         {client.representante?.nome}
                       </h1>
                     </div>
                     <div className="flex flex-col items-start">
-                      <p className="w-full text-end text-xs text-gray-500">
+                      <p className="w-full text-end text-xs text-gray-200">
                         CONTATO
                       </p>
                       <h1 className="text-sm font-medium text-[#fead61]">
@@ -102,12 +102,12 @@ function Clientes() {
               ))
             ) : (
               <div className="flex grow flex-col items-center justify-center">
-                <p className="text-lg italic text-gray-500">
+                <p className="text-lg italic text-gray-200">
                   Oops, parece que não há clientes cadastrados pelo seu usuário.
                 </p>
-                <p className="text-lg italic text-gray-500">
+                <p className="text-lg italic text-gray-200">
                   Clique em{" "}
-                  <strong className="text-[#15599a]">NOVO CLIENTE</strong> para
+                  <strong className="text-[#fbcb83]">NOVO CLIENTE</strong> para
                   criar um !
                 </p>
               </div>
@@ -117,7 +117,7 @@ function Clientes() {
         </div>
         <button
           onClick={() => setNewClientModalIsOpen(true)}
-          className="fixed bottom-10 left-[100px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]"
+          className="fixed bottom-10 left-[100px] cursor-pointer rounded-lg bg-[#fbcb83] p-3 text-black"
         >
           <p className="font-bold">NOVO CLIENTE</p>
         </button>

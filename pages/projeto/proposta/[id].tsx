@@ -149,7 +149,7 @@ function PropostaPage() {
             <div className="grid min-h-[50px] w-full grid-cols-1 grid-rows-5 items-center gap-6 border-b border-gray-200 pb-4 lg:grid-cols-5 lg:grid-rows-1 lg:gap-1">
               <div
                 className={`flex items-center justify-center gap-1 ${
-                  proposeStage == 1 ? "text-[#15599a]" : "text-gray-600"
+                  proposeStage == 1 ? "text-[#fbcb83]" : "text-gray-600"
                 } `}
               >
                 <IoMdOptions style={{ fontSize: "23px" }} />
@@ -157,7 +157,7 @@ function PropostaPage() {
               </div>
               <div
                 className={`flex items-center justify-center gap-1 ${
-                  proposeStage == 2 ? "text-[#15599a]" : "text-gray-600"
+                  proposeStage == 2 ? "text-[#fbcb83]" : "text-gray-600"
                 } `}
               >
                 <SlEnergy style={{ fontSize: "23px" }} />
@@ -165,7 +165,7 @@ function PropostaPage() {
               </div>
               <div
                 className={`flex items-center justify-center gap-1 ${
-                  proposeStage == 3 ? "text-[#15599a]" : "text-gray-600"
+                  proposeStage == 3 ? "text-[#fbcb83]" : "text-gray-600"
                 } `}
               >
                 <MdSell style={{ fontSize: "23px" }} />
@@ -173,7 +173,7 @@ function PropostaPage() {
               </div>
               <div
                 className={`flex items-center justify-center gap-1 ${
-                  proposeStage == 5 ? "text-[#15599a]" : "text-gray-600"
+                  proposeStage == 5 ? "text-[#fbcb83]" : "text-gray-600"
                 } `}
               >
                 <MdAttachMoney style={{ fontSize: "23px" }} />
@@ -181,7 +181,7 @@ function PropostaPage() {
               </div>
               <div
                 className={`flex items-center justify-center gap-1 ${
-                  proposeStage == 4 ? "text-[#15599a]" : "text-gray-600"
+                  proposeStage == 4 ? "text-[#fbcb83]" : "text-gray-600"
                 } `}
               >
                 <ImFileEmpty style={{ fontSize: "23px" }} />

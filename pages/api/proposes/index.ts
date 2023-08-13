@@ -135,28 +135,28 @@ const proposeSchema = z.union([
       modulos: z.array(
         z.object({
           id: z.union([z.string(), z.number()], {
-            required_error: "ID de um dos módulos faltando, contate o Volts.",
+            required_error: "ID de um dos módulos faltando, contate o suporte.",
           }),
           fabricante: z.string({
             required_error:
-              "Fabricante de um dos módulos faltando, contate o Volts.",
+              "Fabricante de um dos módulos faltando, contate o suporte.",
           }),
           modelo: z.string({
             required_error:
-              "Modelo de um dos módulos faltando, contate o Volts.",
+              "Modelo de um dos módulos faltando, contate o suporte.",
           }),
           qtde: z.number({
             required_error:
-              "Quantidade de um dos módulos faltando, contate o Volts.",
+              "Quantidade de um dos módulos faltando, contate o suporte.",
           }),
           potencia: z.number({
             required_error:
-              "Potência de um dos módulos faltando, contate o Volts.",
+              "Potência de um dos módulos faltando, contate o suporte.",
           }),
           garantia: z
             .number({
               required_error:
-                "Garantia de um dos módulos faltando, contate o Volts.",
+                "Garantia de um dos módulos faltando, contate o suporte.",
             })
             .optional(),
         })
@@ -165,38 +165,38 @@ const proposeSchema = z.union([
         z.object({
           id: z.union([z.string(), z.number()], {
             required_error:
-              "ID de um dos inversores faltando, contate o Volts.",
+              "ID de um dos inversores faltando, contate o suporte.",
           }),
           fabricante: z.string({
             required_error:
-              "Fabricante de um dos inversores faltando, contate o Volts.",
+              "Fabricante de um dos inversores faltando, contate o suporte.",
           }),
           modelo: z.string({
             required_error:
-              "Modelo de um dos inversores faltando, contate o Volts.",
+              "Modelo de um dos inversores faltando, contate o suporte.",
           }),
           qtde: z.number({
             required_error:
-              "Quantidade de um dos inversores faltando, contate o Volts.",
+              "Quantidade de um dos inversores faltando, contate o suporte.",
           }),
           garantia: z
             .number({
               required_error:
-                "Garantia de um dos inversores faltando, contate o Volts.",
+                "Garantia de um dos inversores faltando, contate o suporte.",
             })
             .optional(),
           potenciaNominal: z.number({
             required_error:
-              "Potência nominal de um dos inversores faltando, contate o Volts.",
+              "Potência nominal de um dos inversores faltando, contate o suporte.",
           }),
         })
       ),
       fornecedor: z.string({
         required_error:
-          "Fornecedor do kit faltando, por favor, contate o Volts.",
+          "Fornecedor do kit faltando, por favor, contate o suporte.",
       }),
       preco: z.number({
-        required_error: "Preço do kit faltando, por favor, contate o Volts.",
+        required_error: "Preço do kit faltando, por favor, contate o suporte.",
       }),
     }),
     precificacao: z.object({

@@ -56,7 +56,7 @@ function PAInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] pb-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         AUMENTO DE CARGA
       </span>
       <div className="flex w-full grow flex-col">

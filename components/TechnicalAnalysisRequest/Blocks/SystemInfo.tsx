@@ -239,7 +239,7 @@ function SystemInfo({
   }, [kits]);
   return (
     <div className="flex w-full grow flex-col bg-[#fff] px-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         DADOS DO SISTEMA
       </span>
       <div className="flex w-full grow flex-col gap-2">
@@ -266,7 +266,7 @@ function SystemInfo({
                 </div>
               ))}
               <div className="flex w-full items-center justify-center gap-2">
-                <div className="flex flex-col rounded border border-[#15599a] p-2 text-[#15599a]">
+                <div className="flex flex-col rounded border border-[#fbcb83] p-2 text-[#fbcb83]">
                   <h1 className="text-center">POTÊNCIA PICO TOTAL</h1>
                   <h1 className="text-center font-medium">
                     {getSelectedKitsPowerPeak(selectedKits).toLocaleString(

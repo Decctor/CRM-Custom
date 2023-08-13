@@ -34,8 +34,8 @@ function Project({ item }: ProjectCardProps) {
     useState<boolean>(false);
   return (
     <div
-      className={`relative flex h-[150px] min-h-[110px] w-[350px] flex-col justify-between rounded border border-gray-200 ${
-        item.assinado ? "bg-green-100" : "bg-[#fff]"
+      className={`relative flex h-[150px] min-h-[110px] w-[350px] flex-col justify-between rounded border border-gray-600 ${
+        item.assinado ? "bg-green-100" : "bg-[#27374D]"
       }  p-2 shadow-sm`}
     >
       {openActivitiesModal && item.atividades ? (
@@ -66,7 +66,7 @@ function Project({ item }: ProjectCardProps) {
       <div className="flex w-full flex-col">
         <div
           className={`h-1 w-full rounded-sm ${
-            item.contratoSolicitado ? "bg-green-500" : "bg-blue-400"
+            item.contratoSolicitado ? "bg-green-500" : "bg-[#fbcb83]"
           } `}
         ></div>
         <h1 className="text-xs font-bold text-[#fead41]">
@@ -74,7 +74,7 @@ function Project({ item }: ProjectCardProps) {
         </h1>
         <div className="flex w-full flex-col">
           <Link href={`/projeto/id/${item.id}`}>
-            <h1 className="font-medium text-[#353432] hover:text-blue-400">
+            <h1 className="font-medium text-[#fff] hover:text-blue-400">
               {item.name}
             </h1>
           </Link>
@@ -126,7 +126,7 @@ function Project({ item }: ProjectCardProps) {
               />
             </div>
           ) : null}
-          <p className="text-sm font-light text-gray-400">{item.responsavel}</p>
+          <p className="text-sm font-light text-gray-200">{item.responsavel}</p>
         </div>
 
         <div className="cursor-pointer text-xl text-[#fead61] duration-300 ease-in hover:scale-110">

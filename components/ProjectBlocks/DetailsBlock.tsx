@@ -148,24 +148,29 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
     try {
       let storageName = `crm/projetos/${infoHolder?.nome}/${fileKey}-${infoHolder?._id}`;
       const fileRef = ref(storage, storageName);
-      const res = await uploadBytes(fileRef, file).catch((err) => {
-        if (err instanceof FirebaseError)
-          switch (err.code) {
-            case "storage/unauthorized":
-              throw "Usuário não autorizado para upload de arquivos.";
-            case "storage/canceled":
-              throw "O upload de arquivos foi cancelado pelo usuário.";
 
-            case "storage/retry-limit-exceeded":
-              throw "Tempo de envio de arquivo excedido, tente novamente.";
+      const res = await uploadBytes(fileRef, file);
 
-            case "storage/invalid-checksum":
-              throw "Ocorreu um erro na checagem do arquivo enviado, tente novamente.";
+      // .catch((err) => {
+      //   if (err instanceof FirebaseError) {
+      //     console.log("ERRO FIREBASE", err);
+      //     switch (err.code) {
+      //       case "storage/unauthorized":
+      //         throw "Usuário não autorizado para upload de arquivos.";
+      //       case "storage/canceled":
+      //         throw "O upload de arquivos foi cancelado pelo usuário.";
 
-            case "storage/unknown":
-              throw "Erro de origem desconhecida no upload de arquivos.";
-          }
-      });
+      //       case "storage/retry-limit-exceeded":
+      //         throw "Tempo de envio de arquivo excedido, tente novamente.";
+
+      //       case "storage/invalid-checksum":
+      //         throw "Ocorreu um erro na checagem do arquivo enviado, tente novamente.";
+
+      //       case "storage/unknown":
+      //         throw "Erro de origem desconhecida no upload de arquivos.";
+      //     }
+      //   }
+      // });
       const uploadResult = res as UploadResult;
       if ("metadata" in uploadResult) {
         const url = await getDownloadURL(
@@ -188,6 +193,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
         throw "Houve um erro no envio dos arquivos. Por favor, tente novamente.";
       }
     } catch (error) {
+      console.log("FIREBASE ERROR", error);
       // A full list of error codes is available at
       // https://firebase.google.com/docs/storage/web/handle-errors
       if (typeof error == "string") {
@@ -218,15 +224,16 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
   }
   return (
     <div className="flex w-full flex-col gap-6 lg:flex-row">
-      <div className="flex w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">
-        <div className="flex h-[40px] items-center justify-between border-b border-gray-200 pb-2">
-          <h1 className="font-bold text-black">Detalhes</h1>
+      <div className="flex w-full flex-col rounded-md border border-gray-600 bg-[#27374D] p-3 shadow-lg">
+        <div className="flex h-[40px] items-center justify-between border-b border-gray-600 pb-2">
+          <h1 className="font-bold text-white">Detalhes</h1>
         </div>
         <div className="mt-3 flex w-full flex-col gap-2">
           <div className="flex w-full gap-2">
             <div className="grow">
               <TextInput
                 label="NOME DO PROJETO"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente && infoHolder?.nome
                     ? infoHolder?.nome
@@ -270,6 +277,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
               </label>
               <DropdownSelect
                 categoryName="RESPONSÁVEL"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.responsavel ? infoHolder?.responsavel.id : null
                 }
@@ -327,6 +335,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="flex grow flex-col items-start">
               <SelectInput
                 label="TIPO DO PROJETO"
+                labelClassName="font-sans font-medium text-white"
                 value={infoHolder?.tipoProjeto ? infoHolder?.tipoProjeto : null}
                 editable={
                   session?.user.id == infoHolder?.responsavel?.id ||
@@ -388,6 +397,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
                         };
                       })}
                       editable={false}
+                      labelClassName="font-sans font-medium text-white"
                       value={
                         infoHolder.funis ? infoHolder.funis[index].id : null
                       }
@@ -413,6 +423,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
                             )
                           : null
                       }
+                      labelClassName="font-sans font-medium text-white"
                       value={
                         infoHolder.funis
                           ? infoHolder.funis[index].etapaId
@@ -479,6 +490,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
                           value: funnel.id,
                         };
                       })}
+                    labelClassName="font-sans font-medium text-white"
                     value={newFunnelHolder.id ? newFunnelHolder.id : null}
                     onChange={(selected) => {
                       setNewFunnelHolder((prev) => ({
@@ -506,6 +518,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
                           )
                         : null
                     }
+                    labelClassName="font-sans font-medium text-white"
                     value={
                       newFunnelHolder.etapaId ? newFunnelHolder.etapaId : null
                     }
@@ -549,6 +562,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <DateInput
                 label="DATA DE NASCIMENTO"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente && infoHolder?.cliente.dataNascimento
                     ? formatDate(infoHolder.cliente.dataNascimento)
@@ -609,6 +623,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <TextInput
                 label="RG"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente && infoHolder?.cliente.rg
                     ? infoHolder?.cliente.rg
@@ -651,6 +666,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <SelectInput
                 label="ESTADO CIVIL"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente ? infoHolder?.cliente.estadoCivil : null
                 }
@@ -732,6 +748,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <TextInput
                 label="PROFISSÃO"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente && infoHolder?.cliente.profissao
                     ? infoHolder?.cliente.profissao
@@ -783,6 +800,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <TextInput
                 label="ONDE TRABALHA"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente && infoHolder?.cliente.ondeTrabalha
                     ? infoHolder?.cliente.ondeTrabalha
@@ -833,6 +851,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <SelectInput
                 label="CANAL DE AQUISIÇÃO"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente ? infoHolder?.cliente.canalVenda : null
                 }
@@ -890,6 +909,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <TextInput
                 label="TITULAR DA INSTALAÇÃO"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente && infoHolder?.titularInstalacao
                     ? infoHolder?.titularInstalacao
@@ -936,6 +956,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <TextInput
                 label="NÚMERO DE INSTALAÇÃO DA CONCESSIONÁRIA"
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.cliente &&
                   infoHolder?.numeroInstalacaoConcessionaria
@@ -987,6 +1008,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <SelectInput
                 label="TIPO DO TITULAR"
+                labelClassName="font-sans font-medium text-white"
                 value={infoHolder?.tipoTitular}
                 editable={
                   session?.user.id == infoHolder?.responsavel?.id ||
@@ -1044,6 +1066,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <SelectInput
                 label="TIPO DA LIGAÇÃO"
+                labelClassName="font-sans font-medium text-white"
                 value={infoHolder?.tipoLigacao}
                 editable={
                   session?.user.id == infoHolder?.responsavel?.id ||
@@ -1101,6 +1124,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <SelectInput
                 label="TIPO DA INSTALAÇÃO"
+                labelClassName="font-sans font-medium text-white"
                 value={infoHolder?.tipoInstalacao}
                 editable={
                   session?.user.id == infoHolder?.responsavel?.id ||
@@ -1165,6 +1189,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
             <div className="grow">
               <SelectInput
                 label="CREDOR"
+                labelClassName="font-sans font-medium text-white"
                 value={infoHolder?.credor}
                 editable={
                   session?.user.id == infoHolder?.responsavel?.id ||
@@ -1215,6 +1240,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
               <NumberInput
                 label="PADRÃO DE ENTRADA"
                 placeholder="Preencha aqui o preço do padrão de entrada, se houver troca."
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.servicosAdicionais?.padrao
                     ? infoHolder?.servicosAdicionais?.padrao
@@ -1266,6 +1292,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
               <NumberInput
                 label="ESTRUTURA"
                 placeholder="Preencha aqui o preço de estrutura, se necessária."
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.servicosAdicionais?.estrutura
                     ? infoHolder?.servicosAdicionais?.estrutura
@@ -1317,6 +1344,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
               <NumberInput
                 label="SERVIÇOS EXTRA"
                 placeholder="Preencha aqui o preço de serviços extra, se houverem."
+                labelClassName="font-sans font-medium text-white"
                 value={
                   infoHolder?.servicosAdicionais?.outros
                     ? infoHolder?.servicosAdicionais?.outros
@@ -1369,6 +1397,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
           <div className="w-full">
             <SingleFileInput
               label="DOCUMENTO COM FOTO"
+              labelClassName="font-sans font-medium text-white"
               fileKey={"documentoComFoto"}
               handleAttachment={handleAttachment}
               currentFileUrl={infoHolder?.anexos?.documentoComFoto}
@@ -1379,6 +1408,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
           <div className="w-full">
             <SingleFileInput
               label="CONTA DE ENERGIA"
+              labelClassName="font-sans font-medium text-white"
               fileKey={"contaDeEnergia"}
               handleAttachment={handleAttachment}
               currentFileUrl={infoHolder?.anexos?.contaDeEnergia}
@@ -1389,6 +1419,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
           <div className="w-full">
             <SingleFileInput
               label="IPTU"
+              labelClassName="font-sans font-medium text-white"
               fileKey={"iptu"}
               handleAttachment={handleAttachment}
               currentFileUrl={infoHolder?.anexos?.iptu}
@@ -1399,6 +1430,7 @@ function DetailsBlock({ info, session, projectId }: DetailsBlockType) {
           <div className="w-full">
             <SingleFileInput
               label="LAUDO TÉCNICO"
+              labelClassName="font-sans font-medium text-white"
               fileKey={"laudo"}
               handleAttachment={handleAttachment}
               currentFileUrl={infoHolder?.anexos?.laudo}

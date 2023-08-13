@@ -40,7 +40,7 @@ function NotificationBlock({ sidebarExtended }: { sidebarExtended: boolean }) {
             </div>
           </>
         ) : (
-          <MdNotifications style={{ fontSize: "20px", color: "#15599a" }} />
+          <MdNotifications style={{ fontSize: "20px", color: "#fbcb83" }} />
         )}
       </div>
       {notificationModalIsOpen ? (

@@ -434,7 +434,7 @@ function DocumentAttachmentInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] pb-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         DOCUMENTAÇÃO
       </span>
       <div className="flex w-full grow flex-col">
@@ -442,7 +442,7 @@ function DocumentAttachmentInfo({
           <div className="flex w-full flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="propostaComercial"
               >
                 PROPOSTA COMERCIAL ATUALIZADA
@@ -489,7 +489,7 @@ function DocumentAttachmentInfo({
           <div className="flex w-full flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="documentoComFoto"
               >
                 DOCUMENTO COM FOTO
@@ -534,7 +534,7 @@ function DocumentAttachmentInfo({
           <div className="flex w-full flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="comprovanteEnderecoCorrespondente"
               >
                 COMPROVANTE DE ENDEREÇO (DA CORRESPONDÊNCIA)
@@ -587,7 +587,7 @@ function DocumentAttachmentInfo({
               <div className="flex w-full flex-col items-center justify-center self-center">
                 <div className="flex items-center gap-2">
                   <label
-                    className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                    className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                     htmlFor="contratoSocial"
                   >
                     CONTRATO SOCIAL
@@ -634,7 +634,7 @@ function DocumentAttachmentInfo({
               <div className="flex w-full flex-col items-center justify-center self-center">
                 <div className="flex items-center gap-2">
                   <label
-                    className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                    className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                     htmlFor="cartaoCnpj"
                   >
                     CARTÃO CNPJ
@@ -679,7 +679,7 @@ function DocumentAttachmentInfo({
               <div className="flex w-full flex-col items-center justify-center self-center">
                 <div className="flex items-center gap-2">
                   <label
-                    className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                    className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                     htmlFor="comprovanteEnderecoRepresentante"
                   >
                     COMPROVANTE DE ENDEREÇO (REPRESENTANTE LEGAL)
@@ -730,7 +730,7 @@ function DocumentAttachmentInfo({
               <div className="flex w-full flex-col items-center justify-center self-center">
                 <div className="flex items-center gap-2">
                   <label
-                    className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                    className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                     htmlFor="documentoComFotoSocios"
                   >
                     DOCUMENTO COM FOTO (DE TODOS OS SÓCIOS)
@@ -788,7 +788,7 @@ function DocumentAttachmentInfo({
                 >
                   <div className="flex items-center gap-2">
                     <label
-                      className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                      className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                       htmlFor={`recebedora${index + 1}`}
                     >
                       RECEBEDORA Nº{index + 1}

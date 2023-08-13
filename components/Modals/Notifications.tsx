@@ -43,7 +43,7 @@ function Notifications({
         }  z-[2000] flex h-[300px] w-[300px] flex-col rounded-lg border border-gray-200 bg-[#fff] py-3 shadow-lg md:bottom-[10px]`}
       >
         <div className="flex items-center justify-between border-b border-gray-300 px-3 pb-1">
-          <h1 className="text-center text-sm font-medium text-[#15599a]">
+          <h1 className="text-center text-sm font-medium text-[#fbcb83]">
             PAINEL DE NOTIFICAÇÕES
           </h1>
           <button

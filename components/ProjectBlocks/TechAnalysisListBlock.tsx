@@ -49,18 +49,18 @@ function TechAnalysisListBlock({
     console.log("ATUALIZAÇÃO VISITA", technicalAnalysis);
   }, [technicalAnalysis]);
   return (
-    <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:w-[60%]">
-      <div className="flex  h-[40px] items-center  justify-between border-b border-gray-200 pb-2">
+    <div className="flex h-[230px] w-full flex-col rounded-md border border-gray-600 bg-[#27374D] p-3 shadow-lg lg:w-[60%]">
+      <div className="flex  h-[40px] items-center  justify-between border-b border-gray-600 pb-2">
         <div className="flex items-center justify-center gap-5">
           <h1
             onClick={() => setBlockMode("PROPOSES")}
-            className="w-[120px] cursor-pointer border-b border-transparent p-1 text-center font-bold text-black hover:border-blue-500"
+            className="w-[120px] cursor-pointer border-b border-transparent p-1 text-center font-bold text-white hover:border-blue-500"
           >
             Propostas
           </h1>
           <h1
             onClick={() => setBlockMode("TECHNICAL ANALYSIS")}
-            className="w-fit cursor-pointer border-b border-[#15599a] p-1 text-center font-bold text-black hover:border-blue-500"
+            className="w-fit cursor-pointer border-b border-[#fbcb83] p-1 text-center font-bold text-white hover:border-blue-500"
           >
             Análises Técnicas
           </h1>
@@ -173,7 +173,7 @@ function TechAnalysisListBlock({
                 >
                   <div className="flex w-full items-center justify-center lg:w-1/4">
                     {propose._id == idActivePropose ? (
-                      <AiFillStar style={{ color: "#15599a" }} />
+                      <AiFillStar style={{ color: "#fbcb83" }} />
                     ) : null}
                     <Link href={`/proposta/${propose._id}`}>
                       <h1 className="text-center hover:text-blue-400">

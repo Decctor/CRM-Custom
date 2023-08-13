@@ -699,7 +699,7 @@ function NewProject({ closeModal, responsibles }: NewProjectProps) {
             ) : null}
             <button
               onClick={() => handleProjectCreation()}
-              className="font-medium text-[#15599a] duration-300 ease-in-out hover:scale-110"
+              className="font-medium text-[#fbcb83] duration-300 ease-in-out hover:scale-110"
             >
               CRIAR
             </button>

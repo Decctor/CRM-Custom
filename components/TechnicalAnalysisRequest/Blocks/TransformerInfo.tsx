@@ -63,7 +63,7 @@ function TransformerInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] px-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         DADOS DO TRANSFORMADOR
       </span>
 
@@ -109,7 +109,7 @@ function TransformerInfo({
           <div className="flex w-full flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="laudo"
               >
                 FOTO DO TRANSFORMADOR
@@ -157,7 +157,7 @@ function TransformerInfo({
           <div className="flex w-full flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="laudo"
               >
                 FOTO DA LOCALIZAÇÃO DO TRANSFORMADOR
@@ -205,7 +205,7 @@ function TransformerInfo({
           <div className="flex w-full flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="laudo"
               >
                 FOTO DO NÚMERO DO TRANSFORMADOR

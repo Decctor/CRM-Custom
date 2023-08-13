@@ -87,7 +87,7 @@ function InstallationInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] px-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         DADOS DA INSTALAÇÃO
       </span>
 
@@ -241,7 +241,7 @@ function InstallationInfo({
             <div className="flex w-full flex-col items-center justify-center self-center">
               <div className="flex items-center gap-2">
                 <label
-                  className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                  className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                   htmlFor="laudo"
                 >
                   FOTO DA FACHADA
@@ -289,7 +289,7 @@ function InstallationInfo({
             <div className="flex w-full flex-col items-center justify-center self-center">
               <div className="flex items-center gap-2">
                 <label
-                  className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                  className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                   htmlFor="laudo"
                 >
                   FOTO DO QUADRO DE DISTRIBUIÇÃO
@@ -343,7 +343,7 @@ function InstallationInfo({
               <div className="flex w-full grow flex-col items-center justify-center self-center">
                 <div className="flex items-center gap-2">
                   <label
-                    className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                    className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                     htmlFor="laudo"
                   >
                     FOTO DO LOCAL DO INVERSOR
@@ -396,7 +396,7 @@ function InstallationInfo({
               <div className="flex w-full grow flex-col items-center justify-center self-center">
                 <div className="flex items-center gap-2">
                   <label
-                    className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                    className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                     htmlFor="laudo"
                   >
                     FOTO DO ATERRAMENTO

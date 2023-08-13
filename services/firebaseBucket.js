@@ -7,7 +7,7 @@ export default async function getBucket() {
     sdkApp = admin.initializeApp(
       {
         credential: admin.credential.cert(firebaseServiceAccount),
-        storageBucket: "sistemaampere.appspot.com",
+        storageBucket: "appcustom-d6fa1.appspot.com",
       },
       "SDK"
     );

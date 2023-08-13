@@ -14,7 +14,7 @@ function SolicitationTypeSelection({
 }: SolicitationTypeSelectionProps) {
   return (
     <div className="flex w-full grow flex-col items-center gap-2 px-4">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         TIPO DE SOLICITAÇÃO
       </span>
       <div className="flex w-full items-center gap-2">
@@ -66,7 +66,7 @@ function SolicitationTypeSelection({
           onClick={() => selectType("VISITA TÉCNICA IN LOCO - URBANA")}
           className="flex h-[300px] w-full cursor-pointer flex-col items-center gap-2 rounded-sm border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100 lg:w-[50%]"
         >
-          <MdAssessment style={{ color: "#15599a", fontSize: "35px" }} />
+          <MdAssessment style={{ color: "#fbcb83", fontSize: "35px" }} />
           <h1 className="text-center text-lg font-bold">
             VISITA TÉCNICA IN LOCO - URBANA
           </h1>
@@ -87,7 +87,7 @@ function SolicitationTypeSelection({
           onClick={() => selectType("VISITA TÉCNICA IN LOCO - RURAL")}
           className="flex h-[300px] w-full cursor-pointer flex-col items-center gap-2 rounded-sm border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-100 lg:w-[50%]"
         >
-          <MdAssessment style={{ color: "#15599a", fontSize: "35px" }} />
+          <MdAssessment style={{ color: "#fbcb83", fontSize: "35px" }} />
           <h1 className="text-center text-lg font-bold">
             VISITA TÉCNICA IN LOCO - RURAL
           </h1>

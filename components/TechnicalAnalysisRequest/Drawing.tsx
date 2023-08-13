@@ -414,7 +414,7 @@ function Drawing({
     return (
       <div className="flex w-full grow flex-col">
         <div className="flex w-full flex-col bg-[#fff] px-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DADOS GERAIS
           </span>
           <div className="flex w-full grow flex-col gap-2">
@@ -571,7 +571,7 @@ function Drawing({
           </div>
         </div>
         <div className="mt-4 flex w-full flex-col bg-[#fff] px-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DADOS DO SISTEMA
           </span>
           <div className="flex w-full grow flex-col gap-2">
@@ -715,7 +715,7 @@ function Drawing({
                   </div>
                 ))}
                 <div className="flex w-full items-center justify-center gap-2">
-                  <div className="flex flex-col rounded border border-[#15599a] p-2 text-[#15599a]">
+                  <div className="flex flex-col rounded border border-[#fbcb83] p-2 text-[#fbcb83]">
                     <h1 className="text-center">POTÊNCIA PICO TOTAL</h1>
                     <h1 className="text-center font-medium">
                       {getSelectedKitsPowerPeak(selectedKits).toLocaleString(
@@ -737,7 +737,7 @@ function Drawing({
           </div>
         </div>
         <div className="mt-4 flex w-full flex-col bg-[#fff] px-2">
-          <span className="py-2 text-center text-sm font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-sm font-bold uppercase text-[#fbcb83]">
             DESENHO PERSONALIZADO
           </span>
           <div className="mt-2 flex w-full flex-col items-center self-center">
@@ -790,7 +790,7 @@ function Drawing({
         <div className="mt-4 flex w-full flex-col items-center justify-center self-center">
           <div className="flex items-center gap-2">
             <label
-              className="ml-2 text-center text-sm font-bold text-[#15599a]"
+              className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
               htmlFor="laudo"
             >
               FOTOS DO LOCAL DA INSTALAÇÃO

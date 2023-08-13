@@ -273,7 +273,7 @@ export default function Home() {
   return (
     <div className="flex h-full flex-col md:flex-row">
       <Sidebar />
-      <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
+      <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#393E46] p-6">
         <div className="flex flex-col items-center border-b border-[#fead61] pb-2 xl:flex-row">
           <div className="flex font-Poppins text-2xl font-black text-[#fead61]">
             FUNIL
@@ -281,7 +281,7 @@ export default function Home() {
           <div className="flex grow flex-col items-center justify-end  gap-2 xl:flex-row">
             <button
               onClick={() => setNewProjectModalIsOpen(true)}
-              className="flex h-[40px] min-w-[250px] items-center justify-center gap-2 rounded-md border bg-[#15599a] p-2 text-sm font-medium text-white shadow-sm duration-300 ease-in-out hover:scale-105"
+              className="flex h-[40px] min-w-[250px] items-center justify-center gap-2 rounded-md bg-[#fbcb83] p-2 text-sm font-medium text-black shadow-sm duration-300 ease-in-out hover:scale-105"
             >
               <p>Novo Projeto</p>
               <AiOutlinePlus style={{ fontSize: "18px" }} />
@@ -411,13 +411,13 @@ export default function Home() {
             "https://forms.office.com/Pages/ResponsePage.aspx?id=8eMER-Xc8UymdamsboG6_zOKWJXTTFJBqfYnVlq8djNUOVA3MTdBNzYwQldIUlNFTFNZWTJBVk9LRS4u"
           }
         >
-          <div className="fixed bottom-10 right-[30px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]">
-            <p className="text-xs font-bold uppercase">Sugestões</p>
+          <div className="fixed bottom-10 right-[30px] cursor-pointer rounded-lg bg-[#fbcb83] p-3 ">
+            <p className="text-xs font-bold uppercase text-black">Sugestões</p>
           </div>
         </Link>
         <Link href={"https://wa.me/5534984064658"}>
-          <div className="fixed bottom-10 right-[140px] flex cursor-pointer items-center gap-2 rounded-lg bg-[#15599a] p-3 text-xs text-white hover:bg-[#fead61] hover:text-[#15599a]">
-            <p className="text-xs font-bold uppercase">Volts</p>
+          <div className="fixed bottom-10 right-[140px] flex cursor-pointer items-center gap-2 rounded-lg bg-[#fbcb83] p-3 text-xs">
+            <p className="text-xs font-bold uppercase text-black">Suporte</p>
             <MdWhatsapp />
           </div>
         </Link>

@@ -28,7 +28,7 @@ function JourneyInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] pb-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         DADOS PARA CONTATO
       </span>
       <div className="flex grow flex-col gap-2 p-2">

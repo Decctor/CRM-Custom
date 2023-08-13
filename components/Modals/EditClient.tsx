@@ -158,7 +158,7 @@ function EditClient({
           </div>
 
           <div className="flex h-full flex-col gap-y-2 overflow-y-auto overscroll-y-auto border-b border-gray-200 py-2 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
-            <div className="flex flex-col border-b border-[#15599a] px-2 pb-4 pt-2">
+            <div className="flex flex-col border-b border-[#fbcb83] px-2 pb-4 pt-2">
               {newProject.isOpen ? (
                 <div className="flex w-full flex-col gap-2">
                   <div className="flex w-full items-center justify-end">
@@ -303,7 +303,7 @@ function EditClient({
                   {clientInfo.projetos?.length &&
                   clientInfo.projetos.length > 0 ? (
                     <div className="flex w-full flex-col">
-                      <h1 className="mb-2 font-bold text-[#15599a]">
+                      <h1 className="mb-2 font-bold text-[#fbcb83]">
                         PROJETO VINCULADOS
                       </h1>
                       <div className="flex w-full items-center rounded-tl-md rounded-tr-md bg-black p-1 text-white">
@@ -653,7 +653,7 @@ function EditClient({
             <div className="my-2 flex w-full items-center justify-end px-4">
               <button
                 onClick={() => mutate()}
-                className="font-medium text-[#15599a] duration-300 ease-in-out hover:scale-110"
+                className="font-medium text-blue-500 duration-300 ease-in-out hover:scale-110"
               >
                 SALVAR
               </button>

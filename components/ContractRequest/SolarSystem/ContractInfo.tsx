@@ -127,7 +127,7 @@ function ContractInfo({
   }
   return (
     <div className="flex w-full flex-col  bg-[#fff] pb-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         DADOS PARA CONTRATO
       </span>
       <div className="flex flex-col flex-wrap justify-around gap-2 p-2 lg:grid lg:grid-cols-3">

@@ -207,7 +207,7 @@ function ProposeOeM({
         ) : null}
         {proposeCreationSuccess ? (
           <div className="flex min-h-[350px] w-full flex-col items-center justify-center gap-1 lg:w-[600px]">
-            <p className="text-center font-bold text-[#15599a]">
+            <p className="text-center font-bold text-[#fbcb83]">
               A proposta foi gerada com sucesso e vinculada ao projeto em
               questão.
             </p>

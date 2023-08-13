@@ -33,6 +33,7 @@ const getDistance: NextApiHandler<GetResponse> = async (req, res) => {
 
       res.end(zipContent);
     } catch (error) {
+      console.log(error);
       throw "Houve um erro no download do arquivo.";
     }
   }

@@ -120,7 +120,7 @@ function PeriodDropdownFilter({
             )}
             <button
               onClick={handleFilter}
-              className="rounded bg-[#fead61] p-1 text-[#15599a] duration-300 ease-in-out hover:scale-105 hover:bg-[#15599a] hover:text-white"
+              className="rounded bg-[#fead61] p-1 text-[#fbcb83] duration-300 ease-in-out hover:scale-105 hover:bg-[#fbcb83] hover:text-white"
             >
               <AiOutlineSearch />
             </button>

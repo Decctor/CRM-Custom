@@ -241,7 +241,7 @@ function ReviewInfo({
         </span>
         <div className="w-full grow flex-col">
           <div className="flex w-full flex-col  bg-[#fff] pb-2">
-            <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+            <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
               DADOS GERAIS
             </span>
             <div className="flex w-full grow flex-col gap-2">
@@ -395,7 +395,7 @@ function ReviewInfo({
             </div>
           </div>
           <div className="flex w-full flex-col  bg-[#fff] pb-2">
-            <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+            <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
               DADOS DO SISTEMA
             </span>
             <p className="text-center text-lg italic text-gray-500">
@@ -407,7 +407,7 @@ function ReviewInfo({
             </p>
           </div>
           <div className="flex w-full flex-col  bg-[#fff] pb-2">
-            <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+            <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
               DADOS DO PADRÃO
             </span>
             <p className="text-center text-lg italic text-gray-500">
@@ -421,7 +421,7 @@ function ReviewInfo({
             </p>
           </div>
           <div className="flex w-full flex-col  bg-[#fff] pb-2">
-            <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+            <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
               DADOS DO TRANSFORMADOR
             </span>
             <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
@@ -463,7 +463,7 @@ function ReviewInfo({
             </div>
           </div>
           <div className="flex w-full flex-col  bg-[#fff] pb-2">
-            <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+            <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
               DADOS DO ESTRUTURA
             </span>
             <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
@@ -635,7 +635,7 @@ function ReviewInfo({
             </div>
           </div>
           <div className="flex w-full flex-col  bg-[#fff] pb-2">
-            <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+            <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
               DADOS DA INSTALAÇÃO
             </span>
             {requestInfo.tipoInversor == "INVERSOR" ? (
@@ -785,7 +785,7 @@ function ReviewInfo({
           </div>
           {requestInfo.tipoDeSolicitacao == "VISITA TÉCNICA REMOTA - RURAL" ? (
             <div className="flex w-full flex-col  bg-[#fff] pb-2">
-              <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+              <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
                 SERVIÇOS ADICIONAIS
               </span>
               <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
@@ -1060,7 +1060,7 @@ function ReviewInfo({
           ) : null}
 
           <div className="w-fll flex flex-col bg-[#fff] pb-2">
-            <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+            <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
               ARQUIVOS
             </span>
             {files

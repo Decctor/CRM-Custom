@@ -526,18 +526,18 @@ function System({
               onClick={() => setQueryType("TODOS OS KITS")}
               className={`${
                 queryType == "TODOS OS KITS"
-                  ? "bg-[#15599a] text-white hover:bg-transparent hover:text-[#15599a]"
-                  : "text-[#15599a] hover:bg-[#15599a] hover:text-white"
-              } w-full rounded border border-[#15599a] px-2  py-1 font-medium lg:w-fit`}
+                  ? "bg-[#fbcb83] text-white hover:bg-transparent hover:text-[#fbcb83]"
+                  : "text-[#fbcb83] hover:bg-[#fbcb83] hover:text-white"
+              } w-full rounded border border-[#fbcb83] px-2  py-1 font-medium lg:w-fit`}
             >
               MOSTRAR TODOS OS KITS
             </button>
             <button
               onClick={() => setShowFilters((prev) => !prev)}
-              className={`flex w-full items-center justify-center rounded border border-[#15599a] px-2 py-1 lg:w-fit ${
+              className={`flex w-full items-center justify-center rounded border border-[#fbcb83] px-2 py-1 lg:w-fit ${
                 showFilters
-                  ? "bg-[#15599a] text-white"
-                  : "bg-white text-[#15599a]"
+                  ? "bg-[#fbcb83] text-white"
+                  : "bg-white text-[#fbcb83]"
               } `}
             >
               {showFilters ? (
@@ -649,20 +649,20 @@ function System({
               </div>
               <div
                 onClick={() => ordenateKits("ASC")}
-                className={`flex h-[46px] w-full cursor-pointer items-center justify-center rounded-md border border-[#15599a] p-1 text-center lg:w-fit ${
+                className={`flex h-[46px] w-full cursor-pointer items-center justify-center rounded-md border border-[#fbcb83] p-1 text-center lg:w-fit ${
                   filters.order == "ASC"
-                    ? "bg-[#15599a] text-white"
-                    : "bg-transparent text-[#15599a]"
+                    ? "bg-[#fbcb83] text-white"
+                    : "bg-transparent text-[#fbcb83]"
                 }`}
               >
                 PREÇO CRESCENTE
               </div>
               <div
                 onClick={() => ordenateKits("DESC")}
-                className={`flex h-[46px] w-full cursor-pointer items-center justify-center rounded-md border border-[#15599a] p-1 text-center lg:w-fit ${
+                className={`flex h-[46px] w-full cursor-pointer items-center justify-center rounded-md border border-[#fbcb83] p-1 text-center lg:w-fit ${
                   filters.order == "DESC"
-                    ? "bg-[#15599a] text-white"
-                    : "bg-transparent text-[#15599a]"
+                    ? "bg-[#fbcb83] text-white"
+                    : "bg-transparent text-[#fbcb83]"
                 }`}
               >
                 PREÇO DECRESCENTE
@@ -679,7 +679,7 @@ function System({
             <ImSad style={{ fontSize: "50px", color: "#fead61" }} />
             <p className="w-full text-center text-sm italic text-gray-600 lg:w-[50%]">
               Houve um erro na busca dos kits. Por favor, tente
-              <strong className="text-[#15599a]">
+              <strong className="text-[#fbcb83]">
                 "Mostrar todos os kits"
               </strong>
               . Se o erro persistir, tente recarregar a página.
@@ -702,9 +702,9 @@ function System({
               <ImSad style={{ fontSize: "50px", color: "#fead61" }} />
               <p className="w-full text-center text-sm italic text-gray-600 lg:w-[50%]">
                 Oops, parece que não temos kits cadastrados pra essa faixa de
-                potência. Contate o Volts (34 8406-4658) ou, se desejar, busque
-                os demais kits clicando em{" "}
-                <strong className="text-[#15599a]">
+                potência. Contate o suporte (34 8406-4658) ou, se desejar,
+                busque os demais kits clicando em{" "}
+                <strong className="text-[#fbcb83]">
                   "Mostrar todos os kits"
                 </strong>
                 .
@@ -736,7 +736,7 @@ function System({
               </div>
             ))}
             <div className="flex w-full items-center justify-center gap-2">
-              <div className="flex flex-col rounded border border-[#15599a] p-2 text-[#15599a]">
+              <div className="flex flex-col rounded border border-[#fbcb83] p-2 text-[#fbcb83]">
                 <h1 className="text-center">POTÊNCIA PICO TOTAL</h1>
                 <h1 className="text-center font-medium">
                   {getSelectedKitsPowerPeak(selectedKits).toLocaleString(

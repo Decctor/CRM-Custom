@@ -4,6 +4,7 @@ type TextInputProps = {
   label: string;
   value: string | undefined;
   editable?: boolean;
+  labelClassName?: string;
   handleChange: (value: string | undefined) => void;
 };
 function DateInput({
@@ -11,6 +12,7 @@ function DateInput({
   label,
   value,
   editable = true,
+  labelClassName,
   handleChange,
 }: TextInputProps) {
   const inputIdentifier = label.toLowerCase().replace(" ", "_");
@@ -20,7 +22,11 @@ function DateInput({
     >
       <label
         htmlFor={inputIdentifier}
-        className="font-sans font-bold  text-[#353432]"
+        className={
+          labelClassName
+            ? labelClassName
+            : "font-sans font-bold  text-[#353432]"
+        }
       >
         {label}
       </label>

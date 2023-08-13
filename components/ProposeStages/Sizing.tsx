@@ -159,7 +159,7 @@ function Sizing({
               />
             </div>
           </div>
-          <h1 className="justify-center text-center text-sm font-bold text-[#15599a]">
+          <h1 className="justify-center text-center text-sm font-bold text-[#fbcb83]">
             TARIFAS
           </h1>
           <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
@@ -285,7 +285,7 @@ function Sizing({
               />
             </div>
           </div>
-          <h1 className="justify-center text-center text-sm font-bold text-[#15599a]">
+          <h1 className="justify-center text-center text-sm font-bold text-[#fbcb83]">
             ESPECIFICIDADES DA REDE
           </h1>
           <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
@@ -335,7 +335,7 @@ function Sizing({
               </select>
             </div>
           </div>
-          <h1 className="justify-center text-center text-sm font-bold text-[#15599a]">
+          <h1 className="justify-center text-center text-sm font-bold text-[#fbcb83]">
             ESPECIFICIDADES DA INSTALAÇÃO
           </h1>
           <div className="flex w-full flex-col items-center gap-2 lg:flex-row">
@@ -407,7 +407,7 @@ function Sizing({
           </div>
           {technicalAnalysis ? (
             <>
-              <h1 className="justify-center text-center text-sm font-bold text-[#15599a]">
+              <h1 className="justify-center text-center text-sm font-bold text-[#fbcb83]">
                 AVALIAÇÕES TÉCNICAS VINCULADAS AO PROJETO
               </h1>
               <div className="flex w-full flex-wrap items-center justify-center gap-2">

@@ -28,7 +28,7 @@ function Kit({ kit, handleClick }: KitCardProps) {
     <div
       onClick={() => handleClick()}
       className={
-        "relative flex h-[500px] w-full cursor-pointer  flex-col gap-2 rounded border border-gray-300 p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02] hover:bg-blue-50 lg:h-[400px] lg:w-[350px]"
+        "relative flex h-[500px] w-full cursor-pointer flex-col  gap-2 rounded border border-gray-600 bg-[#27374D] p-3 shadow-lg duration-300 ease-in-out hover:scale-[1.02]  lg:h-[400px] lg:w-[350px]"
       }
     >
       {kit.ativo ? (
@@ -37,14 +37,14 @@ function Kit({ kit, handleClick }: KitCardProps) {
         </div>
       ) : null}
 
-      <h1 className="text-center text-lg font-medium text-gray-800">
+      <h1 className="text-center text-lg font-medium text-gray-200">
         {kit.nome}
       </h1>
       <p className="text-center text-xs text-gray-400">{kit.categoria}</p>
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center justify-start gap-2">
           <ImPower style={{ color: "rgb(239,68,68)", fontSize: "20px" }} />
-          <p className="text-xs font-thin text-gray-600">
+          <p className="text-xs font-thin text-gray-300">
             {kit.potPico
               ? (kit.potPico / 1000).toLocaleString("pt-br", {
                   minimumFractionDigits: 1,
@@ -68,7 +68,7 @@ function Kit({ kit, handleClick }: KitCardProps) {
             <MdAttachMoney
               style={{ color: "rgb(34,197,94)", fontSize: "20px" }}
             />
-            <p className="text-xs font-thin text-gray-600">
+            <p className="text-xs font-thin text-gray-300">
               R${" "}
               {kit.preco.toLocaleString("pt-br", {
                 minimumFractionDigits: 2,
@@ -83,7 +83,7 @@ function Kit({ kit, handleClick }: KitCardProps) {
       </div>
       <div className="flex w-full items-start">
         <div className="flex w-1/2 flex-col items-start">
-          <p className="font-medium text-blue-800">TOPOLOGIA</p>
+          <p className="font-medium text-blue-500">TOPOLOGIA</p>
           <div className="flex items-center gap-2">
             <TbTopologyFullHierarchy
               style={{ color: "#FFD200", fontSize: "25px" }}
@@ -92,19 +92,19 @@ function Kit({ kit, handleClick }: KitCardProps) {
           </div>
         </div>
         <div className="flex w-1/2 flex-col items-end">
-          <p className="font-medium text-blue-800">FORNECEDOR</p>
+          <p className="font-medium text-blue-500">FORNECEDOR</p>
           <div className="flex items-center gap-2">
             <AiOutlineShoppingCart
-              style={{ color: "#15599a", fontSize: "25px" }}
+              style={{ color: "#fbcb83", fontSize: "25px" }}
             />{" "}
             <p className="text-xs font-light text-gray-500">{kit.fornecedor}</p>
           </div>
         </div>
       </div>
       <div className="flex w-full flex-col">
-        <h1 className="text-center font-medium text-gray-600">INVERSORES</h1>
+        <h1 className="text-center font-medium text-gray-300">INVERSORES</h1>
         {kit.inversores.map((inverter) => (
-          <div className="flex w-full items-center justify-between text-xs font-thin text-gray-600">
+          <div className="flex w-full items-center justify-between text-xs font-thin text-gray-300">
             <h1>
               {inverter.fabricante}-{inverter.modelo}
             </h1>
@@ -113,9 +113,9 @@ function Kit({ kit, handleClick }: KitCardProps) {
         ))}
       </div>
       <div className="flex w-full flex-col">
-        <h1 className="text-center font-medium text-gray-600">MÓDULOS</h1>
+        <h1 className="text-center font-medium text-gray-300">MÓDULOS</h1>
         {kit.modulos.map((module) => (
-          <div className="flex w-full items-center justify-between text-xs font-thin text-gray-600">
+          <div className="flex w-full items-center justify-between text-xs font-thin text-gray-300">
             <h1>
               {module.fabricante}-{module.modelo}
             </h1>

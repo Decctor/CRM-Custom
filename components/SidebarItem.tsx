@@ -22,7 +22,7 @@ function SidebarItem({ isOpen, icon, text, url }: SiderbarItemProps) {
             <motion.p
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
-              className={`pl-3 text-xs text-gray-600 `}
+              className={`pl-3 text-xs text-gray-200 `}
             >
               {text}
             </motion.p>

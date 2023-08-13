@@ -104,13 +104,13 @@ function PaymentInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] pb-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         DADOS FINANCEIROS E NEGOCIAÇÃO
       </span>
       <div className="flex w-full grow flex-col">
         <button
           onClick={() => setPaymentInfoSameAsContract()}
-          className="w-fit self-center rounded bg-[#15599a] p-2 text-xs font-medium text-white"
+          className="w-fit self-center rounded bg-[#fbcb83] p-2 text-xs font-medium text-white"
         >
           Usar mesmas informações preenchidas para contrato
         </button>

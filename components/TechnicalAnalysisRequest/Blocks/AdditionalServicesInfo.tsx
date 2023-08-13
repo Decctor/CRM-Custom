@@ -83,7 +83,7 @@ function AdditionalServicesInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] px-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         SERIVÇOS ADICIONAIS
       </span>
       <div className="flex w-full grow flex-col gap-2">

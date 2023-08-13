@@ -135,7 +135,7 @@ function PAInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] px-2">
-      <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
         DADOS DO PADRÃO
       </span>
 
@@ -312,7 +312,7 @@ function PAInfo({
           <div className="flex w-full flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="laudo"
               >
                 FOTO DO PADRÃO
@@ -360,7 +360,7 @@ function PAInfo({
           <div className="flex w-full flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="laudo"
               >
                 FOTO DO DISJUNTOR DO PADRÃO
@@ -410,7 +410,7 @@ function PAInfo({
           <div className="flex w-full grow flex-col items-center justify-center self-center">
             <div className="flex items-center gap-2">
               <label
-                className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                 htmlFor="laudo"
               >
                 FOTO DOS CABOS DO PADRÃO
@@ -459,7 +459,7 @@ function PAInfo({
             <div className="flex w-full grow flex-col items-center justify-center self-center">
               <div className="flex items-center gap-2">
                 <label
-                  className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                  className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                   htmlFor="laudo"
                 >
                   FOTO DO POSTE
@@ -511,7 +511,7 @@ function PAInfo({
             <div className="flex w-full flex-col items-center justify-center self-center">
               <div className="flex items-center gap-2">
                 <label
-                  className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                  className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                   htmlFor="laudo"
                 >
                   FOTO DO LOCALIZAÇÃO DO PADRÃO ANTIGO
@@ -563,7 +563,7 @@ function PAInfo({
             <div className="flex w-full flex-col items-center justify-center self-center">
               <div className="flex items-center gap-2">
                 <label
-                  className="ml-2 text-center text-sm font-bold text-[#15599a]"
+                  className="ml-2 text-center text-sm font-bold text-[#fbcb83]"
                   htmlFor="laudo"
                 >
                   FOTO DO LOCALIZAÇÃO DO PADRÃO NOVO

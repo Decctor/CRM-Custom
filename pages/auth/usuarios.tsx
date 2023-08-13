@@ -106,7 +106,7 @@ function Users() {
           )}
           <button
             onClick={() => setUserModalIsOpen(true)}
-            className="fixed bottom-10 left-[100px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]"
+            className="fixed bottom-10 left-[100px] cursor-pointer rounded-lg bg-[#fbcb83] p-3 text-white hover:bg-[#fead61] hover:text-[#fbcb83]"
           >
             <p className="font-bold">NOVO USUÁRIO</p>
           </button>

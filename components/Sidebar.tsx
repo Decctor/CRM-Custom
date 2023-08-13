@@ -12,7 +12,7 @@ import { BsGraphUpArrow } from "react-icons/bs";
 import SidebarItem from "./SidebarItem";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Logo from "../utils/noTextLogo.png";
+import Logo from "../utils/images/logo.png";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useNotifications } from "@/utils/methods";
@@ -36,12 +36,12 @@ export const Sidebar = () => {
           delay: 0.1,
         }}
         style={{ maxHeight: "100vh" }}
-        className={`overscroll-y sticky top-0 z-[90] hidden flex-col overflow-y-auto border-r border-gray-200 bg-[#fff] px-2  py-4 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 md:flex ${
+        className={`overscroll-y sticky top-0 z-[90] hidden flex-col overflow-y-auto border-r border-gray-700 bg-[#222831] px-2  py-4 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 md:flex ${
           sidebarExtended ? "w-[210px] min-w-[210px]" : "w-[70px] min-w-[70px]"
         }`}
       >
         <div className="flex h-[70px] w-full items-start justify-center">
-          <div className="relative h-[37px] w-[37px]">
+          <div className="relative h-[35px] w-[35px]">
             <Image src={Logo} alt="LOGO" title="LOGO" fill={true} />
           </div>
         </div>
@@ -57,12 +57,12 @@ export const Sidebar = () => {
               },
             }}
             onClick={() => setSidebarExtended((prev) => !prev)}
-            className={`my-2 flex w-fit cursor-pointer items-center justify-center self-center rounded p-2  text-[#15599a] duration-300 ease-in hover:scale-105`}
+            className={`my-2 flex w-fit cursor-pointer items-center justify-center self-center rounded p-2  text-[#fbcb83] duration-300 ease-in hover:scale-105`}
           >
             <TfiAngleRight />
           </motion.div>
           {sidebarExtended ? (
-            <h2 className="h-[18px] text-xs text-gray-500">PRINCIPAL</h2>
+            <h2 className="h-[18px] text-xs text-gray-400">PRINCIPAL</h2>
           ) : (
             <div className="h-[18px] w-full "></div>
           )}
@@ -71,7 +71,7 @@ export const Sidebar = () => {
             isOpen={sidebarExtended}
             url="/"
             icon={
-              <MdDashboard style={{ fontSize: "20px", color: "#15599a" }} />
+              <MdDashboard style={{ fontSize: "20px", color: "#fbcb83" }} />
             }
           />
           <SidebarItem
@@ -79,11 +79,11 @@ export const Sidebar = () => {
             isOpen={sidebarExtended}
             url="/estatisticas"
             icon={
-              <ImStatsDots style={{ fontSize: "20px", color: "#15599a" }} />
+              <ImStatsDots style={{ fontSize: "20px", color: "#fbcb83" }} />
             }
           />
           {sidebarExtended ? (
-            <h2 className="mt-2 h-[18px] text-xs text-gray-500">CADASTROS</h2>
+            <h2 className="mt-2 h-[18px] text-xs text-gray-400">CADASTROS</h2>
           ) : (
             <div className="mt-2 h-[18px]"></div>
           )}
@@ -91,14 +91,14 @@ export const Sidebar = () => {
             text="Clientes"
             isOpen={sidebarExtended}
             url="/clientes"
-            icon={<FaUser style={{ fontSize: "20px", color: "#15599a" }} />}
+            icon={<FaUser style={{ fontSize: "20px", color: "#fbcb83" }} />}
           />
           <SidebarItem
             text="Kits"
             isOpen={sidebarExtended}
             url="/kits"
             icon={
-              <FaSolarPanel style={{ fontSize: "20px", color: "#15599a" }} />
+              <FaSolarPanel style={{ fontSize: "20px", color: "#fbcb83" }} />
             }
           />
         </div>
@@ -124,7 +124,7 @@ export const Sidebar = () => {
               text="Controle de Usuários"
               isOpen={sidebarExtended}
               url={"/auth/usuarios"}
-              icon={<FaUsers style={{ fontSize: "20px", color: "#15599a" }} />}
+              icon={<FaUsers style={{ fontSize: "20px", color: "#fbcb83" }} />}
             />
           ) : null}
           <div
@@ -137,7 +137,7 @@ export const Sidebar = () => {
               }}
               style={{
                 fontSize: "20px",
-                color: "#15599a",
+                color: "#fbcb83",
                 cursor: "pointer",
                 alignSelf: "center",
               }}
@@ -148,7 +148,7 @@ export const Sidebar = () => {
       <div
         className={`sticky  z-[90] flex flex-col ${
           sidebarExtended ? "h-[90px]" : "h-[50px] "
-        } w-full items-center border-t border-gray-200 bg-[#fff] md:hidden`}
+        } w-full items-center border-t border-gray-200 bg-[#222831] md:hidden`}
       >
         <div className="grid h-[50px] w-full grid-cols-3">
           <div className="col-span-1 flex items-center justify-center gap-2">
@@ -191,7 +191,7 @@ export const Sidebar = () => {
               }}
               transition={{ duration: 0.1 }}
               onClick={() => setSidebarExtended((prev) => !prev)}
-              className={`my-2 flex w-fit cursor-pointer items-center justify-center self-center rounded p-2  text-[#15599a] duration-300 ease-in hover:scale-105`}
+              className={`my-2 flex w-fit cursor-pointer items-center justify-center self-center rounded p-2  text-[#fbcb83] duration-300 ease-in hover:scale-105`}
             >
               <TfiAngleRight />
             </motion.div>
@@ -208,17 +208,17 @@ export const Sidebar = () => {
             transition={{ duration: 0.25 }}
             className="flex h-[40px] w-full flex-wrap items-center justify-center gap-2"
           >
-            <div className="flex items-center justify-center p-2 text-[#15599a] duration-300 ease-in hover:scale-105 hover:bg-blue-100">
+            <div className="flex items-center justify-center p-2 text-[#fbcb83] duration-300 ease-in hover:scale-105 hover:bg-blue-100">
               <Link href={"/"}>
                 <MdDashboard />
               </Link>
             </div>
-            <div className="flex items-center justify-center p-2 text-[#15599a] duration-300 ease-in hover:scale-105 hover:bg-blue-100">
+            <div className="flex items-center justify-center p-2 text-[#fbcb83] duration-300 ease-in hover:scale-105 hover:bg-blue-100">
               <Link href={"/clientes"}>
                 <FaUser />
               </Link>
             </div>
-            <div className="flex items-center justify-center p-2 text-[#15599a] duration-300 ease-in hover:scale-105 hover:bg-blue-100">
+            <div className="flex items-center justify-center p-2 text-[#fbcb83] duration-300 ease-in hover:scale-105 hover:bg-blue-100">
               <Link href={"/kits"}>
                 <FaSolarPanel />
               </Link>

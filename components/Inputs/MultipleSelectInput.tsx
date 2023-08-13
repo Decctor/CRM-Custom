@@ -13,6 +13,7 @@ type SelectInputProps<T> = {
   label: string;
   selected: (string | number)[] | null;
   selectedItemLabel: string;
+  labelClassName?: string;
   options: SelectOption<T>[] | null;
   handleChange: (value: T) => void;
   onReset: () => void;
@@ -24,6 +25,7 @@ function MultipleSelectInput<T>({
   selected,
   options,
   selectedItemLabel,
+  labelClassName,
   handleChange,
   onReset,
 }: SelectInputProps<T>) {
@@ -111,7 +113,11 @@ function MultipleSelectInput<T>({
     >
       <label
         htmlFor={inputIdentifier}
-        className="font-sans font-bold  text-[#353432]"
+        className={
+          labelClassName
+            ? labelClassName
+            : "font-sans font-bold  text-[#353432]"
+        }
       >
         {label}
       </label>

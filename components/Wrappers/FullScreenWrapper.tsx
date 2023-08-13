@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import LoadingPage from "../utils/LoadingPage";
 function FullScreenWrapper({ children }: PropsWithChildren) {
   return (
-    <div className="flex min-h-[100vh] w-screen max-w-full flex-col  bg-[#fff] xl:min-h-[100vh]">
+    <div className="flex min-h-[100vh] w-screen max-w-full flex-col  bg-[#393E46] xl:min-h-[100vh]">
       <div className="flex min-h-[100%] grow ">
         {/* <Sidebar isOpen={sidebarIsOpen} /> */}
         <div className="flex w-full grow flex-col">{children}</div>

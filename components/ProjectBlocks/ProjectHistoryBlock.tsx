@@ -117,9 +117,9 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
   });
   console.log(history);
   return (
-    <div className="flex w-full flex-col gap-2 rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg">
-      <div className="flex h-fit flex-col items-center justify-between border-b border-gray-200 pb-2 lg:h-[40px] lg:flex-row">
-        <h1 className="font-bold text-black">Histórico</h1>
+    <div className="flex w-full flex-col gap-2 rounded-md border border-gray-600 bg-[#27374D] p-3 shadow-lg">
+      <div className="flex h-fit flex-col items-center justify-between border-b border-gray-600 pb-2 lg:h-[40px] lg:flex-row">
+        <h1 className="font-bold text-white">Histórico</h1>
         <div className="mt-2 flex w-full grow flex-col items-center justify-end gap-2 lg:mt-0 lg:w-fit lg:flex-row">
           <button
             onClick={() => {
@@ -132,7 +132,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
               }));
               setView("NEW ACTIVITY");
             }}
-            className="flex w-full items-center justify-center gap-2 rounded bg-[#15599a] p-1.5 font-medium text-white hover:bg-blue-800 lg:w-fit"
+            className="flex w-full items-center justify-center gap-2 rounded bg-[#fbcb83] p-1.5 font-medium text-white hover:bg-blue-300 lg:w-fit"
           >
             <BsClipboardCheck />
             <p className="text-xs font-normal">Nova Atividade</p>
@@ -145,7 +145,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
               }));
               setView("NEW NOTE");
             }}
-            className="flex w-full items-center justify-center gap-2 rounded bg-[#15599a] p-1.5 font-medium text-white hover:bg-blue-800 lg:w-fit"
+            className="flex w-full items-center justify-center gap-2 rounded bg-[#fbcb83] p-1.5 font-medium text-white hover:bg-blue-300 lg:w-fit"
           >
             <TbNotes />
             <p className="text-xs font-normal">Nova Anotação</p>
@@ -192,7 +192,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
                     : null}
                 </>
               ) : (
-                <p className="w-full grow text-center italic text-gray-500">
+                <p className="w-full grow text-center italic text-gray-200">
                   Nenhuma atividade vinculada a esse projeto foi encontrada...
                 </p>
               )
@@ -217,7 +217,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
                 ))
               ) : (
                 <div className="flex h-[50px] items-center justify-center">
-                  <p className="text-sm italic text-gray-500">
+                  <p className="text-sm italic text-gray-200">
                     Nenhuma atividade vinculada a esse projeto foi encontrada...
                   </p>
                 </div>
@@ -233,6 +233,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
           <div className="flex w-full grow flex-col gap-2">
             <TextInput
               label="TÍTULO DA ATIVIDADE"
+              labelClassName="font-sans font-medium text-white"
               placeholder="Preencha o título da atividade."
               value={newEvent.titulo}
               handleChange={(value) =>
@@ -244,6 +245,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
               <div className="w-full lg:w-[50%]">
                 <SelectInput
                   label="TIPO"
+                  labelClassName="font-sans font-medium text-white"
                   value={newEvent.tipo}
                   options={[
                     { id: 1, value: "LIGAÇÃO", label: "LIGAÇÃO" },
@@ -263,7 +265,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
               <div className="flex w-full flex-col gap-1 lg:w-[50%]">
                 <label
                   htmlFor={"DATAVENCIMENTO"}
-                  className="font-sans font-bold  text-[#353432]"
+                  className="font-sans font-medium text-white"
                 >
                   DATA DE VENCIMENTO
                 </label>
@@ -292,7 +294,7 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
                     }))
                   }
                   type="datetime-local"
-                  className="w-full rounded-md border border-gray-200 p-3 text-sm outline-none placeholder:italic"
+                  className="w-full rounded-md border border-gray-600 p-3 text-sm outline-none placeholder:italic"
                 />
               </div>
             </div>
@@ -305,19 +307,19 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
                 }))
               }
               placeholder="Observações sobre a atividade..."
-              className="h-[80px] resize-none border border-gray-200 bg-gray-100 p-2 text-center outline-none"
+              className="h-[80px] resize-none border border-gray-600 bg-gray-100 p-2 text-center outline-none"
             />
           </div>
-          <div className="flex w-full items-center justify-end gap-3 border-t border-gray-200 p-1">
+          <div className="flex w-full items-center justify-end gap-3 border-t border-gray-600 p-1">
             <button
               onClick={() => setView("HISTORY")}
-              className="text-gray-500 duration-300 ease-in-out hover:scale-105"
+              className="text-gray-200 duration-300 ease-in-out hover:scale-105"
             >
               FECHAR
             </button>
             <button
               onClick={() => createEvent()}
-              className="font-bold text-[#15599a] duration-300 ease-in-out hover:scale-105"
+              className="font-bold text-blue-200 duration-300 ease-in-out hover:scale-105"
             >
               CRIAR
             </button>
@@ -336,19 +338,19 @@ function ProjectHistoryBlock({ projectId, session }: ProjectHistoryBlockProps) {
                 }))
               }
               placeholder="Escreva aqui uma anotação ou atualização acerca do projeto."
-              className="h-[80px] resize-none border border-gray-200 bg-gray-100 p-2 text-center outline-none"
+              className="h-[80px] resize-none border border-gray-600 bg-gray-100 p-2 text-center outline-none"
             />
           </div>
-          <div className="flex w-full items-center justify-end gap-3 border-t border-gray-200 p-1">
+          <div className="flex w-full items-center justify-end gap-3 border-t border-gray-600 p-1">
             <button
               onClick={() => setView("HISTORY")}
-              className="text-gray-500 duration-300 ease-in-out hover:scale-105"
+              className="text-gray-200 duration-300 ease-in-out hover:scale-105"
             >
               FECHAR
             </button>
             <button
               onClick={() => createEvent()}
-              className="font-bold text-[#15599a] duration-300 ease-in-out hover:scale-105"
+              className="font-bold text-blue-200 duration-300 ease-in-out hover:scale-105"
             >
               CRIAR
             </button>

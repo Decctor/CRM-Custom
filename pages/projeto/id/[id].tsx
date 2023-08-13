@@ -28,7 +28,6 @@ import {
 import { FaCity } from "react-icons/fa";
 import { GiPositionMarker } from "react-icons/gi";
 import { HiIdentification } from "react-icons/hi";
-import SleepyVolts from "../../../utils/sleepVolts.svg";
 import Image from "next/image";
 import TextInput from "@/components/Inputs/TextInput";
 import DateInput from "@/components/Inputs/DateInput";
@@ -134,19 +133,19 @@ function Projeto() {
     return (
       <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
-        <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
+        <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#393E46] p-6">
           <div className="flex w-full flex-col items-center justify-between border-b border-[#fead61] pb-2 lg:flex-row">
             <div className="flex w-full flex-col items-start">
               <div className="flex w-full flex-col items-center gap-2 lg:w-fit lg:flex-row">
                 <h1 className="flex text-center font-Raleway text-2xl font-bold text-[#fead41] lg:text-start">
                   {project.identificador}
                 </h1>
-                <h1 className="flex text-center font-Raleway text-2xl font-bold text-blue-900 lg:text-start">
+                <h1 className="flex text-center font-Raleway text-2xl font-bold text-white lg:text-start">
                   {project.nome}
                 </h1>
               </div>
 
-              <p className="w-full text-start text-xs italic text-gray-500">
+              <p className="w-full text-start text-xs italic text-gray-300">
                 {project.descricao}
               </p>
             </div>
@@ -207,15 +206,15 @@ function Projeto() {
           </div>
 
           <div className="flex w-full flex-col items-start gap-6 py-4 lg:flex-row">
-            <div className="flex h-[300px] w-full flex-col rounded-md border border-gray-200 bg-[#fff] p-3 shadow-lg lg:h-[230px] lg:w-[40%]">
-              <div className="flex h-[40px] items-center justify-between border-b border-gray-200 pb-2">
-                <h1 className="font-bold text-black">Dados do Cliente</h1>
+            <div className="flex h-[300px] w-full flex-col rounded-md border border-gray-600 bg-[#27374D] p-3 shadow-lg lg:h-[230px] lg:w-[40%]">
+              <div className="flex h-[40px] items-center justify-between border-b border-gray-600 pb-2">
+                <h1 className="font-bold text-white">Dados do Cliente</h1>
                 <div
                   onClick={() => {
                     setEditModalInfo(project.cliente);
                     setEditModalIsOpen(true);
                   }}
-                  className="cursor-pointer text-lg text-[#15599a] duration-300 ease-in-out hover:scale-110"
+                  className="cursor-pointer text-lg text-[#fbcb83] duration-300 ease-in-out hover:scale-110"
                 >
                   <AiFillEdit />
                 </div>
@@ -224,23 +223,23 @@ function Projeto() {
                 <div className="flex h-full w-full flex-col items-start justify-around gap-2 lg:w-[50%] lg:items-center">
                   <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <AiOutlineUser
-                      style={{ color: "#15599a", fontSize: "20px" }}
+                      style={{ color: "#fbcb83", fontSize: "20px" }}
                     />
-                    <p className="font-Poppins text-sm text-gray-500">
+                    <p className="font-Poppins text-sm text-gray-200">
                       {project.cliente ? project.cliente.nome : "-"}
                     </p>
                   </div>
                   <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
-                    <MdEmail style={{ color: "#15599a", fontSize: "20px" }} />
-                    <p className="break-all font-Poppins text-sm text-gray-500">
+                    <MdEmail style={{ color: "#fbcb83", fontSize: "20px" }} />
+                    <p className="break-all font-Poppins text-sm text-gray-200">
                       {project.cliente ? project.cliente.email : "-"}
                     </p>
                   </div>
                   <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <BsTelephoneFill
-                      style={{ color: "#15599a", fontSize: "20px" }}
+                      style={{ color: "#fbcb83", fontSize: "20px" }}
                     />
-                    <p className="font-Poppins text-sm text-gray-500">
+                    <p className="font-Poppins text-sm text-gray-200">
                       {project.cliente ? project.cliente.telefonePrimario : "-"}
                     </p>
                   </div>
@@ -248,15 +247,15 @@ function Projeto() {
                 <div className="flex h-full w-full flex-col items-start justify-around gap-2 lg:w-[50%] lg:items-center">
                   <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <HiIdentification
-                      style={{ color: "#15599a", fontSize: "20px" }}
+                      style={{ color: "#fbcb83", fontSize: "20px" }}
                     />
-                    <p className="font-Poppins text-sm text-gray-500">
+                    <p className="font-Poppins text-sm text-gray-200">
                       {project.cliente ? project.cliente.cpfCnpj : "-"}
                     </p>
                   </div>
                   <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
-                    <FaCity style={{ color: "#15599a", fontSize: "20px" }} />
-                    <p className="font-Poppins text-sm text-gray-500">
+                    <FaCity style={{ color: "#fbcb83", fontSize: "20px" }} />
+                    <p className="font-Poppins text-sm text-gray-200">
                       {project.cliente
                         ? `${project.cliente.cidade} (${project.cliente.uf})`
                         : "-"}
@@ -264,9 +263,9 @@ function Projeto() {
                   </div>
                   <div className="flex w-full items-center justify-center gap-2 lg:justify-start">
                     <GiPositionMarker
-                      style={{ color: "#15599a", fontSize: "20px" }}
+                      style={{ color: "#fbcb83", fontSize: "20px" }}
                     />
-                    <p className="font-Poppins text-sm text-gray-500">
+                    <p className="font-Poppins text-sm text-gray-200">
                       {project.cliente
                         ? `${project.cliente.endereco} - ${project.cliente.numeroOuIdentificador},  ${project.cliente.bairro}`
                         : "-"}
@@ -336,7 +335,7 @@ function Projeto() {
             }
           />
         ) : null}
-        {/* <div className="fixed bottom-10 right-[30px] cursor-pointer rounded-lg bg-[#15599a] p-3 text-white hover:bg-[#fead61] hover:text-[#15599a]">
+        {/* <div className="fixed bottom-10 right-[30px] cursor-pointer rounded-lg bg-[#fbcb83] p-3 text-white hover:bg-[#fead61] hover:text-[#fbcb83]">
           <p className="text-xs font-bold uppercase">ABRIR CHAMADO</p>
         </div> */}
       </div>

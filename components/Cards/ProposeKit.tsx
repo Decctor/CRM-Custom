@@ -122,7 +122,7 @@ function ProposeKit({ kit, project, propose, handleSelect }: KitCardProps) {
             <p className="font-medium text-blue-800">FORNECEDOR</p>
             <div className="flex items-center gap-2">
               <AiOutlineShoppingCart
-                style={{ color: "#15599a", fontSize: "25px" }}
+                style={{ color: "#fbcb83", fontSize: "25px" }}
               />{" "}
               <p className="text-xs font-light text-gray-500">
                 {kit.fornecedor}
@@ -176,7 +176,7 @@ function ProposeKit({ kit, project, propose, handleSelect }: KitCardProps) {
 
         <button
           onClick={() => handleSelect(kit)}
-          className="flex h-[30px] w-[30px] items-center justify-center rounded-full border border-[#15599a] p-1 text-[#15599a] hover:bg-[#15599a] hover:text-white"
+          className="flex h-[30px] w-[30px] items-center justify-center rounded-full border border-[#fbcb83] p-1 text-[#fbcb83] hover:bg-[#fbcb83] hover:text-white"
         >
           <IoMdAdd />
         </button>

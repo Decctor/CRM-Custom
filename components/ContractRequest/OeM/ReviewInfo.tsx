@@ -136,7 +136,7 @@ function ReviewInfo({
       </span>
       <div className="flex w-full grow flex-col">
         <div className="flex w-full flex-col  bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DADOS PARA CONTRATO
           </span>
           <div className="flex flex-col flex-wrap justify-around gap-2 p-2 lg:grid lg:grid-cols-3">
@@ -671,7 +671,7 @@ function ReviewInfo({
           </div>
         </div>
         <div className="flex w-full flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DADOS PARA CONTATO
           </span>
           <div className="flex grow flex-col gap-2 p-2">
@@ -761,7 +761,7 @@ function ReviewInfo({
           </div>
         </div>
         <div className="flex w-full flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DADOS PARA ENTRADA NA CONCESSIONÁRIA
           </span>
           <div className="flex flex-col gap-2 p-2 lg:grid lg:grid-cols-3">
@@ -1068,7 +1068,7 @@ function ReviewInfo({
           </div>
         </div>
         <div className="flex w-full flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DADOS DO SISTEMA
           </span>
           <div className="flex w-full grow flex-col items-center">
@@ -1139,7 +1139,7 @@ function ReviewInfo({
           </div>
         </div>
         <div className="flex w-full flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DADOS DA ESTRUTURA DE MONTAGEM
           </span>
           <div className="flex w-full grow flex-col items-center gap-2">
@@ -1320,7 +1320,7 @@ function ReviewInfo({
           </div>
         </div>
         <div className="flex w-full flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             AUMENTO DE CARGA
           </span>
           <div className="flex w-full grow flex-col">
@@ -1543,7 +1543,7 @@ function ReviewInfo({
           </div>
         </div>
         <div className="flex w-full flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             PLANO INTEGRADO DE OPERAÇÃO E MANUTENÇÃO
           </span>
           <p className="text-center text-sm italic text-gray-500">
@@ -1846,7 +1846,7 @@ function ReviewInfo({
           </div>
         </div>
         <div className="flex w-full flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DADOS FINANCEIROS E NEGOCIAÇÃO
           </span>
           <div className="flex w-full grow flex-col">
@@ -2214,7 +2214,7 @@ function ReviewInfo({
           </div>
         </div>
         <div className="flex w-full grow flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-sm font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-sm font-bold uppercase text-[#fbcb83]">
             DISTRIBUIÇÃO DE CRÉDITOS
           </span>
           <div className="mt-2 flex justify-center p-2">
@@ -2279,7 +2279,7 @@ function ReviewInfo({
                   />
                   <button
                     onClick={addCreditDist}
-                    className="rounded bg-[#fead61] p-1 font-bold hover:bg-[#15599a] hover:text-white"
+                    className="rounded bg-[#fead61] p-1 font-bold hover:bg-[#fbcb83] hover:text-white"
                   >
                     ADICIONAR
                   </button>
@@ -2316,7 +2316,7 @@ function ReviewInfo({
           )}
         </div>
         <div className="flex w-full grow flex-col bg-[#fff] pb-2">
-          <span className="py-2 text-center text-lg font-bold uppercase text-[#15599a]">
+          <span className="py-2 text-center text-lg font-bold uppercase text-[#fbcb83]">
             DOCUMENTAÇÃO
           </span>
           <div className="flex w-full flex-col items-center">

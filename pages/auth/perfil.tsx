@@ -150,11 +150,11 @@ function Profile() {
     return (
       <div className="flex h-full flex-col md:flex-row">
         <Sidebar />
-        <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
+        <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#393E46] p-6">
           <div className="flex w-full grow flex-col items-center justify-center gap-4 md:flex-row">
             <div className="flex h-fit w-full flex-col  rounded-md border border-gray-300 bg-[#fff] p-4 md:h-[80%] md:w-[40%]">
               <div className="flex w-full grow flex-col">
-                <h1 className="text-center font-Raleway text-2xl font-bold uppercase text-[#15599a]">
+                <h1 className="text-center font-Raleway text-2xl font-bold uppercase text-[#fbcb83]">
                   Meu Perfil
                 </h1>
                 <div className="flex h-[160px]  flex-col items-center justify-center">
@@ -345,7 +345,7 @@ function Profile() {
               </div>
             </div>
             <div className="flex h-fit w-full grow flex-col rounded-md border border-gray-300 bg-[#fff] p-4 md:h-[80%] md:w-[60%]">
-              <h1 className="mb-4 text-center font-Raleway text-2xl font-bold uppercase text-[#15599a]">
+              <h1 className="mb-4 text-center font-Raleway text-2xl font-bold uppercase text-[#fbcb83]">
                 Histórico de Notificações
               </h1>
               {notifications && notifications?.length > 0 ? (

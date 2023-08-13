@@ -23,12 +23,12 @@ function CheckboxInput({
       }`}
     >
       <div
-        className={`flex h-[16px] w-[16px] cursor-pointer items-center justify-center rounded-full border-2 border-[#15599a] ${
-          checked ? "bg-[#15599a]" : ""
+        className={`flex h-[16px] w-[16px] cursor-pointer items-center justify-center rounded-full border-2 border-[#fbcb83] ${
+          checked ? "bg-[#fbcb83]" : ""
         }`}
         onClick={() => handleChange(!checked)}
       >
-        {checked ? <BsCheck style={{ color: "#fead61" }} /> : null}
+        {checked ? <BsCheck style={{ color: "#000" }} /> : null}
       </div>
       <p className="cursor-pointer" onClick={() => handleChange(!checked)}>
         {checked ? labelTrue : labelFalse}

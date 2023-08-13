@@ -112,7 +112,7 @@ function HomologationInfo({
   }
   return (
     <div className="flex w-full grow flex-col bg-[#fff] pb-2">
-      <span className="py-2 text-center text-sm font-bold uppercase text-[#15599a]">
+      <span className="py-2 text-center text-sm font-bold uppercase text-[#fbcb83]">
         DADOS PARA ENTRADA NA CONCESSIONÁRIA
       </span>
       <div className="flex flex-col gap-2 p-2 lg:grid lg:grid-cols-3">
@@ -236,7 +236,7 @@ function HomologationInfo({
         <div className="col-span-3 flex items-center justify-center">
           <button
             onClick={() => useMailInfo()}
-            className="rounded bg-[#15599a] p-2 text-xs font-medium text-white"
+            className="rounded bg-[#fbcb83] p-2 text-xs font-medium text-white"
           >
             Usar informações de endereço da correspondência
           </button>

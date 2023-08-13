@@ -302,22 +302,24 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
   return (
     <div className="flex h-full flex-col md:flex-row">
       <Sidebar />
-      <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
-        <div className="flex w-full flex-col items-center justify-between border-b border-gray-200 pb-2 lg:flex-row">
+      <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#393E46] p-6">
+        <div className="flex w-full flex-col items-center justify-between border-b border-gray-600 pb-2 lg:flex-row">
           <div className="flex flex-col gap-1">
-            <h1 className="text-center font-Raleway text-xl font-bold text-gray-800 lg:text-start">
+            <h1 className="text-center font-Raleway text-xl font-bold text-white lg:text-start">
               {propose?.nome}
             </h1>
             <div className="flex items-center gap-2">
               <Link href={`/projeto/id/${propose.infoProjeto?._id}`}>
                 <div className="flex items-center gap-2">
-                  <RxDashboard style={{ color: "#15599a", fontSize: "15px" }} />
-                  <p className="text-xs">{propose?.infoProjeto?.nome}</p>
+                  <RxDashboard style={{ color: "#fbcb83", fontSize: "15px" }} />
+                  <p className="text-xs text-gray-200">
+                    {propose?.infoProjeto?.nome}
+                  </p>
                 </div>
               </Link>
               <div className="flex items-center gap-2">
-                <FaUser style={{ color: "#15599a", fontSize: "15px" }} />
-                <p className="text-xs">{propose?.autor?.nome}</p>
+                <FaUser style={{ color: "#fbcb83", fontSize: "15px" }} />
+                <p className="text-xs text-gray-200">{propose?.autor?.nome}</p>
               </div>
             </div>
           </div>
@@ -399,12 +401,12 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
             </div>
           )}
           <div className="flex min-h-[350px] w-full flex-col justify-around gap-3 lg:flex-row">
-            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-6 shadow-md lg:w-1/3">
+            <div className="flex h-full w-full flex-col rounded border border-gray-600 bg-[#27374D] p-6 shadow-md lg:w-1/3">
               <div className="flex w-full flex-col items-center">
-                <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
+                <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#fbcb83]">
                   INFORMAÇÕES GERAIS
                 </h1>
-                <p className="text-center text-xs italic text-gray-500">
+                <p className="text-center text-xs italic text-gray-200">
                   Essas são informações sobre a proposta.
                 </p>
               </div>
@@ -415,19 +417,19 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                       <ImPower
                         style={{ color: "rgb(239,68,68)", fontSize: "20px" }}
                       />
-                      <p className="text-xs font-thin text-gray-600">
+                      <p className="text-xs font-thin text-gray-200">
                         POTÊNCIA PICO E GERAÇÃO ESTIMADA
                       </p>
                     </div>
                     <div className="flex w-full items-center justify-center gap-2">
-                      <p className="text-lg font-thin text-gray-600">
+                      <p className="text-lg font-thin text-gray-200">
                         {propose?.potenciaPico?.toLocaleString("pt-br", {
                           maximumFractionDigits: 2,
                           minimumFractionDigits: 2,
                         })}{" "}
                         kWp
                       </p>
-                      <p className="text-lg font-thin text-gray-600">
+                      <p className="text-lg font-thin text-gray-200">
                         {getEstimatedGen(
                           propose.potenciaPico || 0,
                           propose.infoProjeto?.cliente?.cidade,
@@ -446,11 +448,11 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                       <ImPriceTag
                         style={{ color: "rgb(34 ,197,94)", fontSize: "20px" }}
                       />
-                      <p className="text-xs font-thin text-gray-600">
+                      <p className="text-xs font-thin text-gray-200">
                         VALOR DA PROPOSTA
                       </p>
                     </div>
-                    <p className="text-lg font-thin text-gray-600">
+                    <p className="text-lg font-thin text-gray-200">
                       R${" "}
                       {propose?.valorProposta
                         ? propose.valorProposta.toLocaleString("pt-br", {
@@ -461,24 +463,24 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     </p>
                   </div>
                   <div className="flex w-full flex-col items-center gap-2 rounded border border-gray-300 p-1 ">
-                    <h1 className="text-lg font-thin text-gray-600">KIT</h1>
+                    <h1 className="text-lg font-thin text-gray-200">KIT</h1>
                     <div className="flex w-full flex-col">
-                      <h1 className="mb-1 w-full text-center text-xs font-thin text-gray-600">
+                      <h1 className="mb-1 w-full text-center text-xs font-thin text-gray-100">
                         INVERSORES
                       </h1>
                       {propose?.kit?.inversores.map((inverter: any) => (
-                        <div className="w-full text-center text-xs font-medium text-gray-500">
+                        <div className="w-full text-center text-xs font-medium text-gray-200">
                           {inverter.qtde}x{inverter.fabricante} (
                           {inverter.modelo})
                         </div>
                       ))}
                     </div>
                     <div className="flex w-full flex-col">
-                      <h1 className="mb-1 w-full text-center text-xs font-thin text-gray-600">
+                      <h1 className="mb-1 w-full text-center text-xs font-thin text-gray-100">
                         MÓDULOS
                       </h1>
                       {propose?.kit?.modulos.map((module: any) => (
-                        <div className="w-full text-center text-xs font-medium text-gray-500">
+                        <div className="w-full text-center text-xs font-medium text-gray-200">
                           {module.qtde}x{module.fabricante} ({module.modelo})
                         </div>
                       ))}
@@ -487,81 +489,81 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                 </div>
               </div>
             </div>
-            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-6 shadow-md lg:w-1/3">
+            <div className="flex h-full w-full flex-col rounded border border-gray-600 bg-[#27374D] p-6 shadow-md lg:w-1/3">
               <div className="flex w-full flex-col items-center">
-                <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
+                <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#fbcb83]">
                   PREMISSAS
                 </h1>
-                <p className="text-center text-xs italic text-gray-500">
+                <p className="text-center text-xs italic text-gray-200">
                   Essas foram as premissas de dimensionamento utilizadas para
                   essa proposta.
                 </p>
               </div>
               <div className="flex w-full grow flex-col justify-around">
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
-                  <h1 className="font-medium text-gray-500">
+                  <h1 className="font-medium text-gray-200">
                     Consumo de energia mensal
                   </h1>
-                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                  <h1 className="font-bold text-white lg:font-medium">
                     {propose?.premissas.consumoEnergiaMensal} kWh
                   </h1>
                 </div>
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
-                  <h1 className="font-medium text-gray-500">
+                  <h1 className="font-medium text-gray-200">
                     Tarifa de energia
                   </h1>
-                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                  <h1 className="font-bold text-white lg:font-medium">
                     R$ {propose?.premissas.tarifaEnergia} R$/kWh
                   </h1>
                 </div>
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
-                  <h1 className="font-medium text-gray-500">Tarifa TUSD</h1>
-                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                  <h1 className="font-medium text-gray-200">Tarifa TUSD</h1>
+                  <h1 className="font-bold text-white lg:font-medium">
                     {propose?.premissas.tarifaTUSD} R$/kWh
                   </h1>
                 </div>
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
-                  <h1 className="font-medium text-gray-500">Tensão da rede</h1>
-                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                  <h1 className="font-medium text-gray-200">Tensão da rede</h1>
+                  <h1 className="font-bold text-white lg:font-medium">
                     {propose?.premissas.tensaoRede}
                   </h1>
                 </div>
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
-                  <h1 className="font-medium text-gray-500">Fase</h1>
-                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                  <h1 className="font-medium text-gray-200">Fase</h1>
+                  <h1 className="font-bold text-white lg:font-medium">
                     {propose?.premissas.fase}
                   </h1>
                 </div>
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
-                  <h1 className="font-medium text-gray-500">
+                  <h1 className="font-medium text-gray-200">
                     Fator de simultaneidade
                   </h1>
-                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                  <h1 className="font-bold text-white lg:font-medium">
                     {propose?.premissas.fatorSimultaneidade}
                   </h1>
                 </div>
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
-                  <h1 className="font-medium text-gray-500">
+                  <h1 className="font-medium text-gray-200">
                     Tipo de estrutura
                   </h1>
-                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                  <h1 className="font-bold text-white lg:font-medium">
                     {propose?.premissas.tipoEstrutura}
                   </h1>
                 </div>
                 <div className="flex w-full flex-col items-center justify-between lg:flex-row">
-                  <h1 className="font-medium text-gray-500">Distância</h1>
-                  <h1 className="font-bold text-gray-800 lg:font-medium">
+                  <h1 className="font-medium text-gray-200">Distância</h1>
+                  <h1 className="font-bold text-white lg:font-medium">
                     {propose?.premissas.distancia} km
                   </h1>
                 </div>
               </div>
             </div>
-            <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-6 shadow-md lg:w-1/3">
+            <div className="flex h-full w-full flex-col rounded border border-gray-600 bg-[#27374D] p-6 shadow-md lg:w-1/3">
               <div className="flex w-full flex-col items-center">
-                <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
+                <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#fbcb83]">
                   ARQUIVO
                 </h1>
-                <p className="text-center text-xs italic text-gray-500">
+                <p className="text-center text-xs italic text-gray-200">
                   Faça o download do arquivo da proposta utilize do link para
                   acessá-lo a qualquer momento.
                 </p>
@@ -574,14 +576,14 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                       propose?.nome ? propose.nome : "PROPOSTA"
                     )
                   }
-                  className="flex w-fit items-center gap-2 self-center rounded-lg border border-dashed border-[#15599a] p-2 text-[#15599a]"
+                  className="flex w-fit items-center gap-2 self-center rounded-lg border border-dashed border-[#fbcb83] p-2 text-[#fbcb83]"
                 >
                   <p>DOWNLOAD DO PDF</p>
                   <TbDownload />
                 </button>
                 {/* <button
                   onClick={() => handleESigning(propose?.linkArquivo)}
-                  className="flex w-fit items-center gap-2 self-center rounded-lg border border-dashed border-[#15599a] p-2 text-[#15599a]"
+                  className="flex w-fit items-center gap-2 self-center rounded-lg border border-dashed border-[#fbcb83] p-2 text-[#fbcb83]"
                 >
                   <p>ASSINATURA DIGITAL</p>
                   <TbDownload />
@@ -598,30 +600,30 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
           </div>
           {session?.user.permissoes.precos.visualizar ? (
             <>
-              <div className="mt-4 hidden w-full flex-col gap-1 border border-gray-200 bg-[#fff]  shadow-md lg:flex">
+              <div className="mt-4 hidden w-full flex-col gap-1 border border-gray-600 bg-[#27374D]  shadow-md lg:flex">
                 <div className="flex w-full items-center rounded bg-gray-200">
                   <div className="flex w-4/12 items-center justify-center p-1">
-                    <h1 className="font-Raleway font-bold text-gray-500">
+                    <h1 className="font-Raleway font-bold text-gray-800">
                       ITEM
                     </h1>
                   </div>
                   <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="font-Raleway font-bold text-gray-500">
+                    <h1 className="font-Raleway font-bold text-gray-800">
                       CUSTO
                     </h1>
                   </div>
                   <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="font-Raleway font-bold text-gray-500">
+                    <h1 className="font-Raleway font-bold text-gray-800">
                       IMPOSTO
                     </h1>
                   </div>
                   <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="font-Raleway font-bold text-gray-500">
+                    <h1 className="font-Raleway font-bold text-gray-800">
                       LUCRO
                     </h1>
                   </div>
                   <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="font-Raleway font-bold text-gray-500">
+                    <h1 className="font-Raleway font-bold text-gray-800">
                       VENDA
                     </h1>
                   </div>
@@ -657,10 +659,10 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                             key={index}
                           >
                             <div className="flex w-4/12 items-center justify-center p-1">
-                              <h1 className="text-gray-500">{description}</h1>
+                              <h1 className="text-gray-200">{description}</h1>
                             </div>
                             <div className="flex w-2/12 items-center justify-center p-1">
-                              <h1 className="text-gray-500">
+                              <h1 className="text-gray-200">
                                 R${" "}
                                 {custo.toLocaleString("pt-br", {
                                   maximumFractionDigits: 2,
@@ -669,7 +671,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                               </h1>
                             </div>
                             <div className="flex w-2/12 items-center justify-center p-1">
-                              <h1 className="text-gray-500">
+                              <h1 className="text-gray-200">
                                 R${" "}
                                 {taxValue.toLocaleString("pt-br", {
                                   maximumFractionDigits: 2,
@@ -678,7 +680,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                               </h1>
                             </div>
                             <div className="flex w-2/12 items-center justify-center p-1">
-                              <h1 className="text-gray-500">
+                              <h1 className="text-gray-200">
                                 R${" "}
                                 {marginValue.toLocaleString("pt-br", {
                                   maximumFractionDigits: 2,
@@ -687,7 +689,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                               </h1>
                             </div>
                             <div className="flex w-2/12 items-center justify-center p-1">
-                              <h1 className="text-gray-500">
+                              <h1 className="text-gray-200">
                                 R${" "}
                                 {vendaFinal.toLocaleString("pt-br", {
                                   maximumFractionDigits: 2,
@@ -700,12 +702,12 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                       }
                     )
                   : null}
-                <div className="flex w-full items-center rounded border-t border-gray-200 py-1">
+                <div className="flex w-full items-center rounded border-t border-gray-600 py-1">
                   <div className="flex w-4/12 items-center justify-center p-1">
-                    <h1 className="font-bold text-gray-800">TOTAIS</h1>
+                    <h1 className="font-bold text-white">TOTAIS</h1>
                   </div>
                   <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="font-medium text-gray-800">
+                    <h1 className="font-medium text-gray-200">
                       R${" "}
                       {getTotals()?.totalCosts.toLocaleString("pt-br", {
                         maximumFractionDigits: 2,
@@ -714,7 +716,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     </h1>
                   </div>
                   <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="font-medium text-gray-800">
+                    <h1 className="font-medium text-gray-200">
                       R${" "}
                       {getTotals()?.totalTaxes.toLocaleString("pt-br", {
                         maximumFractionDigits: 2,
@@ -723,7 +725,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     </h1>
                   </div>
                   <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="font-medium text-gray-800">
+                    <h1 className="font-medium text-gray-200">
                       R${" "}
                       {getTotals()?.totalProfits.toLocaleString("pt-br", {
                         maximumFractionDigits: 2,
@@ -732,7 +734,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     </h1>
                   </div>
                   <div className="flex w-2/12 items-center justify-center p-1">
-                    <h1 className="font-medium text-gray-800">
+                    <h1 className="font-medium text-gray-200">
                       R${" "}
                       {getTotals()?.finalProposePrice.toLocaleString("pt-br", {
                         maximumFractionDigits: 2,
@@ -742,7 +744,7 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 flex flex-col rounded border border-gray-200 bg-[#fff] shadow-md lg:hidden">
+              <div className="mt-4 flex flex-col rounded border border-gray-600 bg-[#27374D] shadow-md lg:hidden">
                 <h1 className="rounded-tl-md rounded-tr-md bg-gray-500 p-2 text-center font-Raleway font-bold text-white">
                   ITENS
                 </h1>
@@ -775,16 +777,16 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                         key={index}
                       >
                         <div className="flex w-full items-center justify-center p-1">
-                          <h1 className="font-medium text-gray-800">
+                          <h1 className="font-medium text-gray-200">
                             {description}
                           </h1>
                         </div>
                         <div className="grid w-full grid-cols-2  items-center gap-1">
                           <div className="col-span-1 flex flex-col items-center justify-center p-1">
-                            <h1 className="text-sm font-thin text-gray-500">
+                            <h1 className="text-sm font-thin text-gray-200">
                               CUSTO
                             </h1>
-                            <h1 className="text-center text-xs font-bold text-[#15599a]">
+                            <h1 className="text-center text-xs font-bold text-[#fbcb83]">
                               R${" "}
                               {custo.toLocaleString("pt-br", {
                                 maximumFractionDigits: 2,
@@ -793,10 +795,10 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                             </h1>
                           </div>
                           <div className="col-span-1 flex flex-col items-center justify-center p-1">
-                            <h1 className="text-sm font-thin text-gray-500">
+                            <h1 className="text-sm font-thin text-gray-200">
                               IMPOSTO
                             </h1>
-                            <h1 className="text-center text-xs font-bold text-[#15599a]">
+                            <h1 className="text-center text-xs font-bold text-[#fbcb83]">
                               R${" "}
                               {taxValue.toLocaleString("pt-br", {
                                 maximumFractionDigits: 2,
@@ -805,10 +807,10 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                             </h1>
                           </div>
                           <div className="col-span-1 flex flex-col items-center justify-center p-1">
-                            <h1 className="text-sm font-thin text-gray-500">
+                            <h1 className="text-sm font-thin text-gray-200">
                               LUCRO
                             </h1>
-                            <h1 className="text-center text-xs font-bold text-[#15599a]">
+                            <h1 className="text-center text-xs font-bold text-[#fbcb83]">
                               R${" "}
                               {marginValue.toLocaleString("pt-br", {
                                 maximumFractionDigits: 2,
@@ -817,10 +819,10 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                             </h1>
                           </div>
                           <div className="col-span-1 flex flex-col items-center justify-center p-1">
-                            <h1 className="text-sm font-thin text-gray-500">
+                            <h1 className="text-sm font-thin text-gray-200">
                               VENDA
                             </h1>
-                            <h1 className="text-center text-xs font-bold text-[#fead41]">
+                            <h1 className="text-center text-xs font-bold text-blue-400">
                               R${" "}
                               {vendaFinal.toLocaleString("pt-br", {
                                 maximumFractionDigits: 2,
@@ -838,8 +840,8 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                 </h1>
                 <div className="grid w-full grid-cols-2  items-center gap-1 p-2">
                   <div className="col-span-1 flex flex-col items-center justify-center p-1">
-                    <h1 className="text-sm font-thin text-gray-500">CUSTO</h1>
-                    <h1 className="text-center text-xs font-bold text-[#15599a]">
+                    <h1 className="text-sm font-thin text-gray-200">CUSTO</h1>
+                    <h1 className="text-center text-xs font-bold text-[#fbcb83]">
                       R${" "}
                       {getTotals()?.totalCosts.toLocaleString("pt-br", {
                         maximumFractionDigits: 2,
@@ -848,8 +850,8 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     </h1>
                   </div>
                   <div className="col-span-1 flex flex-col items-center justify-center p-1">
-                    <h1 className="text-sm font-thin text-gray-500">IMPOSTO</h1>
-                    <h1 className="text-center text-xs font-bold text-[#15599a]">
+                    <h1 className="text-sm font-thin text-gray-200">IMPOSTO</h1>
+                    <h1 className="text-center text-xs font-bold text-[#fbcb83]">
                       R${" "}
                       {getTotals()?.totalTaxes.toLocaleString("pt-br", {
                         maximumFractionDigits: 2,
@@ -858,8 +860,8 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     </h1>
                   </div>
                   <div className="col-span-1 flex flex-col items-center justify-center p-1">
-                    <h1 className="text-sm font-thin text-gray-500">LUCRO</h1>
-                    <h1 className="text-center text-xs font-bold text-[#15599a]">
+                    <h1 className="text-sm font-thin text-gray-200">LUCRO</h1>
+                    <h1 className="text-center text-xs font-bold text-[#fbcb83]">
                       R${" "}
                       {getTotals()?.totalProfits.toLocaleString("pt-br", {
                         maximumFractionDigits: 2,
@@ -868,8 +870,8 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                     </h1>
                   </div>
                   <div className="col-span-1 flex flex-col items-center justify-center p-1">
-                    <h1 className="text-sm font-thin text-gray-500">VENDA</h1>
-                    <h1 className="text-center text-xs font-bold text-[#fead41]">
+                    <h1 className="text-sm font-thin text-gray-200">VENDA</h1>
+                    <h1 className="text-center text-xs font-bold text-blue-400">
                       R${" "}
                       {getTotals()?.finalProposePrice.toLocaleString("pt-br", {
                         maximumFractionDigits: 2,
@@ -881,13 +883,13 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
               </div>
             </>
           ) : (
-            <div className="mt-4 flex w-full flex-col gap-1 border border-gray-200 bg-[#fff] shadow-md">
+            <div className="mt-4 flex w-full flex-col gap-1 border border-gray-600 bg-[#27374D] shadow-md">
               <div className="flex w-full items-center rounded bg-gray-200">
                 <div className="flex w-8/12 items-center justify-center p-1">
-                  <h1 className="font-Raleway font-bold text-gray-500">ITEM</h1>
+                  <h1 className="font-Raleway font-bold text-gray-800">ITEM</h1>
                 </div>
                 <div className="flex w-4/12 items-center justify-center p-1">
-                  <h1 className="font-Raleway font-bold text-gray-500">
+                  <h1 className="font-Raleway font-bold text-gray-800">
                     VENDA
                   </h1>
                 </div>
@@ -917,11 +919,11 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                       key={index}
                     >
                       <div className="flex w-8/12 items-center justify-center p-1">
-                        <h1 className="text-gray-500">{description}</h1>
+                        <h1 className="text-gray-200">{description}</h1>
                       </div>
 
                       <div className="flex w-4/12 items-center justify-center p-1">
-                        <h1 className="text-gray-500">
+                        <h1 className="text-gray-200">
                           R${" "}
                           {vendaFinal.toLocaleString("pt-br", {
                             maximumFractionDigits: 2,
@@ -933,13 +935,13 @@ function ProposeViewUF({ propose }: ProposeViewUFProps) {
                   );
                 }
               )}
-              <div className="flex w-full items-center rounded border-t border-gray-200 py-1">
+              <div className="flex w-full items-center rounded border-t border-gray-600 py-1">
                 <div className="flex w-8/12 items-center justify-center p-1">
                   <h1 className="font-bold text-gray-800">TOTAIS</h1>
                 </div>
 
                 <div className="flex w-4/12 items-center justify-center p-1">
-                  <h1 className="font-medium text-gray-800">
+                  <h1 className="font-medium text-gray-200">
                     R${" "}
                     {getTotals()?.finalProposePrice.toLocaleString("pt-br", {
                       maximumFractionDigits: 2,

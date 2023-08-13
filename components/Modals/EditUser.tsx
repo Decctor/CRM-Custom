@@ -427,7 +427,7 @@ function EditUser({ user, closeModal, users }: EditUserProps) {
                     typeof userInfo.visibilidade == "object"
                       ? "opacity-100"
                       : "opacity-30"
-                  } cursor-pointer border border-[#15599a] p-2 font-bold text-[#15599a]`}
+                  } cursor-pointer border border-[#fbcb83] p-2 font-bold text-[#fbcb83]`}
                 >
                   PERSONALIZADA
                 </div>
@@ -493,7 +493,7 @@ function EditUser({ user, closeModal, users }: EditUserProps) {
                     userInfo.funisVisiveis != "TODOS"
                       ? "opacity-100"
                       : "opacity-30"
-                  } cursor-pointer border border-[#15599a] p-2 font-bold text-[#15599a]`}
+                  } cursor-pointer border border-[#fbcb83] p-2 font-bold text-[#fbcb83]`}
                 >
                   ALGUNS
                 </div>
@@ -557,7 +557,7 @@ function EditUser({ user, closeModal, users }: EditUserProps) {
             <div className="flex w-full grow items-end justify-end">
               <button
                 onClick={() => mutate()}
-                className="rounded-md border border-[#15599a] p-2 font-medium text-[#15599a] duration-300 ease-in-out  hover:bg-[#15599a] hover:text-white"
+                className="rounded-md border border-[#fbcb83] p-2 font-medium text-[#fbcb83] duration-300 ease-in-out  hover:bg-[#fbcb83] hover:text-white"
               >
                 SALVAR
               </button>

@@ -123,14 +123,14 @@ function SpecificProposePage() {
     // return (
     //   <div className="flex flex-col md:flex-row h-full">
     //     <Sidebar />
-    //     <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#f8f9fa] p-6">
+    //     <div className="flex w-full max-w-full grow flex-col overflow-x-hidden bg-[#393E46] p-6">
     //       <div className="flex w-full items-center justify-between border-b border-gray-200 pb-2">
     //         <div className="flex flex-col gap-1">
     //           <h1 className="font-Raleway text-xl font-bold text-gray-800">
     //             {propose?.nome}
     //           </h1>
     //           <div className="flex items-center gap-2">
-    //             <RxDashboard style={{ color: "#15599a" }} />
+    //             <RxDashboard style={{ color: "#fbcb83" }} />
     //             <p className="text-xs">{propose?.infoProjeto?.nome}</p>
     //           </div>
     //         </div>
@@ -156,7 +156,7 @@ function SpecificProposePage() {
     //         <div className="flex min-h-[350px] w-full flex-col justify-around gap-3 lg:flex-row">
     //           <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md lg:w-1/3">
     //             <div className="flex w-full flex-col items-center">
-    //               <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
+    //               <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#fbcb83]">
     //                 INFORMAÇÕES GERAIS
     //               </h1>
     //               <p className="text-center text-xs italic text-gray-500">
@@ -226,7 +226,7 @@ function SpecificProposePage() {
     //           </div>
     //           <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md lg:w-1/3">
     //             <div className="flex w-full flex-col items-center">
-    //               <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
+    //               <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#fbcb83]">
     //                 PREMISSAS
     //               </h1>
     //               <p className="text-center text-xs italic text-gray-500">
@@ -271,7 +271,7 @@ function SpecificProposePage() {
     //           </div>
     //           <div className="flex h-full w-full flex-col rounded border border-gray-200 bg-[#fff] p-3 shadow-md lg:w-1/3">
     //             <div className="flex w-full flex-col items-center">
-    //               <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#15599a]">
+    //               <h1 className="w-full text-center font-Raleway text-lg font-bold text-[#fbcb83]">
     //                 Arquivo
     //               </h1>
     //               <p className="text-center text-xs italic text-gray-500">
@@ -287,7 +287,7 @@ function SpecificProposePage() {
     //                     propose?.nome ? propose.nome : "PROPOSTA"
     //                   )
     //                 }
-    //                 className="flex w-fit items-center gap-2 self-center rounded-lg border border-dashed border-[#15599a] p-2 text-[#15599a]"
+    //                 className="flex w-fit items-center gap-2 self-center rounded-lg border border-dashed border-[#fbcb83] p-2 text-[#fbcb83]"
     //               >
     //                 <p>DOWNLOAD DO PDF</p>
     //                 <TbDownload />
